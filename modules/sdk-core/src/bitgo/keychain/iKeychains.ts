@@ -30,6 +30,9 @@ export interface Keychain {
   prv?: string;
   provider?: string;
   encryptedPrv?: string;
+  // Required for MPCV2 keys where we reduce the amount of data needed for the keycard.
+  // This is only generated client side and is not sent to WP
+  reducedEncryptedPrv?: string;
   derivationPath?: string;
   derivedFromParentWithSeed?: string;
   commonPub?: string;
@@ -100,6 +103,8 @@ export interface AddKeychainOptions {
   backupGPGPublicKey?: string;
   algoUsed?: string;
   isDistributedCustody?: boolean;
+  // indicates if the key is MPCv2 or not
+  isMPCv2?: boolean;
 }
 
 export interface ApiKeyShare {
@@ -125,6 +130,7 @@ export interface CreateBackupOptions {
   commonKeychain?: string;
   prv?: string;
   encryptedPrv?: string;
+  passphrase?: string;
 }
 
 export interface CreateBitGoOptions {
@@ -181,4 +187,5 @@ export interface IKeychains {
   getKeysForSigning(params?: GetKeysForSigningOptions): Promise<Keychain[]>;
   createMpc(params: CreateMpcOptions): Promise<KeychainsTriplet>;
   createTssBitGoKeyFromOvcShares(ovcOutput: OvcToBitGoJSON): Promise<BitGoKeyFromOvcShares>;
+  createUserKeychain(userPassword: string): Promise<Keychain>;
 }

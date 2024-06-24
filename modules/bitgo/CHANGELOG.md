@@ -3,6 +3,149 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [38.11.0](https://github.com/BitGo/BitGoJS/compare/bitgo@38.10.0...bitgo@38.11.0) (2024-06-14)
+
+### Bug Fixes
+
+- **sdk-coin-xrp:** better error handling ([dcf7de4](https://github.com/BitGo/BitGoJS/commit/dcf7de4e0bfed6f3af2f87f8215e18c130cb8107))
+
+### Features
+
+- **sdk-coin-ethlike:** add new eth like coin packages ([ba305cb](https://github.com/BitGo/BitGoJS/commit/ba305cb7f7b564d499d0f931f50919058e85652f))
+- **sdk-core:** added propagation of reqId to sendMany ([411efa7](https://github.com/BitGo/BitGoJS/commit/411efa76673fa1fb4b3e24fef4a6bf10bbd63af8))
+
+# [38.10.0](https://github.com/BitGo/BitGoJS/compare/bitgo@38.9.0...bitgo@38.10.0) (2024-06-11)
+
+### Bug Fixes
+
+- **abstract-eth:** use correct derivation path in wrw recover function ([5018147](https://github.com/BitGo/BitGoJS/commit/50181478d487c8871f94da2fb92e7327098b2370))
+
+### Features
+
+- **sdk-core:** added unit tests ([f77473f](https://github.com/BitGo/BitGoJS/commit/f77473fe3fb7536842df67226fbffb0d8aca1272))
+- **statics:** added ofc support for Polygon tokens ([baa8fbd](https://github.com/BitGo/BitGoJS/commit/baa8fbd9d269f4eb103f746a5b7afb0402102332))
+
+# [38.9.0](https://github.com/BitGo/BitGoJS/compare/bitgo@38.8.0...bitgo@38.9.0) (2024-06-05)
+
+### Features
+
+- **sdk-core:** supply isMPCv2 for MPCv2 key creation ([64bd55a](https://github.com/BitGo/BitGoJS/commit/64bd55ac018797645b719f1bc8e4886ee7ed9443))
+
+# [38.8.0](https://github.com/BitGo/BitGoJS/compare/bitgo@38.7.0...bitgo@38.8.0) (2024-05-31)
+
+### Features
+
+- **abstract-eth:** add recovery support for bsc and polygon mpcv2 ([820e7b4](https://github.com/BitGo/BitGoJS/commit/820e7b40574add1bc7a05954961c7e7473972168))
+- use cashaddr address format for ecash recovery ([072f11f](https://github.com/BitGo/BitGoJS/commit/072f11f9e2b8b10c91d9ddf4e0503dc3a1e13563))
+
+# [38.7.0](https://github.com/BitGo/BitGoJS/compare/bitgo@38.6.0...bitgo@38.7.0) (2024-05-28)
+
+### Bug Fixes
+
+- should be able to generate onchain custodial wallet with express ([355dc8c](https://github.com/BitGo/BitGoJS/commit/355dc8cabe1b4432020947c22a663fd1e22eb1ac))
+
+### Features
+
+- add p2tr as the last option ([673c7d8](https://github.com/BitGo/BitGoJS/commit/673c7d8444be8147ca2b3803e641ab35890e6521))
+- remove p2tr from changeAddressType list ([561a8bd](https://github.com/BitGo/BitGoJS/commit/561a8bdd4f785a4e8ef483e0271a40a4a5c192d9))
+- **statics:** adding test token for solana tokens for go account ([e89757d](https://github.com/BitGo/BitGoJS/commit/e89757d12a1540b433a856acb0aef6ee22c88ebe))
+- **statics:** enable cosmosLike MPCv2 ([231d25e](https://github.com/BitGo/BitGoJS/commit/231d25eccaeb8e4cd96a3b5b79ae3c11e73ea991))
+- **statics:** enable mpcv2 for bsc and polygon ([e8cbbb8](https://github.com/BitGo/BitGoJS/commit/e8cbbb8d2e4fa1e079298faa5ccac17e19228aff))
+- update @bitgo/public-types to latest ([4ce79f1](https://github.com/BitGo/BitGoJS/commit/4ce79f1e812478ac5f2eaffdb5d0bed39d90cb8b))
+- use settings API to switch between MPCv2 and v1 ([85e2df2](https://github.com/BitGo/BitGoJS/commit/85e2df2856fd0b673bae29b9d6e9aabaa8c8a932))
+
+# [38.6.0](https://github.com/BitGo/BitGoJS/compare/bitgo@38.5.0...bitgo@38.6.0) (2024-05-22)
+
+### Features
+
+- **abstract-eth:** wrw recovery for dkls wallet ([bf374e8](https://github.com/BitGo/BitGoJS/commit/bf374e89522c9688619d9b20ed66d3873b55d75e))
+- **sdk-core:** support smaller mpcv2 keycard ([63512d4](https://github.com/BitGo/BitGoJS/commit/63512d4279d012c0a151720cffb195b198d25e21))
+
+# [38.5.0](https://github.com/BitGo/BitGoJS/compare/bitgo@38.4.2...bitgo@38.5.0) (2024-05-17)
+
+### Features
+
+- send changeAddressType preferences array ([bd18c9e](https://github.com/BitGo/BitGoJS/commit/bd18c9e5e897655036676db49070858e11b6e028))
+- **statics:** add ofc token to represent Erc20 token on avalance chain ([abc09c2](https://github.com/BitGo/BitGoJS/commit/abc09c2009883e535a91a95c235801da87ce87e1))
+- **statics:** adding support for solana tokens for go account ([076ff13](https://github.com/BitGo/BitGoJS/commit/076ff133de149de8e6c6a1382b9f082f7f838316))
+
+## [38.4.2](https://github.com/BitGo/BitGoJS/compare/bitgo@38.4.1...bitgo@38.4.2) (2024-05-13)
+
+### Bug Fixes
+
+- **sdk-coin-xlm:** fix returned data from recover function ([77b1eba](https://github.com/BitGo/BitGoJS/commit/77b1eba312b08ce846e240e7e64cf560204b786b))
+
+## [38.4.1](https://github.com/BitGo/BitGoJS/compare/bitgo@38.4.0...bitgo@38.4.1) (2024-05-08)
+
+### Bug Fixes
+
+- **root:** fix keychains updatePassword for tss ([4cc09a8](https://github.com/BitGo/BitGoJS/commit/4cc09a8882194e19b55c10f21937ef0ffff39465))
+- **sdk-core:** fix ci check issue ([d0eb311](https://github.com/BitGo/BitGoJS/commit/d0eb311141bee9b52919178a5f033212a299ddcf))
+
+### Reverts
+
+- Revert "Revert "feat(abstract-utxo): support trustless change outputs from explaintx"" ([03896f6](https://github.com/BitGo/BitGoJS/commit/03896f65ecaaa85f6a5a9be9d45012d848329938))
+
+# [38.4.0](https://github.com/BitGo/BitGoJS/compare/bitgo@38.3.0...bitgo@38.4.0) (2024-05-01)
+
+### Bug Fixes
+
+- **root:** fix tests ([1324cda](https://github.com/BitGo/BitGoJS/commit/1324cdad62f64da99b645b3c6bd9c4e53639611d))
+
+### Features
+
+- **sdk-core:** add MPCv2 wallet creation ([3b15e71](https://github.com/BitGo/BitGoJS/commit/3b15e715a5cdb165ce671bd216d1191170ee8980))
+- **sdk-core:** create dkls wallets with version 3 as well ([a14151a](https://github.com/BitGo/BitGoJS/commit/a14151a34047326334ed434ea3b16454f61c12a5))
+- **sdk-core:** switch tss signing b/w mpc v1/v2 ([c3d05f8](https://github.com/BitGo/BitGoJS/commit/c3d05f80b45faacea8e588b91633c1594ffc1070))
+- **wp:** update public-types and pass signatureR ([b0dba88](https://github.com/BitGo/BitGoJS/commit/b0dba888413230b6727713c0a8aec73959d62915))
+
+### Reverts
+
+- Revert "feat(abstract-utxo): support trustless change outputs from explaintx" ([23442a9](https://github.com/BitGo/BitGoJS/commit/23442a9873ae432c1d5efee8a3b3d4c0c3a772e2))
+
+# [38.3.0](https://github.com/BitGo/BitGoJS/compare/bitgo@38.2.1...bitgo@38.3.0) (2024-04-25)
+
+### Features
+
+- **sdk-core:** modify accept share method ([74cba44](https://github.com/BitGo/BitGoJS/commit/74cba44bc994ead576ac7d03a7b8171df9298f4b))
+
+## [38.2.1](https://github.com/BitGo/BitGoJS/compare/bitgo@38.2.0...bitgo@38.2.1) (2024-04-24)
+
+### Bug Fixes
+
+- superagent upgrade to 9.0 ([6e9aa43](https://github.com/BitGo/BitGoJS/commit/6e9aa43a6d2999298abd450ceb168d664b8b926d))
+
+# [38.2.0](https://github.com/BitGo/BitGoJS/compare/bitgo@38.1.0...bitgo@38.2.0) (2024-04-22)
+
+### Features
+
+- **abstract-utxo:** support trustless change outputs from explaintx ([445ed53](https://github.com/BitGo/BitGoJS/commit/445ed5357c24357b5f9137669551e146bf2f2e60))
+
+# [38.1.0](https://github.com/BitGo/BitGoJS/compare/bitgo@38.0.5...bitgo@38.1.0) (2024-04-17)
+
+### Features
+
+- **statics:** add ofc token to represent Erc20 token on arbitrun chain ([32ccf68](https://github.com/BitGo/BitGoJS/commit/32ccf682b4329fd53f06c6466585af58dacc4a57))
+- **statics:** remove test on addressCoin ([c5356b9](https://github.com/BitGo/BitGoJS/commit/c5356b92fe9099babaee0085da63a440436b7220))
+
+## [38.0.5](https://github.com/BitGo/BitGoJS/compare/bitgo@38.0.4...bitgo@38.0.5) (2024-04-12)
+
+### Bug Fixes
+
+- pending approvals for txRequestLite should not use multiSig flow ([7802998](https://github.com/BitGo/BitGoJS/commit/7802998082594a970c8ef71a794cf48b748cc555))
+
+## [38.0.4](https://github.com/BitGo/BitGoJS/compare/bitgo@38.0.3...bitgo@38.0.4) (2024-04-10)
+
+**Note:** Version bump only for package bitgo
+
+## [38.0.3](https://github.com/BitGo/BitGoJS/compare/bitgo@38.0.2...bitgo@38.0.3) (2024-04-09)
+
+**Note:** Version bump only for package bitgo
+
+## [38.0.2](https://github.com/BitGo/BitGoJS/compare/bitgo@38.0.1...bitgo@38.0.2) (2024-04-08)
+
+**Note:** Version bump only for package bitgo
+
 ## [38.0.1](https://github.com/BitGo/BitGoJS/compare/bitgo@38.0.0...bitgo@38.0.1) (2024-04-05)
 
 **Note:** Version bump only for package bitgo

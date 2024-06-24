@@ -3,6 +3,82 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.4](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-stx@3.2.3...@bitgo/sdk-coin-stx@3.2.4) (2024-06-14)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-stx
+
+## [3.2.3](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-stx@3.2.2...@bitgo/sdk-coin-stx@3.2.3) (2024-06-11)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-stx
+
+## [3.2.2](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-stx@3.2.1...@bitgo/sdk-coin-stx@3.2.2) (2024-06-05)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-stx
+
+## [3.2.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-stx@3.2.0...@bitgo/sdk-coin-stx@3.2.1) (2024-05-31)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-stx
+
+# [3.2.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-stx@3.1.9...@bitgo/sdk-coin-stx@3.2.0) (2024-05-28)
+
+### Features
+
+- **sdk-coin-stx:** remove legacy support to pox-3 contract ([99e50d9](https://github.com/BitGo/BitGoJS/commit/99e50d92f03ad98df90694f091b7b45e00edc01f))
+
+## [3.1.9](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-stx@3.1.8...@bitgo/sdk-coin-stx@3.1.9) (2024-05-22)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-stx
+
+## [3.1.8](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-stx@3.1.7...@bitgo/sdk-coin-stx@3.1.8) (2024-05-17)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-stx
+
+## [3.1.7](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-stx@3.1.6...@bitgo/sdk-coin-stx@3.1.7) (2024-05-13)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-stx
+
+## [3.1.6](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-stx@3.1.5...@bitgo/sdk-coin-stx@3.1.6) (2024-05-08)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-stx
+
+## [3.1.5](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-stx@3.1.4...@bitgo/sdk-coin-stx@3.1.5) (2024-05-01)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-stx
+
+## [3.1.4](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-stx@3.1.3...@bitgo/sdk-coin-stx@3.1.4) (2024-04-25)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-stx
+
+## [3.1.3](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-stx@3.1.2...@bitgo/sdk-coin-stx@3.1.3) (2024-04-24)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-stx
+
+## [3.1.2](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-stx@3.1.1...@bitgo/sdk-coin-stx@3.1.2) (2024-04-22)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-stx
+
+## [3.1.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-stx@3.1.0...@bitgo/sdk-coin-stx@3.1.1) (2024-04-17)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-stx
+
+# [3.1.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-stx@3.0.4...@bitgo/sdk-coin-stx@3.1.0) (2024-04-12)
+
+### Features
+
+- **sdk-coin-stx:** add support to nakamoto updgrade stack-stx tx ([f9cab3a](https://github.com/BitGo/BitGoJS/commit/f9cab3a0f836f3411f45e3ab1a04ee131680f649))
+
+## [3.0.4](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-stx@3.0.3...@bitgo/sdk-coin-stx@3.0.4) (2024-04-10)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-stx
+
+## [3.0.3](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-stx@3.0.2...@bitgo/sdk-coin-stx@3.0.3) (2024-04-09)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-stx
+
+## [3.0.2](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-stx@3.0.1...@bitgo/sdk-coin-stx@3.0.2) (2024-04-08)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-stx
+
 ## [3.0.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-stx@3.0.0...@bitgo/sdk-coin-stx@3.0.1) (2024-04-05)
 
 **Note:** Version bump only for package @bitgo/sdk-coin-stx

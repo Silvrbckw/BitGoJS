@@ -3,6 +3,92 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [20.5.3](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-polygon@20.5.2...@bitgo/sdk-coin-polygon@20.5.3) (2024-06-14)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-polygon
+
+## [20.5.2](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-polygon@20.5.1...@bitgo/sdk-coin-polygon@20.5.2) (2024-06-11)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-polygon
+
+## [20.5.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-polygon@20.5.0...@bitgo/sdk-coin-polygon@20.5.1) (2024-06-05)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-polygon
+
+# [20.5.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-polygon@20.4.0...@bitgo/sdk-coin-polygon@20.5.0) (2024-05-31)
+
+### Features
+
+- **abstract-eth:** add recovery support for bsc and polygon mpcv2 ([820e7b4](https://github.com/BitGo/BitGoJS/commit/820e7b40574add1bc7a05954961c7e7473972168))
+
+# [20.4.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-polygon@20.3.3...@bitgo/sdk-coin-polygon@20.4.0) (2024-05-28)
+
+### Features
+
+- **abstract-eth:** add support to build tx for CCR of unsupported token ([a6dac7c](https://github.com/BitGo/BitGoJS/commit/a6dac7c00d47acfa3d4dd072b9cfcdf99215a743))
+
+## [20.3.3](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-polygon@20.3.2...@bitgo/sdk-coin-polygon@20.3.3) (2024-05-22)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-polygon
+
+## [20.3.2](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-polygon@20.3.1...@bitgo/sdk-coin-polygon@20.3.2) (2024-05-17)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-polygon
+
+## [20.3.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-polygon@20.3.0...@bitgo/sdk-coin-polygon@20.3.1) (2024-05-13)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-polygon
+
+# [20.3.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-polygon@20.2.1...@bitgo/sdk-coin-polygon@20.3.0) (2024-05-08)
+
+### Features
+
+- **abstract-eth:** support v4 wallet for recover method ([142ec9f](https://github.com/BitGo/BitGoJS/commit/142ec9f220ec2af54545aca4b4d95b39a4179002))
+
+## [20.2.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-polygon@20.2.0...@bitgo/sdk-coin-polygon@20.2.1) (2024-05-01)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-polygon
+
+# [20.2.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-polygon@20.1.1...@bitgo/sdk-coin-polygon@20.2.0) (2024-04-25)
+
+### Features
+
+- **abstract-eth:** use non packed encode for V4 wallet ([54fd3a8](https://github.com/BitGo/BitGoJS/commit/54fd3a8dbafb14bdeae78204c122885d288d48b6))
+
+## [20.1.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-polygon@20.1.0...@bitgo/sdk-coin-polygon@20.1.1) (2024-04-24)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-polygon
+
+# [20.1.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-polygon@20.0.6...@bitgo/sdk-coin-polygon@20.1.0) (2024-04-22)
+
+### Bug Fixes
+
+- **sdk-coin-polygon:** fix send tx for polygon testnet ([172a081](https://github.com/BitGo/BitGoJS/commit/172a081cc4bec1eedf9876a438bc8828dc543d31))
+
+### Features
+
+- **statics:** add polygon amoy testnet ([b9a770d](https://github.com/BitGo/BitGoJS/commit/b9a770d4833a9175832629912ecae4687b2681b4))
+
+## [20.0.6](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-polygon@20.0.5...@bitgo/sdk-coin-polygon@20.0.6) (2024-04-17)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-polygon
+
+## [20.0.5](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-polygon@20.0.4...@bitgo/sdk-coin-polygon@20.0.5) (2024-04-12)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-polygon
+
+## [20.0.4](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-polygon@20.0.3...@bitgo/sdk-coin-polygon@20.0.4) (2024-04-10)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-polygon
+
+## [20.0.3](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-polygon@20.0.2...@bitgo/sdk-coin-polygon@20.0.3) (2024-04-09)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-polygon
+
+## [20.0.2](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-polygon@20.0.1...@bitgo/sdk-coin-polygon@20.0.2) (2024-04-08)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-polygon
+
 ## [20.0.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-polygon@20.0.0...@bitgo/sdk-coin-polygon@20.0.1) (2024-04-05)
 
 **Note:** Version bump only for package @bitgo/sdk-coin-polygon

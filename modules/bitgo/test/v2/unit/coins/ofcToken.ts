@@ -284,6 +284,90 @@ describe('OFC:', function () {
     });
   });
 
+  describe('check ofc tokens for arbethErc20', function () {
+    const tokenMain = 'ofcarbeth:link';
+    const tokenTest = 'ofctarbeth:link';
+    describe('for main network', function () {
+      it(`should have the correct values for ${tokenMain}`, function () {
+        const ofcCoin = bitgo.coin(tokenMain);
+        ofcCoin.getChain().should.equal(tokenMain);
+        ofcCoin.getFullName().should.equal('Chainlink Token');
+        ofcCoin.getBaseFactor().should.equal(PRECISION_18);
+      });
+    });
+    describe('for test network', function () {
+      it(`should have the correct values for ${tokenTest}`, function () {
+        const ofcCoin = bitgo.coin(tokenTest);
+        ofcCoin.getChain().should.equal(tokenTest);
+        ofcCoin.getFullName().should.equal('Arbitrum Test LINK');
+        ofcCoin.getBaseFactor().should.equal(PRECISION_18);
+      });
+    });
+  });
+
+  describe('check ofc tokens for avaxErc20', function () {
+    const tokenMain = 'ofcavaxc:link';
+    const tokenTest = 'ofctavaxc:link';
+    describe('for main network', function () {
+      it(`should have the correct values for ${tokenMain}`, function () {
+        const ofcCoin = bitgo.coin(tokenMain);
+        ofcCoin.getChain().should.equal(tokenMain);
+        ofcCoin.getFullName().should.equal('Chainlink');
+        ofcCoin.getBaseFactor().should.equal(PRECISION_18);
+      });
+    });
+    describe('for test network', function () {
+      it(`should have the correct values for ${tokenTest}`, function () {
+        const ofcCoin = bitgo.coin(tokenTest);
+        ofcCoin.getChain().should.equal(tokenTest);
+        ofcCoin.getFullName().should.equal('Test Chainlink');
+        ofcCoin.getBaseFactor().should.equal(PRECISION_18);
+      });
+    });
+  });
+
+  describe('check ofc tokens for solana', function () {
+    const tokenMain = 'ofcsol:hnt';
+    const tokenTest = 'ofctsol:hnt';
+    describe('for main network', function () {
+      it(`should have the correct values for ${tokenMain}`, function () {
+        const ofcCoin = bitgo.coin(tokenMain);
+        ofcCoin.getChain().should.equal(tokenMain);
+        ofcCoin.getFullName().should.equal('Helium Network Token');
+        ofcCoin.getBaseFactor().should.equal(PRECISION_8);
+      });
+    });
+    describe('for test network', function () {
+      it(`should have the correct values for ${tokenTest}`, function () {
+        const ofcCoin = bitgo.coin(tokenTest);
+        ofcCoin.getChain().should.equal(tokenTest);
+        ofcCoin.getFullName().should.equal('testnet Helium Network Token');
+        ofcCoin.getBaseFactor().should.equal(PRECISION_8);
+      });
+    });
+  });
+
+  describe('check ofc tokens for solana', function () {
+    const tokenMain = 'ofcsol:gari';
+    const tokenTest = 'ofctsol:gari';
+    describe('for main network', function () {
+      it(`should have the correct values for ${tokenMain}`, function () {
+        const ofcCoin = bitgo.coin(tokenMain);
+        ofcCoin.getChain().should.equal(tokenMain);
+        ofcCoin.getFullName().should.equal('GARI');
+        ofcCoin.getBaseFactor().should.equal(PRECISION_9);
+      });
+    });
+    describe('for test network', function () {
+      it(`should have the correct values for ${tokenTest}`, function () {
+        const ofcCoin = bitgo.coin(tokenTest);
+        ofcCoin.getChain().should.equal(tokenTest);
+        ofcCoin.getFullName().should.equal('testnet Gari Token');
+        ofcCoin.getBaseFactor().should.equal(PRECISION_9);
+      });
+    });
+  });
+
   it('can sign payloads', async function () {
     const inputParams = {
       txPrebuild: {
@@ -301,5 +385,26 @@ describe('OFC:', function () {
 
     const signedResult = await otestusdCoin.signTransaction(inputParams);
     signedResult.should.deepEqual(expectedResult);
+  });
+
+  describe('check ofc tokens for polygonErc20', function () {
+    const tokenMain = 'ofcpolygon:link';
+    const tokenTest = 'ofctpolygon:link';
+    describe('for main network', function () {
+      it(`should have the correct values for ${tokenMain}`, function () {
+        const ofcCoin = bitgo.coin(tokenMain);
+        ofcCoin.getChain().should.equal(tokenMain);
+        ofcCoin.getFullName().should.equal('ChainLink Token');
+        ofcCoin.getBaseFactor().should.equal(PRECISION_18);
+      });
+    });
+    describe('for test network', function () {
+      it(`should have the correct values for ${tokenTest}`, function () {
+        const ofcCoin = bitgo.coin(tokenTest);
+        ofcCoin.getChain().should.equal(tokenTest);
+        ofcCoin.getFullName().should.equal('Polygon Test LINK');
+        ofcCoin.getBaseFactor().should.equal(PRECISION_18);
+      });
+    });
   });
 });

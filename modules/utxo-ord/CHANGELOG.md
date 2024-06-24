@@ -3,6 +3,78 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.20.24](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-ord@1.20.23...@bitgo/utxo-ord@1.20.24) (2024-06-14)
+
+**Note:** Version bump only for package @bitgo/utxo-ord
+
+## [1.20.23](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-ord@1.20.22...@bitgo/utxo-ord@1.20.23) (2024-06-11)
+
+**Note:** Version bump only for package @bitgo/utxo-ord
+
+## [1.20.22](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-ord@1.20.21...@bitgo/utxo-ord@1.20.22) (2024-06-05)
+
+**Note:** Version bump only for package @bitgo/utxo-ord
+
+## [1.20.21](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-ord@1.20.20...@bitgo/utxo-ord@1.20.21) (2024-05-31)
+
+**Note:** Version bump only for package @bitgo/utxo-ord
+
+## [1.20.20](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-ord@1.20.19...@bitgo/utxo-ord@1.20.20) (2024-05-28)
+
+**Note:** Version bump only for package @bitgo/utxo-ord
+
+## [1.20.19](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-ord@1.20.18...@bitgo/utxo-ord@1.20.19) (2024-05-22)
+
+**Note:** Version bump only for package @bitgo/utxo-ord
+
+## [1.20.18](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-ord@1.20.17...@bitgo/utxo-ord@1.20.18) (2024-05-17)
+
+**Note:** Version bump only for package @bitgo/utxo-ord
+
+## [1.20.17](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-ord@1.20.16...@bitgo/utxo-ord@1.20.17) (2024-05-13)
+
+**Note:** Version bump only for package @bitgo/utxo-ord
+
+## [1.20.16](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-ord@1.20.15...@bitgo/utxo-ord@1.20.16) (2024-05-08)
+
+**Note:** Version bump only for package @bitgo/utxo-ord
+
+## [1.20.15](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-ord@1.20.14...@bitgo/utxo-ord@1.20.15) (2024-05-01)
+
+**Note:** Version bump only for package @bitgo/utxo-ord
+
+## [1.20.14](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-ord@1.20.13...@bitgo/utxo-ord@1.20.14) (2024-04-25)
+
+**Note:** Version bump only for package @bitgo/utxo-ord
+
+## [1.20.13](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-ord@1.20.12...@bitgo/utxo-ord@1.20.13) (2024-04-24)
+
+**Note:** Version bump only for package @bitgo/utxo-ord
+
+## [1.20.12](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-ord@1.20.11...@bitgo/utxo-ord@1.20.12) (2024-04-22)
+
+**Note:** Version bump only for package @bitgo/utxo-ord
+
+## [1.20.11](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-ord@1.20.10...@bitgo/utxo-ord@1.20.11) (2024-04-17)
+
+**Note:** Version bump only for package @bitgo/utxo-ord
+
+## [1.20.10](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-ord@1.20.9...@bitgo/utxo-ord@1.20.10) (2024-04-12)
+
+**Note:** Version bump only for package @bitgo/utxo-ord
+
+## [1.20.9](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-ord@1.20.8...@bitgo/utxo-ord@1.20.9) (2024-04-10)
+
+**Note:** Version bump only for package @bitgo/utxo-ord
+
+## [1.20.8](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-ord@1.20.7...@bitgo/utxo-ord@1.20.8) (2024-04-09)
+
+**Note:** Version bump only for package @bitgo/utxo-ord
+
+## [1.20.7](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-ord@1.20.6...@bitgo/utxo-ord@1.20.7) (2024-04-08)
+
+**Note:** Version bump only for package @bitgo/utxo-ord
+
 ## [1.20.6](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-ord@1.20.5...@bitgo/utxo-ord@1.20.6) (2024-04-05)
 
 **Note:** Version bump only for package @bitgo/utxo-ord

@@ -17,6 +17,11 @@ export interface UtxoNetwork extends BaseNetwork {
   utxolibName: string;
 }
 
+export interface LightningNetwork extends BaseNetwork {
+  // Network name as defined in @bitgo/utxo-lib networks.ts
+  utxolibName: string;
+}
+
 export interface AdaNetwork extends BaseNetwork {
   // Network name as defined in @bitgo/utxo-lib networks.ts
   // maybe add network identifier / magic network number
@@ -109,7 +114,7 @@ abstract class Testnet extends BaseNetwork {
 class Algorand extends Mainnet implements AccountNetwork {
   name = 'Algorand';
   family = CoinFamily.ALGO;
-  explorerUrl = 'https://explorer.bitquery.io/algorand/tx/';
+  explorerUrl = 'https://allo.info/tx/';
 }
 
 class AlgorandTestnet extends Testnet implements AccountNetwork {
@@ -124,7 +129,7 @@ class Ada extends Mainnet implements AdaNetwork {
   utxolibName = 'cardano';
   poolDeposit = 500000000;
   stakeKeyDeposit = 2000000;
-  explorerUrl = 'https://explorer.cardano.org/en/transaction?id=';
+  explorerUrl = 'https://beta.explorer.cardano.org/en/transactions/';
   coinsPerUtxoWord = 34482;
   maxTransactionSize = 8000;
   maxValueSize = 4000;
@@ -256,6 +261,20 @@ class BinanceSmartChainTestnet extends Testnet implements EthereumNetwork {
   explorerUrl = 'https://testnet.bscscan.com/tx/';
   accountExplorerUrl = 'https://testnet.bscscan.com/address/';
   chainId = 97;
+}
+
+class LightningBitcoin extends Mainnet implements LightningNetwork {
+  name = 'LightningBitcoin';
+  family = CoinFamily.LNBTC;
+  utxolibName = 'bitcoin';
+  explorerUrl = 'https://mempool.space/lightning';
+}
+
+class LightningBitcoinTestnet extends Testnet implements LightningNetwork {
+  name = 'TestnetLightningBitcoin';
+  family = CoinFamily.LNBTC;
+  utxolibName = 'bitcoin';
+  explorerUrl = 'https://mempool.space/lightning';
 }
 
 class Bitcoin extends Mainnet implements UtxoNetwork {
@@ -486,9 +505,9 @@ class Goerli extends Testnet implements EthereumNetwork {
 class Holesky extends Testnet implements EthereumNetwork {
   name = 'Holesky';
   family = CoinFamily.ETH;
-  explorerUrl = 'https://holesky.beaconcha.in/tx/';
-  accountExplorerUrl = 'https://holesky.beaconcha.in/address/';
-  blockExplorerUrl = 'https://holesky.beaconcha.in/block/';
+  explorerUrl = 'https://holesky.etherscan.io/tx/';
+  accountExplorerUrl = 'https://holesky.etherscan.io/address/';
+  blockExplorerUrl = 'https://holesky.etherscan.io/block/';
   // https://chainlist.org/chain/17000
   chainId = 17000;
   batcherContractAddress = '0x8ae286c75a339ffabaed3a22088c52eb4f589780';
@@ -659,7 +678,7 @@ class Tia extends Mainnet implements AccountNetwork {
 class TiaTestnet extends Testnet implements AccountNetwork {
   name = 'Testnet Celestia';
   family = CoinFamily.TIA;
-  explorerUrl = 'https://testnet.mintscan.io/celestia-testnet/txs/';
+  explorerUrl = 'https://testnet.celestia.explorers.guru/transaction/';
 }
 
 class Hash extends Mainnet implements AccountNetwork {
@@ -794,7 +813,7 @@ class Stx extends Mainnet implements StacksNetwork {
 class StxTestnet extends Testnet implements StacksNetwork {
   name = 'StxTestnet';
   family = CoinFamily.STX;
-  explorerUrl = 'https://explorer.stacks.co/txid/?chain=testnet';
+  explorerUrl = 'https://explorer.stacks.co/txid/?chain=testnet&api=https://api.nakamoto.testnet.hiro.so';
   sendmanymemoContractAddress = 'ST3F1X4QGV2SM8XD96X45M6RTQXKA1PZJZZCQAB4B';
   stakingContractAddress = 'ST000000000000000000002AMW42H';
 }
@@ -913,13 +932,13 @@ class Polygon extends Mainnet implements EthereumNetwork {
 class PolygonTestnet extends Testnet implements EthereumNetwork {
   name = 'PolygonTestnet';
   family = CoinFamily.POLYGON;
-  explorerUrl = 'https://mumbai.polygonscan.com/tx/';
-  accountExplorerUrl = 'https://mumbai.polygonscan.com/address/';
-  chainId = 80001;
-  forwarderFactoryAddress = '0x7d10cfdcb763375fb5f0a0e9101f490f0bf1b43a';
-  forwarderImplementationAddress = '0xaa2216d72d7c149dfe4c3dd2154cd00994216506';
-  walletFactoryAddress = '0xe37c07faec87be075ce4002b5fedbde00a4fe9d5';
-  walletImplementationAddress = '0x11f8d70a4ee9d0962bb1160d776d4a996cfdff40';
+  explorerUrl = 'https://amoy.polygonscan.com/tx/';
+  accountExplorerUrl = 'https://amoy.polygonscan.com/address/';
+  chainId = 80002;
+  forwarderFactoryAddress = '0x23223fd7cfc5f34b20f38ebb9a489e1ff3c084d1';
+  forwarderImplementationAddress = '0xd4c24325b5ef514fbb1ecc76a9bb4dcb57a8341e';
+  walletFactoryAddress = '0xe9c16033e01bf9f94bf9f99fc0fefcfb8b124992';
+  walletImplementationAddress = '0xf8360c213e4f44cce03e48cb9281254de2a7a566';
   batcherContractAddress = '0xcdf01a31ea2a1d62951aac3a5743c4416f9da3fb';
   nativeCoinOperationHashPrefix = 'POLYGON';
   tokenOperationHashPrefix = 'POLYGON-ERC20';
@@ -977,6 +996,34 @@ class ZkSyncTestnet extends Testnet implements EthereumNetwork {
   walletImplementationAddress = '0x92db2759d1dca129a0d9d46877f361be819184c4';
 }
 
+class BaseChainTestnet extends Testnet implements EthereumNetwork {
+  name = 'BaseChainTestnet';
+  family = CoinFamily.BASEETH;
+  explorerUrl = 'https://sepolia.basescan.org/tx/';
+  accountExplorerUrl = 'https://sepolia.basescan.org/address/';
+  chainId = 84532;
+  nativeCoinOperationHashPrefix = '84532';
+  tokenOperationHashPrefix = '84532-ERC20';
+  forwarderFactoryAddress = '0xdd498702f44c4da08eb9e08d3f015eefe5cb71fc';
+  forwarderImplementationAddress = '0xbe69cae311191fb45e648ed20847f06fad2dbab4';
+  walletFactoryAddress = '0x4550e1e7616d3364877fc6c9324938dab678621a';
+  walletImplementationAddress = '0x92db2759d1dca129a0d9d46877f361be819184c4';
+}
+
+class BaseChain extends Mainnet implements EthereumNetwork {
+  name = 'BaseChain';
+  family = CoinFamily.BASEETH;
+  explorerUrl = 'https://basescan.org/tx/';
+  accountExplorerUrl = 'https://basescan.org/address/';
+  chainId = 8453;
+  nativeCoinOperationHashPrefix = '8453';
+  tokenOperationHashPrefix = '8453-ERC20';
+  forwarderFactoryAddress = '0xdd498702f44c4da08eb9e08d3f015eefe5cb71fc';
+  forwarderImplementationAddress = '0xbe69cae311191fb45e648ed20847f06fad2dbab4';
+  walletFactoryAddress = '0x4550e1e7616d3364877fc6c9324938dab678621a';
+  walletImplementationAddress = '0x92db2759d1dca129a0d9d46877f361be819184c4';
+}
+
 export const Networks = {
   main: {
     ada: Object.freeze(new Ada()),
@@ -985,6 +1032,7 @@ export const Networks = {
     atom: Object.freeze(new Atom()),
     avalancheC: Object.freeze(new AvalancheC()),
     avalancheP: Object.freeze(new AvalancheP()),
+    basechain: Object.freeze(new BaseChain()),
     bitcoin: Object.freeze(new Bitcoin()),
     bitcoinCash: Object.freeze(new BitcoinCash()),
     bitcoinGold: Object.freeze(new BitcoinGold()),
@@ -1010,6 +1058,7 @@ export const Networks = {
     injective: Object.freeze(new Injective()),
     islm: Object.freeze(new Islm()),
     kava: Object.freeze(new Kava()),
+    lnbtc: Object.freeze(new LightningBitcoin()),
     litecoin: Object.freeze(new Litecoin()),
     polygon: Object.freeze(new Polygon()),
     ofc: Object.freeze(new Ofc()),
@@ -1039,6 +1088,7 @@ export const Networks = {
     atom: Object.freeze(new AtomTestnet()),
     avalancheC: Object.freeze(new AvalancheCTestnet()),
     avalancheP: Object.freeze(new AvalanchePTestnet()),
+    basechain: Object.freeze(new BaseChainTestnet()),
     bitcoin: Object.freeze(new BitcoinTestnet()),
     bitcoinCash: Object.freeze(new BitcoinCashTestnet()),
     bitcoinGold: Object.freeze(new BitcoinGoldTestnet()),
@@ -1064,6 +1114,7 @@ export const Networks = {
     kovan: Object.freeze(new Kovan()),
     goerli: Object.freeze(new Goerli()),
     holesky: Object.freeze(new Holesky()),
+    lnbtc: Object.freeze(new LightningBitcoinTestnet()),
     litecoin: Object.freeze(new LitecoinTestnet()),
     polygon: Object.freeze(new PolygonTestnet()),
     ofc: Object.freeze(new OfcTestnet()),

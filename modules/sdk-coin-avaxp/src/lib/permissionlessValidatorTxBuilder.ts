@@ -16,7 +16,7 @@ import {
   UnsignedTx,
   Utxo,
   utils as avaxUtils,
-} from '@bitgo/avalanchejs';
+} from '@bitgo-forks/avalanchejs';
 import {
   BaseAddress,
   BaseKey,
@@ -475,7 +475,7 @@ export class PermissionlessValidatorTxBuilder extends TransactionBuilder {
         );
         stakeOutputs.push(stakeOutput);
 
-        if (currentTotal >= totalTarget) {
+        if (currentTotal > totalTarget) {
           const changeOutput = new avaxSerial.TransferableOutput(
             assetId,
             new TransferOutput(
@@ -493,7 +493,12 @@ export class PermissionlessValidatorTxBuilder extends TransactionBuilder {
         }
       }
     }
-    inputs.sort((a, b) => avaxUtils.bytesCompare(a.utxoID.txID.toBytes(), b.utxoID.txID.toBytes()));
+    inputs.sort((a, b) => {
+      if (avaxUtils.bytesEqual(a.utxoID.txID.toBytes(), b.utxoID.txID.toBytes())) {
+        return a.utxoID.outputIdx.value() - b.utxoID.outputIdx.value();
+      }
+      return avaxUtils.bytesCompare(a.utxoID.txID.toBytes(), b.utxoID.txID.toBytes());
+    });
     return { inputs, stakeOutputs, changeOutputs, utxos, credentials };
   }
 

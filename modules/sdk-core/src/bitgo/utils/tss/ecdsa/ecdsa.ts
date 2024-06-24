@@ -1,18 +1,15 @@
 import assert from 'assert';
 import { Buffer } from 'buffer';
-import { Key, SerializedKeyPair } from 'openpgp';
 import * as openpgp from 'openpgp';
-import { ec } from 'elliptic';
+import { Key, SerializedKeyPair } from 'openpgp';
 import { Hash } from 'crypto';
-
 import { EcdsaPaillierProof, EcdsaRangeProof, EcdsaTypes, hexToBigInt, minModulusBitLength } from '@bitgo/sdk-lib-mpc';
 import { bip32 } from '@bitgo/utxo-lib';
 
 import { ECDSA, Ecdsa } from '../../../../account-lib/mpc/tss';
 import { AddKeychainOptions, ApiKeyShare, CreateBackupOptions, Keychain, KeyType } from '../../../keychain';
 import ECDSAMethods, { ECDSAMethodTypes } from '../../../tss/ecdsa';
-import { IBaseCoin, KeychainsTriplet } from '../../../baseCoin';
-import baseTSSUtils from '../baseTSSUtils';
+import { KeychainsTriplet } from '../../../baseCoin';
 import {
   BitGoProofSignatures,
   CreateEcdsaBitGoKeychainParams,
@@ -22,7 +19,6 @@ import {
   KeyShare,
 } from './types';
 import {
-  BackupGpgKey,
   BackupKeyShare,
   BitgoHeldBackupKeyShare,
   CustomKShareGeneratingFunction,
@@ -35,10 +31,10 @@ import {
   TxRequest,
 } from '../baseTypes';
 import { getTxRequest } from '../../../tss';
-import { AShare, DShare, EncryptedNShare, OShare, SendShareType, SShare, WShare } from '../../../tss/ecdsa/types';
-import { createShareProof, generateGPGKeyPair, getBitgoGpgPubKey, getTrustGpgPubKey } from '../../opengpgUtils';
+import { AShare, DShare, EncryptedNShare, SendShareType, SShare, WShare, OShare } from '../../../tss/ecdsa/types';
+import { createShareProof, generateGPGKeyPair, getBitgoGpgPubKey } from '../../opengpgUtils';
 import { BitGoBase } from '../../../bitgoBase';
-import { BackupProvider, IWallet } from '../../../wallet';
+import { BackupProvider } from '../../../wallet';
 import { buildNShareFromAPIKeyShare, getParticipantFromIndex, verifyWalletSignature } from '../../../tss/ecdsa/ecdsa';
 import { signMessageWithDerivedEcdhKey, verifyEcdhSignature } from '../../../ecdh';
 import { getTxRequestChallenge } from '../../../tss/common';
@@ -48,49 +44,13 @@ import {
   TssEcdsaStep2ReturnMessage,
   TxRequestChallengeResponse,
 } from '../../../tss/types';
+import { BaseEcdsaUtils } from './base';
+import { IRequestTracer } from '../../../../api';
 
 const encryptNShare = ECDSAMethods.encryptNShare;
 
 /** @inheritdoc */
-export class EcdsaUtils extends baseTSSUtils<KeyShare> {
-  // We do not have full support for 3-party verification (w/ external source) of key shares and signature shares. There is no 3rd party key service support with this release.
-  private bitgoPublicGpgKey: openpgp.Key | undefined = undefined;
-
-  constructor(bitgo: BitGoBase, baseCoin: IBaseCoin, wallet?: IWallet) {
-    super(bitgo, baseCoin, wallet);
-    this.setBitgoGpgPubKey(bitgo);
-  }
-
-  private async setBitgoGpgPubKey(bitgo) {
-    this.bitgoPublicGpgKey = await getBitgoGpgPubKey(bitgo);
-  }
-
-  async getBitgoPublicGpgKey(): Promise<openpgp.Key> {
-    if (!this.bitgoPublicGpgKey) {
-      // retry getting bitgo's gpg key
-      await this.setBitgoGpgPubKey(this.bitgo);
-      if (!this.bitgoPublicGpgKey) {
-        throw new Error("Failed to get Bitgo's gpg key");
-      }
-    }
-
-    return this.bitgoPublicGpgKey;
-  }
-
-  /**
-   * Gets the common public key from commonKeychain.
-   *
-   * @param {String} commonKeychain common key chain between n parties
-   * @returns {string} encoded public key
-   */
-  static getPublicKeyFromCommonKeychain(commonKeychain: string): string {
-    if (commonKeychain.length !== 130) {
-      throw new Error(`Invalid commonKeychain length, expected 130, got ${commonKeychain.length}`);
-    }
-    const commonPubHexStr = commonKeychain.slice(0, 66);
-    return commonPubHexStr;
-  }
-
+export class EcdsaUtils extends BaseEcdsaUtils {
   async finalizeBitgoHeldBackupKeyShare(
     keyId: string,
     commonKeychain: string,
@@ -226,15 +186,6 @@ export class EcdsaUtils extends baseTSSUtils<KeyShare> {
       };
     }
     return backupKeyShare;
-  }
-
-  /**
-   * Gets backup pub gpg key string
-   * if a third party provided then get from trust
-   * @param isThirdPartyBackup
-   */
-  async getBackupGpgPubKey(isThirdPartyBackup = false): Promise<BackupGpgKey> {
-    return isThirdPartyBackup ? getTrustGpgPubKey(this.bitgo) : generateGPGKeyPair('secp256k1');
   }
 
   createUserKeychain({
@@ -658,7 +609,7 @@ export class EcdsaUtils extends baseTSSUtils<KeyShare> {
       chaincode = '0' + chaincode;
     }
     const signerShare = bip32.fromPrivateKey(Buffer.from(u, 'hex'), Buffer.from(chaincode, 'hex')).toBase58();
-    const bitgoGpgKey = await getBitgoGpgPubKey(this.bitgo);
+    const bitgoGpgKey = (await getBitgoGpgPubKey(this.bitgo)).mpcV1;
     const encryptedSignerShare = (await openpgp.encrypt({
       message: await openpgp.createMessage({
         text: signerShare,
@@ -823,13 +774,14 @@ export class EcdsaUtils extends baseTSSUtils<KeyShare> {
         'Wallet is not ready for TSS ECDSA signing. Please contact your enterprise admin to finish the enterprise TSS initialization.'
       );
     }
-    const txRequestObj: TxRequest = await getTxRequest(this.bitgo, this.wallet.id(), txRequest as string);
+    const txRequestObj: TxRequest = await getTxRequest(this.bitgo, this.wallet.id(), txRequest as string, params.reqId);
     const { userPaillierModulus } = await externalSignerPaillierModulusGetter({ txRequest: txRequestObj });
     const { enterpriseChallenge, bitgoChallenge } = await this.getEcdsaSigningChallenges(
       txRequest as string,
       requestType,
       userPaillierModulus,
-      0
+      0,
+      params.reqId
     );
     const step1SigningMaterial = await externalSignerKShareGenerator({
       tssParams: {
@@ -851,7 +803,8 @@ export class EcdsaUtils extends baseTSSUtils<KeyShare> {
       step1SigningMaterial.vssProof,
       step1SigningMaterial.privateShareProof,
       step1SigningMaterial.publicShare,
-      step1SigningMaterial.userPublicGpgKey
+      step1SigningMaterial.userPublicGpgKey,
+      params.reqId
     )) as Omit<AShare, 'ntilde' | 'h1' | 'h2'>; // WP/HSM does not return the initial challenge
     const step2Return = await externalSignerMuDeltaShareGenerator({
       txRequest: txRequestObj,
@@ -866,7 +819,13 @@ export class EcdsaUtils extends baseTSSUtils<KeyShare> {
       txRequestObj.txRequestId,
       requestType,
       SendShareType.MUShare,
-      step2Return.muDShare
+      step2Return.muDShare,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      params.reqId
     )) as DShare;
     const userSShare = await externalSignerSShareGenerator({
       tssParams: {
@@ -884,9 +843,15 @@ export class EcdsaUtils extends baseTSSUtils<KeyShare> {
       txRequestObj.txRequestId,
       requestType,
       SendShareType.SShare,
-      userSShare
+      userSShare,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      params.reqId
     );
-    return await getTxRequest(this.bitgo, this.wallet.id(), txRequestObj.txRequestId);
+    return await getTxRequest(this.bitgo, this.wallet.id(), txRequestObj.txRequestId, params.reqId);
   }
 
   /**
@@ -1035,12 +1000,14 @@ export class EcdsaUtils extends baseTSSUtils<KeyShare> {
    * @param {RequestType} requestType -  (0 for tx, 1 for message)
    * @param {string} walletPaillierModulus - paillier pubkey $n$
    * @param {number} index - index of the requestType
+   * @param {IRequestTracer} reqId - request tracer request id
    */
   async getEcdsaSigningChallenges(
     txRequestId: string,
     requestType: RequestType,
     walletPaillierModulus: string,
-    index = 0
+    index = 0,
+    reqId?: IRequestTracer
   ): Promise<{
     enterpriseChallenge: EcdsaTypes.SerializedEcdsaChallenges;
     bitgoChallenge: TxRequestChallengeResponse;
@@ -1057,7 +1024,8 @@ export class EcdsaUtils extends baseTSSUtils<KeyShare> {
       txRequestId,
       index.toString(),
       requestType,
-      walletPaillierModulus
+      walletPaillierModulus,
+      reqId
     );
 
     const bitgoToEnterprisePaillierChallenge = { p: createBitgoChallengeResponse.p };
@@ -1135,7 +1103,7 @@ export class EcdsaUtils extends baseTSSUtils<KeyShare> {
     assert(bitgoKeychain.commonKeychain);
     assert(bitgoKeychain.walletHSMGPGPublicKeySigs);
 
-    const bitgoGpgKey = await getBitgoGpgPubKey(this.bitgo);
+    const bitgoGpgKey = (await getBitgoGpgPubKey(this.bitgo)).mpcV1;
     const userKeyPub = await openpgp.readKey({ armoredKey: userGpgPub });
     const userKeyId = userKeyPub.keyPacket.getFingerprint();
     const backupKeyPub = await openpgp.readKey({ armoredKey: backupGpgPub });
@@ -1408,18 +1376,5 @@ export class EcdsaUtils extends baseTSSUtils<KeyShare> {
       .put(bitgo.url(`/enterprise/${entId}/tssconfig/ecdsa/challenge`, 2))
       .send(body)
       .result();
-  }
-
-  /**
-   * util function that checks that a commonKeychain is valid and can ultimately resolve to a valid public key
-   * @param commonKeychain - a user uploaded commonKeychain string
-   * @throws if the commonKeychain is invalid length or invalid format
-   */
-
-  static validateCommonKeychainPublicKey(commonKeychain: string) {
-    const pub = EcdsaUtils.getPublicKeyFromCommonKeychain(commonKeychain);
-    const secp256k1 = new ec('secp256k1');
-    const key = secp256k1.keyFromPublic(pub, 'hex');
-    return key.getPublic().encode('hex', false).slice(2);
   }
 }

@@ -34,7 +34,7 @@ export interface PingOptions {
   reqId?: IRequestTracer;
 }
 
-export const supportedRequestMethods = ['get', 'post', 'put', 'del', 'patch'] as const;
+export const supportedRequestMethods = ['get', 'post', 'put', 'del', 'patch', 'options'] as const;
 
 export interface CalculateHmacSubjectOptions {
   urlPath: string;
@@ -100,6 +100,7 @@ export interface AuthenticateOptions {
    * It is highly recommended that this is always set to avoid any issues when using a BitGo wallet
    */
   ensureEcdhKeychain?: boolean;
+  forReset2FA?: boolean;
 }
 
 export interface ProcessedAuthenticationOptions {
@@ -111,6 +112,7 @@ export interface ProcessedAuthenticationOptions {
   extensible?: boolean;
   extensionAddress?: string;
   forceV1Auth?: boolean;
+  forReset2FA?: boolean;
 }
 
 export interface User {

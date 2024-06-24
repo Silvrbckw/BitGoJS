@@ -30,6 +30,9 @@
       "path": "../abstract-eth"
     },
     {
+      "path": "../abstract-lightning"
+    },
+    {
       "path": "../abstract-utxo"
     },
     {
@@ -111,6 +114,9 @@
       "path": "../sdk-coin-ethw"
     },
     {
+      "path": "../sdk-coin-ethlike"
+    },
+    {
       "path": "../sdk-coin-hash"
     },
     {
@@ -121,6 +127,9 @@
     },
     {
       "path": "../sdk-coin-islm"
+    },
+    {
+      "path": "../sdk-coin-lnbtc"
     },
     {
       "path": "../sdk-coin-ltc"

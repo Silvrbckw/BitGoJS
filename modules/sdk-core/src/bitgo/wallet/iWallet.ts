@@ -28,6 +28,7 @@ import {
 import { ILightning } from '../lightning';
 import { SerializedNtilde } from '../../account-lib/mpc/tss/ecdsa/types';
 import { IAddressBook } from '../address-book';
+import { WalletUser } from '@bitgo/public-types';
 
 export interface MaximumSpendableOptions {
   minValue?: number | string;
@@ -166,6 +167,7 @@ export interface PrebuildTransactionResult extends TransactionPrebuild {
     feeString?: string;
   };
   pendingApprovalId?: string;
+  reqId?: IRequestTracer;
 }
 
 export interface CustomSigningFunction {
@@ -197,6 +199,7 @@ export interface WalletSignTransactionOptions extends WalletSignBaseOptions {
   customMuDeltaShareGeneratingFunction?: CustomMuDeltaShareGeneratingFunction;
   customSShareGeneratingFunction?: CustomSShareGeneratingFunction;
   apiVersion?: ApiVersion;
+  multisigTypeVersion?: 'MPCv2';
   [index: string]: unknown;
 }
 
@@ -604,11 +607,13 @@ export interface WalletData {
     bitgo?: string;
   };
   multisigType: 'onchain' | 'tss';
+  multisigTypeVersion?: 'MPCv2';
   type?: WalletType;
   subType?: SubWalletType;
   tokens?: Record<string, any>[];
   nfts?: { [contractAddressOrToken: string]: NftBalance };
   unsupportedNfts?: { [contractAddress: string]: NftBalance };
+  users?: WalletUser[];
 }
 
 export interface RecoverTokenOptions {
@@ -695,6 +700,7 @@ export interface IWallet {
   coin(): string;
   type(): WalletType | undefined;
   multisigType(): 'onchain' | 'tss';
+  multisigTypeVersion(): 'MPCv2' | undefined;
   label(): string;
   keyIds(): string[];
   receiveAddress(): string;

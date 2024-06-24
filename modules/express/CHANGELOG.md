@@ -3,6 +3,94 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [10.0.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/express@10.0.0...@bitgo/express@10.0.1) (2024-06-14)
+
+**Note:** Version bump only for package @bitgo/express
+
+# [10.0.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/express@9.65.1...@bitgo/express@10.0.0) (2024-06-11)
+
+### Features
+
+- encrypt and return backup key by default ([f80d834](https://github.com/BitGo/BitGoJS/commit/f80d834984598eebfdcfa1b8252a898b30fbceec))
+
+### BREAKING CHANGES
+
+- changes the default behavior of generateWallet
+
+## [9.65.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/express@9.65.0...@bitgo/express@9.65.1) (2024-06-05)
+
+**Note:** Version bump only for package @bitgo/express
+
+# [9.65.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/express@9.64.0...@bitgo/express@9.65.0) (2024-05-31)
+
+### Features
+
+- add bitgo network connection schema ([2324060](https://github.com/BitGo/BitGoJS/commit/2324060a06f0441a9c8bfa848ff24158b63e097a))
+
+# [9.64.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/express@9.63.3...@bitgo/express@9.64.0) (2024-05-28)
+
+### Features
+
+- use settings API to switch between MPCv2 and v1 ([85e2df2](https://github.com/BitGo/BitGoJS/commit/85e2df2856fd0b673bae29b9d6e9aabaa8c8a932))
+
+## [9.63.3](https://github.com/BitGo/BitGoJS/compare/@bitgo/express@9.63.2...@bitgo/express@9.63.3) (2024-05-22)
+
+**Note:** Version bump only for package @bitgo/express
+
+## [9.63.2](https://github.com/BitGo/BitGoJS/compare/@bitgo/express@9.63.1...@bitgo/express@9.63.2) (2024-05-17)
+
+**Note:** Version bump only for package @bitgo/express
+
+## [9.63.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/express@9.63.0...@bitgo/express@9.63.1) (2024-05-13)
+
+**Note:** Version bump only for package @bitgo/express
+
+# [9.63.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/express@9.62.5...@bitgo/express@9.63.0) (2024-05-08)
+
+### Features
+
+- add network connection encryption function ([8d43b26](https://github.com/BitGo/BitGoJS/commit/8d43b26d99ba7a07ce5e35cbf1906131e2779269))
+
+## [9.62.5](https://github.com/BitGo/BitGoJS/compare/@bitgo/express@9.62.4...@bitgo/express@9.62.5) (2024-05-01)
+
+**Note:** Version bump only for package @bitgo/express
+
+## [9.62.4](https://github.com/BitGo/BitGoJS/compare/@bitgo/express@9.62.3...@bitgo/express@9.62.4) (2024-04-25)
+
+**Note:** Version bump only for package @bitgo/express
+
+## [9.62.3](https://github.com/BitGo/BitGoJS/compare/@bitgo/express@9.62.2...@bitgo/express@9.62.3) (2024-04-24)
+
+### Bug Fixes
+
+- superagent upgrade to 9.0 ([6e9aa43](https://github.com/BitGo/BitGoJS/commit/6e9aa43a6d2999298abd450ceb168d664b8b926d))
+
+## [9.62.2](https://github.com/BitGo/BitGoJS/compare/@bitgo/express@9.62.1...@bitgo/express@9.62.2) (2024-04-22)
+
+**Note:** Version bump only for package @bitgo/express
+
+## [9.62.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/express@9.62.0...@bitgo/express@9.62.1) (2024-04-17)
+
+**Note:** Version bump only for package @bitgo/express
+
+# [9.62.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/express@9.61.9...@bitgo/express@9.62.0) (2024-04-12)
+
+### Features
+
+- **bitgo:** add PATCH and OPTIONS to redirectRequest ([4c8ba7a](https://github.com/BitGo/BitGoJS/commit/4c8ba7abb5718261774352e1a191f0ab5dc5e616))
+
+## [9.61.9](https://github.com/BitGo/BitGoJS/compare/@bitgo/express@9.61.8...@bitgo/express@9.61.9) (2024-04-10)
+
+**Note:** Version bump only for package @bitgo/express
+
+## [9.61.8](https://github.com/BitGo/BitGoJS/compare/@bitgo/express@9.61.7...@bitgo/express@9.61.8) (2024-04-09)
+
+**Note:** Version bump only for package @bitgo/express
+
+## [9.61.7](https://github.com/BitGo/BitGoJS/compare/@bitgo/express@9.61.6...@bitgo/express@9.61.7) (2024-04-08)
+
+**Note:** Version bump only for package @bitgo/express
+
 ## [9.61.6](https://github.com/BitGo/BitGoJS/compare/@bitgo/express@9.61.5...@bitgo/express@9.61.6) (2024-04-05)
 
 **Note:** Version bump only for package @bitgo/express

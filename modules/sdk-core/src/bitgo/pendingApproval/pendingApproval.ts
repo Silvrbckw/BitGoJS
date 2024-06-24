@@ -20,7 +20,7 @@ import { BuildParams } from '../wallet/BuildParams';
 import { IRequestTracer } from '../../api';
 import BaseTssUtils from '../utils/tss/baseTSSUtils';
 import EddsaUtils from '../utils/tss/eddsa';
-import { EcdsaUtils } from '../utils/tss/ecdsa';
+import { EcdsaMPCv2Utils, EcdsaUtils } from '../utils/tss/ecdsa';
 import { KeyShare as EcdsaKeyShare } from '../utils/tss/ecdsa/types';
 import { KeyShare as EddsaKeyShare } from '../utils/tss/eddsa/types';
 
@@ -49,7 +49,11 @@ export class PendingApproval implements IPendingApproval {
 
     if (this.baseCoin.supportsTss()) {
       if (this.baseCoin.getMPCAlgorithm() === 'ecdsa') {
-        this.tssUtils = new EcdsaUtils(this.bitgo, this.baseCoin, wallet);
+        if (this.wallet?.multisigTypeVersion() === 'MPCv2') {
+          this.tssUtils = new EcdsaMPCv2Utils(this.bitgo, this.baseCoin, wallet);
+        } else {
+          this.tssUtils = new EcdsaUtils(this.bitgo, this.baseCoin, wallet);
+        }
       } else {
         this.tssUtils = new EddsaUtils(this.bitgo, this.baseCoin, wallet);
       }
@@ -63,6 +67,10 @@ export class PendingApproval implements IPendingApproval {
    */
   id(): string {
     return this._pendingApproval.id;
+  }
+
+  toJSON(): PendingApprovalData {
+    return this._pendingApproval;
   }
 
   /**
@@ -374,13 +382,17 @@ export class PendingApproval implements IPendingApproval {
         };
       }
 
-      const transaction = _.get(
-        this.info(),
-        `transactionRequest.coinSpecific.${this.baseCoin.type}`
-      ) as PreApproveResult;
-
       // this user may not have spending privileges or a passphrase may not have been passed in
       if (!this.canRecreateTransaction(params)) {
+        // If this is a TransactionRequest, then the txRequest already has the unsigned transaction
+        if (this._pendingApproval.txRequestId) {
+          return undefined;
+        }
+        // If this is a MultiSig, then we need to fetch the half signed tx to propagate to the approval API
+        const transaction = _.get(
+          this.info(),
+          `transactionRequest.coinSpecific.${this.baseCoin.type}`
+        ) as PreApproveResult;
         if (!_.isObject(transaction)) {
           throw new Error('there is neither an original transaction object nor can a new one be recreated');
         }

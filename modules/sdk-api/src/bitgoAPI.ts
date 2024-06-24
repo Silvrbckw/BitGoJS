@@ -11,6 +11,7 @@ import {
   EcdhDerivedKeypair,
   EncryptOptions,
   EnvironmentName,
+  generateRandomPassword,
   getAddressP2PKH,
   getSharedSecret,
   GetSharingKeyOptions,
@@ -25,7 +26,6 @@ import * as utxolib from '@bitgo/utxo-lib';
 import { bip32, ECPairInterface } from '@bitgo/utxo-lib';
 import * as bitcoinMessage from 'bitcoinjs-message';
 import { isBrowser, isWebWorker } from 'browser-or-node';
-import * as bs58 from 'bs58';
 import { createHmac } from 'crypto';
 import debugLib from 'debug';
 import * as _ from 'lodash';
@@ -41,6 +41,7 @@ import {
   verifyResponse,
 } from './api';
 import { decrypt, encrypt } from './encrypt';
+import { verifyAddress } from './v1/verifyAddress';
 import {
   AccessTokenOptions,
   AddAccessTokenOptions,
@@ -103,7 +104,7 @@ if (!isBrowser && !isWebWorker) {
   proxyAgentModule = require('proxy-agent');
 }
 
-const patchedRequestMethods = ['get', 'post', 'put', 'del', 'patch'] as const;
+const patchedRequestMethods = ['get', 'post', 'put', 'del', 'patch', 'options'] as const;
 
 export class BitGoAPI implements BitGoBase {
   // v1 types
@@ -456,6 +457,9 @@ export class BitGoAPI implements BitGoBase {
   patch(url: string): BitGoRequest {
     return this.requestPatch('patch', url);
   }
+  options(url: string): BitGoRequest {
+    return this.requestPatch('options', url);
+  }
 
   /**
    * Calculate the HMAC for the given key and message
@@ -680,12 +684,12 @@ export class BitGoAPI implements BitGoBase {
    * Caution: contains sensitive data
    */
   toJSON(): BitGoJson {
-    return structuredClone({
+    return {
       user: this._user,
       token: this._token,
       extensionKey: this._extensionKey ? this._extensionKey.toWIF() : undefined,
       ecdhXprv: this._ecdhXprv,
-    });
+    };
   }
 
   /**
@@ -727,6 +731,7 @@ export class BitGoAPI implements BitGoBase {
     forceSMS,
     extensible,
     trust,
+    forReset2FA,
   }: AuthenticateOptions): ProcessedAuthenticationOptions {
     if (!_.isString(username)) {
       throw new Error('expected string username');
@@ -757,6 +762,10 @@ export class BitGoAPI implements BitGoBase {
       this._extensionKey = makeRandomKey();
       authParams.extensible = true;
       authParams.extensionAddress = getAddressP2PKH(this._extensionKey);
+    }
+
+    if (forReset2FA) {
+      authParams.forReset2FA = true;
     }
 
     return authParams;
@@ -1202,8 +1211,7 @@ export class BitGoAPI implements BitGoBase {
    * @returns {String}          base58 random password
    */
   generateRandomPassword(numWords = 5): string {
-    const bytes = sjcl.codec.bytes.fromBits(sjcl.random.randomWords(numWords));
-    return bs58.encode(bytes);
+    return generateRandomPassword(numWords);
   }
 
   /**
@@ -1475,14 +1483,7 @@ export class BitGoAPI implements BitGoBase {
     const networkName = common.Environments[this.getEnv()].network;
     const network = utxolib.networks[networkName];
 
-    let address;
-    try {
-      address = utxolib.address.fromBase58Check(params.address, network);
-    } catch (e) {
-      return false;
-    }
-
-    return address.version === network.pubKeyHash || address.version === network.scriptHash;
+    return verifyAddress(params.address, network);
   }
 
   /**

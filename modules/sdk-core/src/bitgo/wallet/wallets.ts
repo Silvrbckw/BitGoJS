@@ -5,6 +5,8 @@ import assert from 'assert';
 import { BigNumber } from 'bignumber.js';
 import { bip32 } from '@bitgo/utxo-lib';
 import * as _ from 'lodash';
+import { CoinFeature } from '@bitgo/statics';
+
 import { sanitizeLegacyPath } from '../../api';
 import * as common from '../../common';
 import { IBaseCoin, KeychainsTriplet, SupplementGenerateWalletOptions } from '../baseCoin';
@@ -27,6 +29,7 @@ import {
   WalletWithKeychains,
 } from './iWallets';
 import { Wallet } from './wallet';
+import { TssSettings } from '@bitgo/public-types';
 
 export class Wallets implements IWallets {
   private readonly bitgo: BitGoBase;
@@ -123,8 +126,20 @@ export class Wallets implements IWallets {
       throw new Error('invalid argument for gasPrice - number expected');
     }
 
-    if (params.walletVersion && !_.isNumber(params.walletVersion)) {
-      throw new Error('invalid argument for walletVersion - number expected');
+    if (params.walletVersion) {
+      if (!_.isNumber(params.walletVersion)) {
+        throw new Error('invalid argument for walletVersion - number expected');
+      }
+      if (params.multisigType === 'tss' && this.baseCoin.getMPCAlgorithm() === 'ecdsa' && params.walletVersion === 3) {
+        const tssSettings: TssSettings = await this.bitgo
+          .get(this.bitgo.microservicesUrl('/api/v2/tss/settings'))
+          .result();
+        const multisigTypeVersion =
+          tssSettings.coinSettings[this.baseCoin.getFamily()]?.walletCreationSettings?.multiSigTypeVersion;
+        if (multisigTypeVersion === 'MPCv2') {
+          params.walletVersion = 5;
+        }
+      }
     }
 
     if (params.tags && Array.isArray(params.tags) === false) {
@@ -216,18 +231,24 @@ export class Wallets implements IWallets {
       walletParams.enterprise = enterprise;
     }
 
-    // EVM TSS wallets must use wallet version 3
-    if ((isTss && this.baseCoin.isEVM()) !== (params.walletVersion === 3)) {
-      throw new Error('EVM TSS wallets are only supported for wallet version 3');
+    // EVM TSS wallets must use wallet version 3 and 5
+    if (isTss && this.baseCoin.isEVM() && !(params.walletVersion === 3 || params.walletVersion === 5)) {
+      throw new Error('EVM TSS wallets are only supported for wallet version 3 and 5');
     }
 
     if (isTss) {
       if (!this.baseCoin.supportsTss()) {
         throw new Error(`coin ${this.baseCoin.getFamily()} does not support TSS at this time`);
       }
+      if (params.walletVersion === 5 && !this.baseCoin.getConfig().features.includes(CoinFeature.MPCV2)) {
+        throw new Error(`coin ${this.baseCoin.getFamily()} does not support TSS MPCv2 at this time`);
+      }
       assert(enterprise, 'enterprise is required for TSS wallet');
 
       if (type === 'cold') {
+        if (params.walletVersion === 5) {
+          throw new Error('EVM TSS MPCv2 wallets are not supported for cold wallets');
+        }
         // validate
         assert(params.bitgoKeyId, 'bitgoKeyId is required for SMC TSS wallet');
         assert(params.commonKeychain, 'commonKeychain is required for SMC TSS wallet');
@@ -243,6 +264,9 @@ export class Wallets implements IWallets {
       }
 
       if (type === 'custodial') {
+        if (params.walletVersion === 5) {
+          throw new Error('EVM TSS MPCv2 wallets are not supported for custodial wallets');
+        }
         return this.generateCustodialMpcWallet({
           multisigType: 'tss',
           label,
@@ -252,6 +276,7 @@ export class Wallets implements IWallets {
       }
 
       assert(passphrase, 'cannot generate TSS keys without passphrase');
+
       return this.generateMpcWallet({
         multisigType: 'tss',
         label,
@@ -406,6 +431,7 @@ export class Wallets implements IWallets {
           disableKRSEmail: params.disableKRSEmail,
           krsSpecific: params.krsSpecific,
           type: this.baseCoin.getChain(),
+          passphrase: params.passphrase,
           reqId,
         });
       }
@@ -423,7 +449,7 @@ export class Wallets implements IWallets {
           throw new Error('cannot generate backup keypair without passphrase');
         }
         // No provided backup xpub or address, so default to creating one here
-        return this.baseCoin.keychains().createBackup({ reqId });
+        return this.baseCoin.keychains().createBackup({ reqId, passphrase: params.passphrase });
       }
     };
 
@@ -449,6 +475,14 @@ export class Wallets implements IWallets {
 
     if (_.includes(['xrp', 'xlm', 'cspr'], this.baseCoin.getFamily()) && !_.isUndefined(params.rootPrivateKey)) {
       walletParams.rootPrivateKey = params.rootPrivateKey;
+    }
+
+    // Custodial onchain wallets do not need m, n, keys, or keySignatures
+    if (params.type === 'custodial' && (params.multisigType ?? 'onchain') === 'onchain') {
+      walletParams.n = undefined;
+      walletParams.m = undefined;
+      walletParams.keys = undefined;
+      walletParams.keySignatures = undefined;
     }
 
     const keychains = {
@@ -539,6 +573,44 @@ export class Wallets implements IWallets {
   }
 
   /**
+   * Re-share wallet with existing spenders of the wallet
+   * @param walletId
+   * @param userPassword
+   */
+  async reshareWalletWithSpenders(walletId: string, userPassword: string): Promise<void> {
+    const wallet = await this.get({ id: walletId });
+    if (!wallet?._wallet?.enterprise) {
+      throw new Error('Enterprise not found for the wallet');
+    }
+
+    const enterpriseUsersResponse = await this.bitgo
+      .get(this.bitgo.url(`/enterprise/${wallet?._wallet?.enterprise}/user`))
+      .result();
+    // create a map of users for easy lookup - we need the user email id to share the wallet
+    const usersMap = new Map(
+      [...enterpriseUsersResponse?.adminUsers, ...enterpriseUsersResponse?.nonAdminUsers].map((obj) => [obj.id, obj])
+    );
+
+    if (wallet._wallet.users) {
+      for (const user of wallet._wallet.users) {
+        const userObject = usersMap.get(user.user);
+        if (user.permissions.includes('spend') && !user.permissions.includes('admin') && userObject) {
+          const shareParams = {
+            walletId: walletId,
+            user: user.user,
+            permissions: user.permissions.join(','),
+            walletPassphrase: userPassword,
+            email: userObject.email.email,
+            reshare: true,
+            skipKeychain: false,
+          };
+          await wallet.shareWallet(shareParams);
+        }
+      }
+    }
+  }
+
+  /**
    * Accepts a wallet share, adding the wallet to the user's list
    * Needs a user's password to decrypt the shared key
    *
@@ -554,9 +626,52 @@ export class Wallets implements IWallets {
     common.validateParams(params, ['walletShareId'], ['overrideEncryptedPrv', 'userPassword', 'newWalletPassphrase']);
 
     let encryptedPrv = params.overrideEncryptedPrv;
+    const walletShare = await this.getShare({ walletShareId: params.walletShareId });
+    if (
+      walletShare.keychainOverrideRequired &&
+      walletShare.permissions.indexOf('admin') !== -1 &&
+      walletShare.permissions.indexOf('spend') !== -1
+    ) {
+      if (_.isUndefined(params.userPassword)) {
+        throw new Error('userPassword param must be provided to decrypt shared key');
+      }
 
-    const walletShare = (await this.getShare({ walletShareId: params.walletShareId })) as any;
+      const walletKeychain = await this.baseCoin.keychains().createUserKeychain(params.userPassword);
+      if (_.isUndefined(walletKeychain.encryptedPrv)) {
+        throw new Error('encryptedPrv was not found on wallet keychain');
+      }
 
+      const payload = {
+        tradingAccountId: walletShare.wallet,
+        pubkey: walletKeychain.pub,
+        timestamp: new Date().toISOString(),
+      };
+      const payloadString = JSON.stringify(payload);
+
+      const privateKey = this.bitgo.decrypt({
+        password: params.userPassword,
+        input: walletKeychain.encryptedPrv,
+      });
+      const signature = await this.baseCoin.signMessage({ prv: privateKey }, payloadString);
+
+      const response = await this.updateShare({
+        walletShareId: params.walletShareId,
+        state: 'accepted',
+        keyId: walletKeychain.id,
+        signature: signature.toString('hex'),
+        payload: payloadString,
+      });
+      // If the wallet share was accepted successfully (changed=true), reshare the wallet with the spenders
+      if (response.changed && response.state === 'accepted') {
+        try {
+          await this.reshareWalletWithSpenders(walletShare.wallet, params.userPassword);
+        } catch (e) {
+          // TODO: PX-3826
+          // Do nothing
+        }
+      }
+      return response;
+    }
     // Return right away if there is no keychain to decrypt, or if explicit encryptedPrv was provided
     if (!walletShare.keychain || !walletShare.keychain.encryptedPrv || encryptedPrv) {
       return this.updateShare({
@@ -606,7 +721,6 @@ export class Wallets implements IWallets {
     if (encryptedPrv) {
       updateParams.encryptedPrv = encryptedPrv;
     }
-
     return this.updateShare(updateParams);
   }
 
@@ -675,6 +789,17 @@ export class Wallets implements IWallets {
     originalPasscodeEncryptionCode,
     backupProvider,
   }: GenerateMpcWalletOptions): Promise<WalletWithKeychains> {
+    if (multisigType === 'tss' && this.baseCoin.getMPCAlgorithm() === 'ecdsa' && walletVersion === 3) {
+      const tssSettings: TssSettings = await this.bitgo
+        .get(this.bitgo.microservicesUrl('/api/v2/tss/settings'))
+        .result();
+      const multisigTypeVersion =
+        tssSettings.coinSettings[this.baseCoin.getFamily()]?.walletCreationSettings?.multiSigTypeVersion;
+      if (multisigTypeVersion === 'MPCv2') {
+        walletVersion = 5;
+      }
+    }
+
     const reqId = new RequestTracer();
     this.bitgo.setRequestTracer(reqId);
 

@@ -41,6 +41,8 @@ import {
   Eth,
   Eth2,
   Ethw,
+  EthLikeCoin,
+  TethLikeCoin,
   FiatEur,
   FiatGBP,
   FiatUsd,
@@ -123,6 +125,8 @@ import {
   Zeta,
   Zketh,
   ZkethToken,
+  Lnbtc,
+  Tlnbtc,
 } from './coins';
 
 function registerCoinConstructors(globalCoinFactory: CoinFactory): void {
@@ -151,6 +155,8 @@ function registerCoinConstructors(globalCoinFactory: CoinFactory): void {
   globalCoinFactory.register('eth', Eth.createInstance);
   globalCoinFactory.register('eth2', Eth2.createInstance);
   globalCoinFactory.register('ethw', Ethw.createInstance);
+  globalCoinFactory.register('baseeth', EthLikeCoin.createInstance);
+  globalCoinFactory.register('tbaseeth', TethLikeCoin.createInstance);
   globalCoinFactory.register('fiateur', FiatEur.createInstance);
   globalCoinFactory.register('fiatgbp', FiatGBP.createInstance);
   globalCoinFactory.register('fiatusd', FiatUsd.createInstance);
@@ -158,6 +164,7 @@ function registerCoinConstructors(globalCoinFactory: CoinFactory): void {
   globalCoinFactory.register('hash', Hash.createInstance);
   globalCoinFactory.register('hbar', Hbar.createInstance);
   globalCoinFactory.register('hteth', Hteth.createInstance);
+  globalCoinFactory.register('lnbtc', Lnbtc.createInstance);
   globalCoinFactory.register('ltc', Ltc.createInstance);
   globalCoinFactory.register('injective', Injective.createInstance);
   globalCoinFactory.register('islm', Islm.createInstance);
@@ -204,6 +211,7 @@ function registerCoinConstructors(globalCoinFactory: CoinFactory): void {
   globalCoinFactory.register('thbar', Thbar.createInstance);
   globalCoinFactory.register('tinjective', Tinjective.createInstance);
   globalCoinFactory.register('tislm', Tislm.createInstance);
+  globalCoinFactory.register('tlnbtc', Tlnbtc.createInstance);
   globalCoinFactory.register('tltc', Tltc.createInstance);
   globalCoinFactory.register('tnear', TNear.createInstance);
   globalCoinFactory.register('topeth', Topeth.createInstance);

@@ -35,6 +35,7 @@ import {
   CustomSShareGeneratingFunction,
 } from './baseTypes';
 import { GShare, SignShare } from '../../../account-lib/mpc/tss';
+import { RequestTracer } from '../util';
 
 /**
  * BaseTssUtil class which different signature schemes have to extend
@@ -322,9 +323,12 @@ export default class BaseTssUtils<KeyShare> extends MpcUtils implements ITssUtil
    * Call delete signature shares for a txRequest, the endpoint delete the signatures and return them
    *
    * @param {string} txRequestId tx id reference to delete signature shares
+   * @param {IRequestTracer} reqId - the request tracer request id
    * @returns {SignatureShareRecord[]}
    */
-  async deleteSignatureShares(txRequestId: string): Promise<SignatureShareRecord[]> {
+  async deleteSignatureShares(txRequestId: string, reqId?: IRequestTracer): Promise<SignatureShareRecord[]> {
+    const reqTracer = reqId || new RequestTracer();
+    this.bitgo.setRequestTracer(reqTracer);
     return this.bitgo
       .del(this.bitgo.url(`/wallet/${this.wallet.id()}/txrequests/${txRequestId}/signatureshares`, 2))
       .send()
@@ -335,10 +339,13 @@ export default class BaseTssUtils<KeyShare> extends MpcUtils implements ITssUtil
    * Initialize the send procedure once Bitgo has the User To Bitgo GShare
    *
    * @param {String} txRequestId - the txRequest Id
+   * @param {IRequestTracer} reqId - the request tracer request id
    * @returns {Promise<any>}
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async sendTxRequest(txRequestId: string): Promise<any> {
+  async sendTxRequest(txRequestId: string, reqId?: IRequestTracer): Promise<any> {
+    const reqTracer = reqId || new RequestTracer();
+    this.bitgo.setRequestTracer(reqTracer);
     return this.bitgo
       .post(this.baseCoin.url('/wallet/' + this.wallet.id() + '/tx/send'))
       .send({ txRequestId })
@@ -366,10 +373,11 @@ export default class BaseTssUtils<KeyShare> extends MpcUtils implements ITssUtil
    * Gets the latest Tx Request by id
    *
    * @param {String} txRequestId - the txRequest Id
+   * @param {IRequestTracer} reqId - request tracer request id
    * @returns {Promise<TxRequest>}
    */
-  async getTxRequest(txRequestId: string): Promise<TxRequest> {
-    return getTxRequest(this.bitgo, this.wallet.id(), txRequestId);
+  async getTxRequest(txRequestId: string, reqId?: IRequestTracer): Promise<TxRequest> {
+    return getTxRequest(this.bitgo, this.wallet.id(), txRequestId, reqId);
   }
 
   /**
@@ -387,14 +395,16 @@ export default class BaseTssUtils<KeyShare> extends MpcUtils implements ITssUtil
    * It gets the appropriate BitGo GPG public key for key creation based on a
    * combination of coin and the feature flags on the user and their enterprise if set.
    * @param enterpriseId - enterprise under which user wants to create the wallet
+   * @param isMPCv2 - true to get the MPCv2 GPG public key, defaults to false
    */
-  public async getBitgoGpgPubkeyBasedOnFeatureFlags(enterpriseId: string | undefined): Promise<Key> {
+  public async getBitgoGpgPubkeyBasedOnFeatureFlags(enterpriseId: string | undefined, isMPCv2 = false): Promise<Key> {
     const response: BitgoGPGPublicKey = await this.bitgo
       .get(this.baseCoin.url('/tss/pubkey'))
       .query({ enterpriseId })
+      .retry(3)
       .result();
-    const bitgoPublicKeyStr = response.publicKey as string;
-    return readKey({ armoredKey: bitgoPublicKeyStr });
+    const bitgoPublicKeyStr = isMPCv2 ? response.mpcv2PublicKey : response.publicKey;
+    return readKey({ armoredKey: bitgoPublicKeyStr as string });
   }
 
   /**

@@ -3,6 +3,80 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.30.5](https://github.com/BitGo/BitGoJS/compare/@bitgo/web-demo@1.30.4...@bitgo/web-demo@1.30.5) (2024-06-14)
+
+**Note:** Version bump only for package @bitgo/web-demo
+
+## [1.30.4](https://github.com/BitGo/BitGoJS/compare/@bitgo/web-demo@1.30.3...@bitgo/web-demo@1.30.4) (2024-06-11)
+
+**Note:** Version bump only for package @bitgo/web-demo
+
+## [1.30.3](https://github.com/BitGo/BitGoJS/compare/@bitgo/web-demo@1.30.2...@bitgo/web-demo@1.30.3) (2024-06-05)
+
+**Note:** Version bump only for package @bitgo/web-demo
+
+## [1.30.2](https://github.com/BitGo/BitGoJS/compare/@bitgo/web-demo@1.30.1...@bitgo/web-demo@1.30.2) (2024-05-31)
+
+**Note:** Version bump only for package @bitgo/web-demo
+
+## [1.30.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/web-demo@1.30.0...@bitgo/web-demo@1.30.1) (2024-05-28)
+
+**Note:** Version bump only for package @bitgo/web-demo
+
+# [1.30.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/web-demo@1.29.13...@bitgo/web-demo@1.30.0) (2024-05-22)
+
+### Features
+
+- **sdk-core:** support smaller mpcv2 keycard ([63512d4](https://github.com/BitGo/BitGoJS/commit/63512d4279d012c0a151720cffb195b198d25e21))
+
+## [1.29.13](https://github.com/BitGo/BitGoJS/compare/@bitgo/web-demo@1.29.12...@bitgo/web-demo@1.29.13) (2024-05-17)
+
+**Note:** Version bump only for package @bitgo/web-demo
+
+## [1.29.12](https://github.com/BitGo/BitGoJS/compare/@bitgo/web-demo@1.29.11...@bitgo/web-demo@1.29.12) (2024-05-13)
+
+**Note:** Version bump only for package @bitgo/web-demo
+
+## [1.29.11](https://github.com/BitGo/BitGoJS/compare/@bitgo/web-demo@1.29.10...@bitgo/web-demo@1.29.11) (2024-05-08)
+
+**Note:** Version bump only for package @bitgo/web-demo
+
+## [1.29.10](https://github.com/BitGo/BitGoJS/compare/@bitgo/web-demo@1.29.9...@bitgo/web-demo@1.29.10) (2024-05-01)
+
+**Note:** Version bump only for package @bitgo/web-demo
+
+## [1.29.9](https://github.com/BitGo/BitGoJS/compare/@bitgo/web-demo@1.29.8...@bitgo/web-demo@1.29.9) (2024-04-25)
+
+**Note:** Version bump only for package @bitgo/web-demo
+
+## [1.29.8](https://github.com/BitGo/BitGoJS/compare/@bitgo/web-demo@1.29.7...@bitgo/web-demo@1.29.8) (2024-04-24)
+
+**Note:** Version bump only for package @bitgo/web-demo
+
+## [1.29.7](https://github.com/BitGo/BitGoJS/compare/@bitgo/web-demo@1.29.6...@bitgo/web-demo@1.29.7) (2024-04-22)
+
+**Note:** Version bump only for package @bitgo/web-demo
+
+## [1.29.6](https://github.com/BitGo/BitGoJS/compare/@bitgo/web-demo@1.29.5...@bitgo/web-demo@1.29.6) (2024-04-17)
+
+**Note:** Version bump only for package @bitgo/web-demo
+
+## [1.29.5](https://github.com/BitGo/BitGoJS/compare/@bitgo/web-demo@1.29.4...@bitgo/web-demo@1.29.5) (2024-04-12)
+
+**Note:** Version bump only for package @bitgo/web-demo
+
+## [1.29.4](https://github.com/BitGo/BitGoJS/compare/@bitgo/web-demo@1.29.3...@bitgo/web-demo@1.29.4) (2024-04-10)
+
+**Note:** Version bump only for package @bitgo/web-demo
+
+## [1.29.3](https://github.com/BitGo/BitGoJS/compare/@bitgo/web-demo@1.29.2...@bitgo/web-demo@1.29.3) (2024-04-09)
+
+**Note:** Version bump only for package @bitgo/web-demo
+
+## [1.29.2](https://github.com/BitGo/BitGoJS/compare/@bitgo/web-demo@1.29.1...@bitgo/web-demo@1.29.2) (2024-04-08)
+
+**Note:** Version bump only for package @bitgo/web-demo
+
 ## [1.29.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/web-demo@1.29.0...@bitgo/web-demo@1.29.1) (2024-04-05)
 
 **Note:** Version bump only for package @bitgo/web-demo

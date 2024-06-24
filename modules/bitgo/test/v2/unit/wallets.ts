@@ -1,8 +1,12 @@
 //
 // Tests for Wallets
 //
-
+import * as assert from 'assert';
 import * as nock from 'nock';
+import * as sinon from 'sinon';
+import * as should from 'should';
+import * as _ from 'lodash';
+import { TestBitGo } from '@bitgo/sdk-test';
 import {
   BlsUtils,
   common,
@@ -11,12 +15,11 @@ import {
   ECDSAUtils,
   KeychainsTriplet,
   GenerateWalletOptions,
+  Wallet,
 } from '@bitgo/sdk-core';
-import * as _ from 'lodash';
-import { TestBitGo } from '@bitgo/sdk-test';
-import { BitGo } from '../../../src/bitgo';
-import * as sinon from 'sinon';
-import * as should from 'should';
+import { BitGo } from '../../../src';
+import { afterEach } from 'mocha';
+import { TssSettings } from '@bitgo/public-types';
 
 describe('V2 Wallets:', function () {
   const bitgo = TestBitGo.decorate(BitGo, { env: 'mock' });
@@ -397,13 +400,69 @@ describe('V2 Wallets:', function () {
         scope.done();
       }
     });
+
+    it('should generate custodial onchain wallet without passing m, n, keys, keySignatures', async () => {
+      const params: GenerateWalletOptions = {
+        label: 'test wallet',
+        enterprise: 'myenterprise',
+        type: 'custodial',
+        passphrase: 'secret',
+      };
+
+      const walletNock = nock(bgUrl)
+        .post('/api/v2/tbtc/wallet', function (body) {
+          body.type.should.equal('custodial');
+          should.not.exist(body.m);
+          should.not.exist(body.n);
+          should.not.exist(body.keys);
+          should.not.exist(body.keySignatures);
+          return true;
+        })
+        .reply(200);
+
+      nock(bgUrl)
+        .post('/api/v2/tbtc/key', _.matches({ source: 'bitgo' }))
+        .reply(200, { pub: 'bitgoPub' });
+      nock(bgUrl).post('/api/v2/tbtc/key', _.matches({})).reply(200);
+      nock(bgUrl)
+        .post('/api/v2/tbtc/key', _.matches({ source: 'backup' }))
+        .reply(200, { pub: 'backupPub' });
+
+      await wallets.generateWallet(params);
+
+      walletNock.isDone().should.be.true();
+    });
   });
 
   describe('Generate TSS wallet:', function () {
     const tsol = bitgo.coin('tsol');
+    const sandbox = sinon.createSandbox();
+
+    beforeEach(function () {
+      nock('https://bitgo.fakeurl')
+        .get(`/api/v2/tss/settings`)
+        .times(2)
+        .reply(200, {
+          coinSettings: {
+            eth: {
+              walletCreationSettings: {},
+            },
+            bsc: {
+              walletCreationSettings: {},
+            },
+            polygon: {
+              walletCreationSettings: {},
+            },
+          },
+        });
+    });
+
+    afterEach(function () {
+      nock.cleanAll();
+      sandbox.verifyAndRestore();
+    });
 
     it('should create a new TSS wallet', async function () {
-      const sandbox = sinon.createSandbox();
       const stubbedKeychainsTriplet: KeychainsTriplet = {
         userKeychain: {
           id: '1',
@@ -439,12 +498,10 @@ describe('V2 Wallets:', function () {
       });
 
       walletNock.isDone().should.be.true();
-      sandbox.verifyAndRestore();
     });
 
     it('should create a new ECDSA TSS wallet with BitGoTrustAsKrs as backup provider', async function () {
       const tpolygon = bitgo.coin('tpolygon');
-      const sandbox = sinon.createSandbox();
       const stubbedKeychainsTriplet: KeychainsTriplet = {
         userKeychain: {
           id: '1',
@@ -479,7 +536,6 @@ describe('V2 Wallets:', function () {
       });
 
       walletNock.isDone().should.be.true();
-      sandbox.verifyAndRestore();
     });
 
     it('should fail to create TSS wallet with invalid inputs', async function () {
@@ -542,6 +598,7 @@ describe('V2 Wallets:', function () {
 
       const walletNock = nock('https://bitgo.fakeurl')
         .post('/api/v2/tsol/wallet')
+        .times(1)
         .reply(200, { ...walletParams, keys });
 
       const wallets = new Wallets(bitgo, tsol);
@@ -560,7 +617,6 @@ describe('V2 Wallets:', function () {
     });
 
     it('should create a new TSS SMC wallet', async function () {
-      const sandbox = sinon.createSandbox();
       const commonKeychain = 'longstring';
       const seed = 'seed';
       const keys: KeychainsTriplet = {
@@ -647,12 +703,9 @@ describe('V2 Wallets:', function () {
       userKeyNock.isDone().should.be.true();
       backupKeyNock.isDone().should.be.true();
       walletNock.isDone().should.be.true();
-
-      sandbox.verifyAndRestore();
     });
 
     it('should throw an error for TSS SMC wallet if the bitgoKeyId is not a bitgo key ', async function () {
-      const sandbox = sinon.createSandbox();
       const commonKeychain = 'longstring';
       const seed = 'seed';
       const keys: KeychainsTriplet = {
@@ -697,13 +750,140 @@ describe('V2 Wallets:', function () {
         .should.be.rejectedWith('The provided bitgoKeyId is not a BitGo keychain');
 
       bitgoKeyNock.isDone().should.be.true();
+    });
+  });
 
+  describe('Generate TSS MPCv2 wallet:', async function () {
+    const sandbox = sinon.createSandbox();
+
+    beforeEach(function () {
+      const tssSettings: TssSettings = {
+        coinSettings: {
+          eth: {
+            walletCreationSettings: {
+              multiSigTypeVersion: 'MPCv2',
+            },
+          },
+          bsc: {
+            walletCreationSettings: {
+              multiSigTypeVersion: 'MPCv2',
+            },
+          },
+          polygon: {
+            walletCreationSettings: {
+              multiSigTypeVersion: 'MPCv2',
+            },
+          },
+          atom: {
+            walletCreationSettings: {
+              multiSigTypeVersion: 'MPCv2',
+            },
+          },
+          tia: {
+            walletCreationSettings: {
+              multiSigTypeVersion: 'MPCv2',
+            },
+          },
+        },
+      };
+      nock('https://bitgo.fakeurl').get(`/api/v2/tss/settings`).times(2).reply(200, tssSettings);
+    });
+
+    afterEach(function () {
+      nock.cleanAll();
       sandbox.verifyAndRestore();
+    });
+
+    ['hteth', 'tbsc', 'tpolygon', 'ttia', 'tatom'].forEach((coin) => {
+      it(`should create a new ${coin} TSS MPCv2 wallet`, async function () {
+        const testCoin = bitgo.coin(coin);
+        const stubbedKeychainsTriplet: KeychainsTriplet = {
+          userKeychain: {
+            id: '1',
+            commonKeychain: 'userPub',
+            type: 'tss',
+            source: 'user',
+          },
+          backupKeychain: {
+            id: '2',
+            commonKeychain: 'userPub',
+            type: 'tss',
+            source: 'backup',
+          },
+          bitgoKeychain: {
+            id: '3',
+            commonKeychain: 'userPub',
+            type: 'tss',
+            source: 'bitgo',
+          },
+        };
+        const stubCreateKeychains = sandbox
+          .stub(ECDSAUtils.EcdsaMPCv2Utils.prototype, 'createKeychains')
+          .resolves(stubbedKeychainsTriplet);
+
+        const walletNock = nock('https://bitgo.fakeurl').post(`/api/v2/${coin}/wallet`).reply(200);
+
+        const wallets = new Wallets(bitgo, testCoin);
+
+        await wallets.generateWallet({
+          label: 'tss wallet',
+          passphrase: 'tss password',
+          multisigType: 'tss',
+          enterprise: 'enterprise',
+          passcodeEncryptionCode: 'originalPasscodeEncryptionCode',
+          walletVersion: 3,
+        });
+
+        walletNock.isDone().should.be.true();
+        stubCreateKeychains.calledOnce.should.be.true();
+      });
+    });
+
+    it('should throw for a cold wallet using wallet version 5', async function () {
+      const hteth = bitgo.coin('hteth');
+      const wallets = new Wallets(bitgo, hteth);
+
+      await assert.rejects(
+        async () => {
+          await wallets.generateWallet({
+            label: 'tss wallet',
+            multisigType: 'tss',
+            enterprise: 'enterprise',
+            walletVersion: 5,
+            type: 'cold',
+          });
+        },
+        { message: 'EVM TSS MPCv2 wallets are not supported for cold wallets' }
+      );
+    });
+
+    it('should throw for a custodial wallet using wallet version 5', async function () {
+      const hteth = bitgo.coin('hteth');
+      const wallets = new Wallets(bitgo, hteth);
+
+      await assert.rejects(
+        async () => {
+          await wallets.generateWallet({
+            label: 'tss wallet',
+            multisigType: 'tss',
+            enterprise: 'enterprise',
+            walletVersion: 5,
+            type: 'custodial',
+          });
+        },
+        { message: 'EVM TSS MPCv2 wallets are not supported for custodial wallets' }
+      );
     });
   });
 
   describe('Generate BLS-DKG wallet:', function () {
     const eth2 = bitgo.coin('eth2');
+    const sandbox = sinon.createSandbox();
+
+    afterEach(function () {
+      nock.cleanAll();
+      sandbox.verifyAndRestore();
+    });
 
     it('should create a new BLS-DKG wallet', async function () {
       const stubbedKeychainsTriplet: KeychainsTriplet = {
@@ -723,7 +903,7 @@ describe('V2 Wallets:', function () {
           type: 'independent',
         },
       };
-      sinon.stub(BlsUtils.prototype, 'createKeychains').resolves(stubbedKeychainsTriplet);
+      sandbox.stub(BlsUtils.prototype, 'createKeychains').resolves(stubbedKeychainsTriplet);
 
       const walletNock = nock('https://bitgo.fakeurl').post('/api/v2/eth2/wallet').reply(200);
 
@@ -737,7 +917,6 @@ describe('V2 Wallets:', function () {
       });
 
       walletNock.isDone().should.be.true();
-      sinon.verify();
     });
 
     it('should fail to create BLS-DKG wallet with invalid inputs', async function () {
@@ -783,8 +962,363 @@ describe('V2 Wallets:', function () {
   });
 
   describe('Sharing', () => {
+    describe('Wallet share where keychainOverrideRequired is set true', () => {
+      const sandbox = sinon.createSandbox();
+
+      afterEach(function () {
+        sandbox.verifyAndRestore();
+      });
+
+      it('when password not provived we should receive validation error', async function () {
+        const shareId = 'test_case_1';
+
+        const walletShareNock = nock(bgUrl)
+          .get(`/api/v2/tbtc/walletshare/${shareId}`)
+          .reply(200, {
+            keychainOverrideRequired: true,
+            permissions: ['admin', 'spend', 'view'],
+          });
+
+        // Validate accept share case
+        await wallets
+          .acceptShare({ walletShareId: shareId })
+          .should.be.rejectedWith('userPassword param must be provided to decrypt shared key');
+        walletShareNock.done();
+      });
+
+      it('when we accept share and failed to make changes, reshare should not be called', async function () {
+        const shareId = 'test_case_2';
+        const keychainId = 'test_case_2';
+        const userPassword = 'test_case_2';
+        // create a user key
+        const keyChainNock = nock(bgUrl)
+          .post('/api/v2/tbtc/key', _.conforms({ pub: (p) => p.startsWith('xpub') }))
+          .reply(200, (uri, requestBody) => {
+            return { id: keychainId, encryptedPrv: requestBody['encryptedPrv'], pub: requestBody['pub'] };
+          });
+
+        const walletShareInfoNock = nock(bgUrl)
+          .get(`/api/v2/tbtc/walletshare/${shareId}`)
+          .reply(200, {
+            keychainOverrideRequired: true,
+            permissions: ['admin', 'spend', 'view'],
+          });
+
+        const acceptShareNock = nock(bgUrl)
+          .post(`/api/v2/tbtc/walletshare/${shareId}`, (body: any) => {
+            if (body.walletShareId !== shareId || body.state !== 'accepted' || body.keyId !== keychainId) {
+              return false;
+            }
+            return true;
+          })
+          .reply(200, { changed: false });
+
+        // Stub wallet share wallet method
+        const walletShareStub = sandbox.stub(Wallet.prototype, 'shareWallet').onCall(0).resolves('success');
+
+        const res = await wallets.acceptShare({ walletShareId: shareId, userPassword });
+        should.equal(res.changed, false);
+        keyChainNock.done();
+        walletShareInfoNock.done();
+        acceptShareNock.done();
+        should.equal(walletShareStub.called, false);
+      });
+
+      it('when we accept share but state is not valid, reshare should not be called', async function () {
+        const shareId = 'test_case_3';
+        const keychainId = 'test_case_3';
+        const userPassword = 'test_case_3';
+
+        // create a user key
+        const keyChainNock = nock(bgUrl)
+          .post('/api/v2/tbtc/key', _.conforms({ pub: (p) => p.startsWith('xpub') }))
+          .reply(200, (uri, requestBody) => {
+            return { id: keychainId, encryptedPrv: requestBody['encryptedPrv'], pub: requestBody['pub'] };
+          });
+
+        const walletShareInfoNock = nock(bgUrl)
+          .get(`/api/v2/tbtc/walletshare/${shareId}`)
+          .reply(200, {
+            keychainOverrideRequired: true,
+            permissions: ['admin', 'spend', 'view'],
+          });
+
+        const acceptShareNock = nock(bgUrl)
+          .post(`/api/v2/tbtc/walletshare/${shareId}`, (body: any) => {
+            if (body.walletShareId !== shareId || body.state !== 'accepted' || body.keyId !== keychainId) {
+              return false;
+            }
+            return true;
+          })
+          .reply(200, { changed: true, state: 'not_accepted' });
+
+        // Stub wallet share wallet method
+        const walletShareStub = sandbox.stub(Wallet.prototype, 'shareWallet').onCall(0).resolves('success');
+
+        const res = await wallets.acceptShare({ walletShareId: shareId, userPassword });
+        should.equal(res.changed, true);
+        should.equal(res.state, 'not_accepted');
+        keyChainNock.done();
+        walletShareInfoNock.done();
+        acceptShareNock.done();
+        should.equal(walletShareStub.called, false);
+      });
+
+      it('when we get a correct resposne from accept share method, but failed to reshare wallet with spenders', async function () {
+        const shareId = 'test_case_6';
+        const keychainId = 'test_case_6';
+        const spenderUserOne = {
+          payload: {
+            permissions: ['spend', 'view'],
+            user: 'test_case_6',
+          },
+          email: { email: 'test_case_6' },
+          id: 'test_case_6',
+          coin: 'ofc',
+        };
+        const spenderUserTwo = {
+          payload: {
+            permissions: ['spend', 'view'],
+            user: 'test_case_9',
+          },
+          email: { email: 'test_case_9' },
+          id: 'test_case_9',
+          coin: 'ofc',
+        };
+        const adminUser = {
+          payload: {
+            permissions: ['admin', 'spend', 'view'],
+            user: 'test_case_7',
+          },
+          email: { email: 'test_case_7' },
+          id: 'test_case_7',
+          coin: 'ofc',
+        };
+        const viewerUser = {
+          payload: {
+            permissions: ['view'],
+            user: 'test_case_8',
+          },
+          email: { email: 'test_case_8' },
+          id: 'test_case_8',
+          coin: 'ofc',
+        };
+        const userPassword = 'test_case_6';
+        const walletId = 'test_case_6';
+        const enterpriseId = 'test_case_6';
+
+        const walletShareNock = nock(bgUrl)
+          .get(`/api/v2/tbtc/walletshare/${shareId}`)
+          .reply(200, {
+            keychainOverrideRequired: true,
+            permissions: ['admin', 'spend', 'view'],
+            wallet: walletId,
+          });
+
+        // create a user key
+        const keyChainCreateNock = nock(bgUrl)
+          .post('/api/v2/tbtc/key', _.conforms({ pub: (p) => p.startsWith('xpub') }))
+          .reply(200, (uri, requestBody) => {
+            return { id: keychainId, encryptedPrv: requestBody['encryptedPrv'], pub: requestBody['pub'] };
+          });
+
+        const acceptShareNock = nock(bgUrl)
+          .post(`/api/v2/tbtc/walletshare/${shareId}`, (body: any) => {
+            if (body.walletShareId !== shareId || body.state !== 'accepted' || body.keyId !== keychainId) {
+              return false;
+            }
+            return true;
+          })
+          .reply(200, { changed: true, state: 'accepted' });
+
+        const walletInfoNock = nock(bgUrl)
+          .get(`/api/v2/tbtc/wallet/${walletId}`)
+          .reply(200, {
+            users: [spenderUserOne.payload, spenderUserTwo.payload, adminUser.payload, viewerUser.payload],
+            enterprise: enterpriseId,
+            coin: spenderUserOne.coin,
+            id: walletId,
+            keys: [{}],
+          });
+
+        const enterpriseUserNock = nock(bgUrl)
+          .get(`/api/v1/enterprise/${enterpriseId}/user`)
+          .reply(200, {
+            adminUsers: [
+              { id: spenderUserOne.id, email: spenderUserOne.email },
+              { id: spenderUserTwo.id, email: spenderUserTwo.email },
+              { id: adminUser.id, email: adminUser.email },
+              { id: viewerUser.id, email: viewerUser.email },
+            ],
+            nonAdminUsers: [],
+          });
+
+        const walletShareStub = sandbox
+          .stub(Wallet.prototype, 'shareWallet')
+          .returns(new Promise((_resolve, reject) => reject(new Error('Failed to reshare wallet'))));
+
+        const shareParamsOne = {
+          walletId: walletId,
+          user: spenderUserOne.id,
+          permissions: spenderUserOne.payload.permissions.join(','),
+          walletPassphrase: userPassword,
+          email: spenderUserOne.email.email,
+          reshare: true,
+          skipKeychain: false,
+        };
+
+        const shareParamsTwo = {
+          walletId: walletId,
+          user: spenderUserTwo.id,
+          permissions: spenderUserTwo.payload.permissions.join(','),
+          walletPassphrase: userPassword,
+          email: spenderUserTwo.email.email,
+          reshare: true,
+          skipKeychain: false,
+        };
+
+        const res = await wallets.acceptShare({ walletShareId: shareId, userPassword });
+        should.equal(res.changed, true);
+        should.equal(res.state, 'accepted');
+        keyChainCreateNock.done();
+        walletShareNock.done();
+        walletInfoNock.done();
+        acceptShareNock.done();
+        enterpriseUserNock.done();
+        should.equal(walletShareStub.calledOnce, true);
+        should.equal(walletShareStub.calledWith(shareParamsOne), true);
+        should.equal(walletShareStub.calledWith(shareParamsTwo), false);
+      });
+
+      it('when we get a correct resposne from accept share method and reshare wallet with spenders', async function () {
+        const shareId = 'test_case_6';
+        const keychainId = 'test_case_6';
+        const spenderUserOne = {
+          payload: {
+            permissions: ['spend', 'view'],
+            user: 'test_case_6',
+          },
+          email: { email: 'test_case_6' },
+          id: 'test_case_6',
+          coin: 'ofc',
+        };
+        const spenderUserTwo = {
+          payload: {
+            permissions: ['spend', 'view'],
+            user: 'test_case_9',
+          },
+          email: { email: 'test_case_9' },
+          id: 'test_case_9',
+          coin: 'ofc',
+        };
+        const adminUser = {
+          payload: {
+            permissions: ['admin', 'spend', 'view'],
+            user: 'test_case_7',
+          },
+          email: { email: 'test_case_7' },
+          id: 'test_case_7',
+          coin: 'ofc',
+        };
+        const viewerUser = {
+          payload: {
+            permissions: ['view'],
+            user: 'test_case_8',
+          },
+          email: { email: 'test_case_8' },
+          id: 'test_case_8',
+          coin: 'ofc',
+        };
+        const userPassword = 'test_case_6';
+        const walletId = 'test_case_6';
+        const enterpriseId = 'test_case_6';
+
+        const walletShareNock = nock(bgUrl)
+          .get(`/api/v2/tbtc/walletshare/${shareId}`)
+          .reply(200, {
+            keychainOverrideRequired: true,
+            permissions: ['admin', 'spend', 'view'],
+            wallet: walletId,
+          });
+
+        // create a user key
+        const keyChainCreateNock = nock(bgUrl)
+          .post('/api/v2/tbtc/key', _.conforms({ pub: (p) => p.startsWith('xpub') }))
+          .reply(200, (uri, requestBody) => {
+            return { id: keychainId, encryptedPrv: requestBody['encryptedPrv'], pub: requestBody['pub'] };
+          });
+
+        const acceptShareNock = nock(bgUrl)
+          .post(`/api/v2/tbtc/walletshare/${shareId}`, (body: any) => {
+            if (body.walletShareId !== shareId || body.state !== 'accepted' || body.keyId !== keychainId) {
+              return false;
+            }
+            return true;
+          })
+          .reply(200, { changed: true, state: 'accepted' });
+
+        const walletInfoNock = nock(bgUrl)
+          .get(`/api/v2/tbtc/wallet/${walletId}`)
+          .reply(200, {
+            users: [spenderUserOne.payload, spenderUserTwo.payload, adminUser.payload, viewerUser.payload],
+            enterprise: enterpriseId,
+            coin: spenderUserOne.coin,
+            id: walletId,
+            keys: [{}],
+          });
+
+        const enterpriseUserNock = nock(bgUrl)
+          .get(`/api/v1/enterprise/${enterpriseId}/user`)
+          .reply(200, {
+            adminUsers: [
+              { id: spenderUserOne.id, email: spenderUserOne.email },
+              { id: spenderUserTwo.id, email: spenderUserTwo.email },
+              { id: adminUser.id, email: adminUser.email },
+              { id: viewerUser.id, email: viewerUser.email },
+            ],
+            nonAdminUsers: [],
+          });
+
+        const walletShareStub = sandbox
+          .stub(Wallet.prototype, 'shareWallet')
+          .returns(new Promise((resolve, _reject) => resolve('success')));
+
+        const shareParamsOne = {
+          walletId: walletId,
+          user: spenderUserOne.id,
+          permissions: spenderUserOne.payload.permissions.join(','),
+          walletPassphrase: userPassword,
+          email: spenderUserOne.email.email,
+          reshare: true,
+          skipKeychain: false,
+        };
+
+        const shareParamsTwo = {
+          walletId: walletId,
+          user: spenderUserTwo.id,
+          permissions: spenderUserTwo.payload.permissions.join(','),
+          walletPassphrase: userPassword,
+          email: spenderUserTwo.email.email,
+          reshare: true,
+          skipKeychain: false,
+        };
+
+        const res = await wallets.acceptShare({ walletShareId: shareId, userPassword });
+        should.equal(res.changed, true);
+        should.equal(res.state, 'accepted');
+        keyChainCreateNock.done();
+        walletShareNock.done();
+        walletInfoNock.done();
+        acceptShareNock.done();
+        enterpriseUserNock.done();
+        should.equal(walletShareStub.calledTwice, true);
+        should.equal(walletShareStub.calledWith(shareParamsOne), true);
+        should.equal(walletShareStub.calledWith(shareParamsTwo), true);
+      });
+    });
+
     it('should share a wallet to viewer', async function () {
-      const shareId = '123';
+      const shareId = '12311';
 
       nock(bgUrl).get(`/api/v2/tbtc/walletshare/${shareId}`).reply(200, {});
       const acceptShareNock = nock(bgUrl)

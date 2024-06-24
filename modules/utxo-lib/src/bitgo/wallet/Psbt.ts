@@ -6,10 +6,16 @@ import { BIP32Interface } from 'bip32';
 import * as bs58check from 'bs58check';
 import { UtxoPsbt } from '../UtxoPsbt';
 import { UtxoTransaction } from '../UtxoTransaction';
-import { createOutputScript2of3, getLeafHash, scriptTypeForChain, toXOnlyPublicKey } from '../outputScripts';
+import {
+  createOutputScript2of3,
+  getLeafHash,
+  ScriptType2Of3,
+  scriptTypeForChain,
+  toXOnlyPublicKey,
+} from '../outputScripts';
 import { DerivedWalletKeys, RootWalletKeys } from './WalletKeys';
 import { toPrevOutputWithPrevTx } from '../Unspent';
-import { createPsbtFromHex, createPsbtFromTransaction } from '../transaction';
+import { createPsbtFromHex, createPsbtFromTransaction, createTransactionFromBuffer } from '../transaction';
 import { isWalletUnspent, WalletUnspent } from './Unspent';
 
 import {
@@ -26,6 +32,7 @@ import {
   ParsedScriptType,
   isPlaceholderSignature,
   parseSignatureScript,
+  ParsedScriptType2Of3,
 } from '../parseInput';
 import { parsePsbtMusig2PartialSigs } from '../Musig2';
 import { isTuple, Triple } from '../types';
@@ -393,6 +400,19 @@ export function parsePsbtInput(input: PsbtInput): ParsedPsbtP2ms | ParsedPsbtTap
 }
 
 /**
+ * Converts a parsed script type into an array of script types.
+ * @param parsedScriptType - The parsed script type.
+ * @returns An array of ScriptType2Of3 values corresponding to the parsed script type.
+ */
+export function toScriptType2Of3s(parsedScriptType: ParsedScriptType2Of3): ScriptType2Of3[] {
+  return parsedScriptType === 'taprootScriptPathSpend'
+    ? ['p2trMusig2', 'p2tr']
+    : parsedScriptType === 'taprootKeyPathSpend'
+    ? ['p2trMusig2']
+    : [parsedScriptType];
+}
+
+/**
  * @returns strictly parse the input and get signature count.
  * unsigned(0), half-signed(1) or fully-signed(2)
  */
@@ -561,7 +581,7 @@ export function clonePsbtWithoutNonWitnessUtxo(psbt: UtxoPsbt): UtxoPsbt {
 
   psbt.data.inputs.forEach((input, i) => {
     if (input.nonWitnessUtxo && !input.witnessUtxo) {
-      const tx = UtxoTransaction.fromBuffer<bigint>(input.nonWitnessUtxo, false, 'bigint', psbt.network);
+      const tx = createTransactionFromBuffer(input.nonWitnessUtxo, psbt.network, { amountType: 'bigint' });
       if (!txInputs[i].hash.equals(tx.getHash())) {
         throw new Error(`Non-witness UTXO hash for input #${i} doesn't match the hash specified in the prevout`);
       }
@@ -571,6 +591,25 @@ export function clonePsbtWithoutNonWitnessUtxo(psbt: UtxoPsbt): UtxoPsbt {
   });
 
   return newPsbt;
+}
+
+/**
+ * Returns true if there are non-segwit inputs in the PSBT that do not contain the
+ * nonWitnessUtxo.
+ *
+ * isPsbtLite(clonePsbtWithoutNonWitnessUtxo(psbt)) === true
+ *
+ * @param psbt
+ */
+export function isPsbtLite(psbt: UtxoPsbt): boolean {
+  let isFull = true;
+  const nonSegwitInputTypes = ['p2shP2pk', 'p2sh'];
+  psbt.data.inputs.forEach((input) => {
+    if (isFull && nonSegwitInputTypes.includes(getPsbtInputScriptType(input))) {
+      isFull = !!input.nonWitnessUtxo;
+    }
+  });
+  return !isFull;
 }
 
 /**

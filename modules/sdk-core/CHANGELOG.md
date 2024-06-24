@@ -3,6 +3,159 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [27.1.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-core@27.0.0...@bitgo/sdk-core@27.1.0) (2024-06-14)
+
+### Features
+
+- **sdk-coin-ethlike:** add new eth like coin packages ([ba305cb](https://github.com/BitGo/BitGoJS/commit/ba305cb7f7b564d499d0f931f50919058e85652f))
+- **sdk-core:** added propagation of reqId to sendMany ([411efa7](https://github.com/BitGo/BitGoJS/commit/411efa76673fa1fb4b3e24fef4a6bf10bbd63af8))
+
+# [27.0.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-core@26.16.0...@bitgo/sdk-core@27.0.0) (2024-06-11)
+
+### Features
+
+- encrypt and return backup key by default ([f80d834](https://github.com/BitGo/BitGoJS/commit/f80d834984598eebfdcfa1b8252a898b30fbceec))
+- **sdk-core:** added reqId propagation to ecdsa methods ([35d6beb](https://github.com/BitGo/BitGoJS/commit/35d6beb5c1cfc678eb451dd09203d9348dfaea49))
+- **sdk-core:** added unit tests ([f77473f](https://github.com/BitGo/BitGoJS/commit/f77473fe3fb7536842df67226fbffb0d8aca1272))
+- **sdk-core:** propagate reqId for prebuildTransaction downstream methods ([789d305](https://github.com/BitGo/BitGoJS/commit/789d3057cb519198e38530e5ef15d2b55b0305da))
+- **sdk-core:** use new sign and send apis ([4bf737c](https://github.com/BitGo/BitGoJS/commit/4bf737c7cc357c9f46b655fa9f056ba7a29bfa9d))
+
+### BREAKING CHANGES
+
+- changes the default behavior of generateWallet
+
+# [26.16.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-core@26.15.0...@bitgo/sdk-core@26.16.0) (2024-06-05)
+
+### Bug Fixes
+
+- **sdk-core:** call txRequest migration for all apiVersion=full ([53b5c2b](https://github.com/BitGo/BitGoJS/commit/53b5c2bd96fa15658ae9ce8d3e87338fc9579703))
+- **sdk-core:** pad alpha and mu shares of MPCV1 ([3235e8c](https://github.com/BitGo/BitGoJS/commit/3235e8c61a32fd3e6985a68a38d73068d43d1e67))
+
+### Features
+
+- **sdk-coin-sol:** add sol close ATA recovery support ([b1fdb64](https://github.com/BitGo/BitGoJS/commit/b1fdb6471bd1f5331e7a690056cf9380c5c2b5f1))
+- **sdk-core:** make sendManyTss backwards compatible with sendMany ([37553bd](https://github.com/BitGo/BitGoJS/commit/37553bd62854867770a22410e5d652ec7c4d06bb))
+- **sdk-core:** supply isMPCv2 for MPCv2 key creation ([64bd55a](https://github.com/BitGo/BitGoJS/commit/64bd55ac018797645b719f1bc8e4886ee7ed9443))
+
+# [26.15.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-core@26.14.0...@bitgo/sdk-core@26.15.0) (2024-05-31)
+
+### Features
+
+- **abstract-eth:** add recovery support for bsc and polygon mpcv2 ([820e7b4](https://github.com/BitGo/BitGoJS/commit/820e7b40574add1bc7a05954961c7e7473972168))
+- add bitgo network connection schema ([2324060](https://github.com/BitGo/BitGoJS/commit/2324060a06f0441a9c8bfa848ff24158b63e097a))
+
+# [26.14.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-core@26.13.0...@bitgo/sdk-core@26.14.0) (2024-05-28)
+
+### Bug Fixes
+
+- should be able to generate onchain custodial wallet with express ([355dc8c](https://github.com/BitGo/BitGoJS/commit/355dc8cabe1b4432020947c22a663fd1e22eb1ac))
+
+### Features
+
+- **sdk-core:** remove hardcoded coinSpecific forwarderVersions ([6c9eff2](https://github.com/BitGo/BitGoJS/commit/6c9eff2b6a603d9e77b9c5bd139adfff7a6e0d15))
+- **statics:** enable cosmosLike MPCv2 ([231d25e](https://github.com/BitGo/BitGoJS/commit/231d25eccaeb8e4cd96a3b5b79ae3c11e73ea991))
+- update @bitgo/public-types to latest ([4ce79f1](https://github.com/BitGo/BitGoJS/commit/4ce79f1e812478ac5f2eaffdb5d0bed39d90cb8b))
+- use settings API to switch between MPCv2 and v1 ([85e2df2](https://github.com/BitGo/BitGoJS/commit/85e2df2856fd0b673bae29b9d6e9aabaa8c8a932))
+
+# [26.13.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-core@26.12.0...@bitgo/sdk-core@26.13.0) (2024-05-22)
+
+### Features
+
+- **sdk-core:** support smaller mpcv2 keycard ([63512d4](https://github.com/BitGo/BitGoJS/commit/63512d4279d012c0a151720cffb195b198d25e21))
+
+# [26.12.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-core@26.11.1...@bitgo/sdk-core@26.12.0) (2024-05-17)
+
+### Features
+
+- remove conditional p2trMusig2 check ([9683f33](https://github.com/BitGo/BitGoJS/commit/9683f3325fd454a804a60894c618ee0212acc6b2))
+
+## [26.11.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-core@26.11.0...@bitgo/sdk-core@26.11.1) (2024-05-13)
+
+**Note:** Version bump only for package @bitgo/sdk-core
+
+# [26.11.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-core@26.10.0...@bitgo/sdk-core@26.11.0) (2024-05-08)
+
+### Bug Fixes
+
+- **root:** fix keychains updatePassword for tss ([4cc09a8](https://github.com/BitGo/BitGoJS/commit/4cc09a8882194e19b55c10f21937ef0ffff39465))
+- rsa decrypt only needed for node ([3ce36cc](https://github.com/BitGo/BitGoJS/commit/3ce36ccc65b1f6a82fd15a6c7a49359a8eb7098e))
+- **sdk-core:** fix ci check issue ([d0eb311](https://github.com/BitGo/BitGoJS/commit/d0eb311141bee9b52919178a5f033212a299ddcf))
+- **sdk-core:** route PA flow to use MPCv2 ([7c116e9](https://github.com/BitGo/BitGoJS/commit/7c116e9e84d858953746b68ee693c25845feaebd))
+- use native crypto when overridden ([027245e](https://github.com/BitGo/BitGoJS/commit/027245eff5e320ecc679d97081a3c94a8e22c55b))
+
+### Features
+
+- add network connection encryption function ([8d43b26](https://github.com/BitGo/BitGoJS/commit/8d43b26d99ba7a07ce5e35cbf1906131e2779269))
+- breakout encryption logic functions ([af048f7](https://github.com/BitGo/BitGoJS/commit/af048f76709aa89c000b7bf43cdb2931cb00d7fa))
+- **sdk-lib-mpc:** support mpcv1 to mpcv2 retrofit ([b54a465](https://github.com/BitGo/BitGoJS/commit/b54a46575be40a51b4791cfc082695591dfd5d14))
+
+# [26.10.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-core@26.9.0...@bitgo/sdk-core@26.10.0) (2024-05-01)
+
+### Bug Fixes
+
+- **root:** fix tests ([1324cda](https://github.com/BitGo/BitGoJS/commit/1324cdad62f64da99b645b3c6bd9c4e53639611d))
+
+### Features
+
+- **sdk-core:** add MPCv2 wallet creation ([3b15e71](https://github.com/BitGo/BitGoJS/commit/3b15e715a5cdb165ce671bd216d1191170ee8980))
+- **sdk-core:** create dkls wallets with version 3 as well ([a14151a](https://github.com/BitGo/BitGoJS/commit/a14151a34047326334ed434ea3b16454f61c12a5))
+- **sdk-core:** dkls signing with wallet platform ([90341a9](https://github.com/BitGo/BitGoJS/commit/90341a9cdce6a0c3eb3a5b5b253486070e8a03ed))
+- **sdk-core:** switch tss signing b/w mpc v1/v2 ([c3d05f8](https://github.com/BitGo/BitGoJS/commit/c3d05f80b45faacea8e588b91633c1594ffc1070))
+- **wp:** add sig combine verification check on client side ([c069f8b](https://github.com/BitGo/BitGoJS/commit/c069f8b61b0a62d6e5fddd35fc72fcdeb618024a))
+- **wp:** update public-types and pass signatureR ([b0dba88](https://github.com/BitGo/BitGoJS/commit/b0dba888413230b6727713c0a8aec73959d62915))
+
+# [26.9.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-core@26.8.2...@bitgo/sdk-core@26.9.0) (2024-04-25)
+
+### Features
+
+- **sdk-coin-stx:** add max amount and auth-id for self-stack pox-4 ([bf12091](https://github.com/BitGo/BitGoJS/commit/bf12091d0230f3b9fb82683a1dc32b5e270d0c8c))
+- **sdk-core:** modify accept share method ([74cba44](https://github.com/BitGo/BitGoJS/commit/74cba44bc994ead576ac7d03a7b8171df9298f4b))
+
+## [26.8.2](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-core@26.8.1...@bitgo/sdk-core@26.8.2) (2024-04-24)
+
+### Bug Fixes
+
+- superagent upgrade to 9.0 ([6e9aa43](https://github.com/BitGo/BitGoJS/commit/6e9aa43a6d2999298abd450ceb168d664b8b926d))
+
+## [26.8.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-core@26.8.0...@bitgo/sdk-core@26.8.1) (2024-04-22)
+
+**Note:** Version bump only for package @bitgo/sdk-core
+
+# [26.8.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-core@26.7.0...@bitgo/sdk-core@26.8.0) (2024-04-17)
+
+### Features
+
+- **sdk-lib-mpc:** combine partial signatures util support ([c7f126f](https://github.com/BitGo/BitGoJS/commit/c7f126f68f9ebfed370248daa3321fb14145c5c0))
+
+### Reverts
+
+- Revert "feat: protect pass by value when sending data out" ([ef1497f](https://github.com/BitGo/BitGoJS/commit/ef1497ffdc9c158300c32a596828081d32eb6f3a))
+
+# [26.7.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-core@26.6.2...@bitgo/sdk-core@26.7.0) (2024-04-12)
+
+### Bug Fixes
+
+- pending approvals for txRequestLite should not use multiSig flow ([7802998](https://github.com/BitGo/BitGoJS/commit/7802998082594a970c8ef71a794cf48b748cc555))
+
+### Features
+
+- **bitgo:** add PATCH and OPTIONS to redirectRequest ([4c8ba7a](https://github.com/BitGo/BitGoJS/commit/4c8ba7abb5718261774352e1a191f0ab5dc5e616))
+- **sdk-coin-stx:** add support to nakamoto updgrade stack-stx tx ([f9cab3a](https://github.com/BitGo/BitGoJS/commit/f9cab3a0f836f3411f45e3ab1a04ee131680f649))
+
+## [26.6.2](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-core@26.6.1...@bitgo/sdk-core@26.6.2) (2024-04-10)
+
+**Note:** Version bump only for package @bitgo/sdk-core
+
+## [26.6.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-core@26.6.0...@bitgo/sdk-core@26.6.1) (2024-04-09)
+
+**Note:** Version bump only for package @bitgo/sdk-core
+
+# [26.6.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-core@26.5.0...@bitgo/sdk-core@26.6.0) (2024-04-08)
+
+### Features
+
+- protect pass by value when sending data out ([8755bdd](https://github.com/BitGo/BitGoJS/commit/8755bdd5f4174de21f0b7e4c1e7bb74fb9b8e40f))
+
 # [26.5.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-core@26.4.0...@bitgo/sdk-core@26.5.0) (2024-04-05)
 
 ### Features

@@ -3,6 +3,65 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.8.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-lib-mpc@9.8.0...@bitgo/sdk-lib-mpc@9.8.1) (2024-06-11)
+
+### Bug Fixes
+
+- **sdk-lib-mpc:** improve mpcv2 error handling ([00a57ad](https://github.com/BitGo/BitGoJS/commit/00a57add1f505075d58acb13e8e10465b26b699b))
+- **sdk-lib-mpc:** replace @noble/secp256k1 with @noble/curves ([c89064d](https://github.com/BitGo/BitGoJS/commit/c89064de0ddbe097b5ccb6caba33680da75980d9))
+
+# [9.8.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-lib-mpc@9.7.0...@bitgo/sdk-lib-mpc@9.8.0) (2024-05-22)
+
+### Features
+
+- **abstract-eth:** wrw recovery for dkls wallet ([bf374e8](https://github.com/BitGo/BitGoJS/commit/bf374e89522c9688619d9b20ed66d3873b55d75e))
+- **sdk-core:** support smaller mpcv2 keycard ([63512d4](https://github.com/BitGo/BitGoJS/commit/63512d4279d012c0a151720cffb195b198d25e21))
+
+# [9.7.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-lib-mpc@9.6.0...@bitgo/sdk-lib-mpc@9.7.0) (2024-05-08)
+
+### Features
+
+- make openssl prime gen non-breaking change ([e74357f](https://github.com/BitGo/BitGoJS/commit/e74357fa7ed64721d024c45f0105f6f87731de83))
+- **sdk-lib-mpc:** support mpcv1 to mpcv2 retrofit ([b54a465](https://github.com/BitGo/BitGoJS/commit/b54a46575be40a51b4791cfc082695591dfd5d14))
+
+### Reverts
+
+- Revert "feat(sdk-lib-mpc): use crypto module for safe prime" ([1b69c40](https://github.com/BitGo/BitGoJS/commit/1b69c4096d183e6515d77e95e775aa44b386a809))
+
+# [9.6.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-lib-mpc@9.5.0...@bitgo/sdk-lib-mpc@9.6.0) (2024-05-01)
+
+### Bug Fixes
+
+- **sdk-lib-mpc:** fix mpcv2 sig combine to pad signatures to 64 bytes ([421698d](https://github.com/BitGo/BitGoJS/commit/421698d3ccd8eaab22ba5e0989474421d11bd773))
+- **sdk-lib-mpc:** fix wasm init in mpcv2 wallets ([efbe63a](https://github.com/BitGo/BitGoJS/commit/efbe63a147000f3c0b601f065b70e4fa0e71eb58))
+
+### Features
+
+- **sdk-core:** add MPCv2 wallet creation ([3b15e71](https://github.com/BitGo/BitGoJS/commit/3b15e715a5cdb165ce671bd216d1191170ee8980))
+
+# [9.5.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-lib-mpc@9.4.0...@bitgo/sdk-lib-mpc@9.5.0) (2024-04-25)
+
+### Features
+
+- **sdk-lib-mpc:** add derivation to verify mpcv2 signature ([672b6fb](https://github.com/BitGo/BitGoJS/commit/672b6fbcfca926b2275ec7cc4d9f5b1d5f717f42))
+
+# [9.4.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-lib-mpc@9.3.0...@bitgo/sdk-lib-mpc@9.4.0) (2024-04-22)
+
+### Bug Fixes
+
+- **sdk-lib-mpc:** fix mpcv2 commitment and signatureR serialization ([89efa0c](https://github.com/BitGo/BitGoJS/commit/89efa0c1dbcc2aa6cb587692e989a0e8a6c7a984))
+
+### Features
+
+- **sdk-lib-mpc:** add utility to verify dkls signatures ([eb0824d](https://github.com/BitGo/BitGoJS/commit/eb0824dfaf7e9c2c9bb85df08b2e9012d1bf657b))
+
+# [9.3.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-lib-mpc@9.2.0...@bitgo/sdk-lib-mpc@9.3.0) (2024-04-17)
+
+### Features
+
+- **sdk-lib-mpc:** add dkls utils ([3a198d4](https://github.com/BitGo/BitGoJS/commit/3a198d453c46bc9a7217c34111fae85add6f13a1))
+- **sdk-lib-mpc:** combine partial signatures util support ([c7f126f](https://github.com/BitGo/BitGoJS/commit/c7f126f68f9ebfed370248daa3321fb14145c5c0))
+
 # [9.2.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-lib-mpc@9.1.1...@bitgo/sdk-lib-mpc@9.2.0) (2024-04-05)
 
 ### Features

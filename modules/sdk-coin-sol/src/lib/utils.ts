@@ -1,34 +1,4 @@
 import {
-  Keypair,
-  PublicKey,
-  SignaturePubkeyPair,
-  StakeInstruction,
-  StakeProgram,
-  SystemInstruction,
-  SystemProgram,
-  Transaction as SolTransaction,
-  TransactionInstruction,
-} from '@solana/web3.js';
-import bs58 from 'bs58';
-import BigNumber from 'bignumber.js';
-import {
-  ataInitInstructionIndexes,
-  MAX_MEMO_LENGTH,
-  MEMO_PROGRAM_PK,
-  stakingActivateInstructionsIndexes,
-  stakingDeactivateInstructionsIndexes,
-  stakingPartialDeactivateInstructionsIndexes,
-  stakingWithdrawInstructionsIndexes,
-  stakingAuthorizeInstructionsIndexes,
-  stakingDelegateInstructionsIndexes,
-  VALID_SYSTEM_INSTRUCTION_TYPES,
-  ValidInstructionTypesEnum,
-  walletInitInstructionIndexes,
-  nonceAdvanceInstruction,
-  validInstructionData,
-  validInstructionData2,
-} from './constants';
-import {
   BuildTransactionError,
   isValidXpub,
   NotSupported,
@@ -36,11 +6,42 @@ import {
   TransactionType,
   UtilsError,
 } from '@bitgo/sdk-core';
-import { ValidInstructionTypes } from './iface';
-import nacl from 'tweetnacl';
-import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID, getAssociatedTokenAddress } from '@solana/spl-token';
 import { BaseCoin, BaseNetwork, CoinNotDefinedError, coins, SolCoin } from '@bitgo/statics';
+import { ASSOCIATED_TOKEN_PROGRAM_ID, getAssociatedTokenAddress, TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import {
+  Keypair,
+  PublicKey,
+  SignaturePubkeyPair,
+  Transaction as SolTransaction,
+  StakeInstruction,
+  StakeProgram,
+  SystemInstruction,
+  SystemProgram,
+  TransactionInstruction,
+} from '@solana/web3.js';
 import assert from 'assert';
+import BigNumber from 'bignumber.js';
+import bs58 from 'bs58';
+import nacl from 'tweetnacl';
+import {
+  ataCloseInstructionIndexes,
+  ataInitInstructionIndexes,
+  MAX_MEMO_LENGTH,
+  MEMO_PROGRAM_PK,
+  nonceAdvanceInstruction,
+  stakingActivateInstructionsIndexes,
+  stakingAuthorizeInstructionsIndexes,
+  stakingDeactivateInstructionsIndexes,
+  stakingDelegateInstructionsIndexes,
+  stakingPartialDeactivateInstructionsIndexes,
+  stakingWithdrawInstructionsIndexes,
+  VALID_SYSTEM_INSTRUCTION_TYPES,
+  validInstructionData,
+  validInstructionData2,
+  ValidInstructionTypesEnum,
+  walletInitInstructionIndexes,
+} from './constants';
+import { ValidInstructionTypes } from './iface';
 
 const DECODED_BLOCK_HASH_LENGTH = 32; // https://docs.solana.com/developing/programming-model/transactions#blockhash-format
 const DECODED_SIGNATURE_LENGTH = 64; // https://docs.solana.com/terminology#signature
@@ -295,6 +296,8 @@ export function getTransactionType(transaction: SolTransaction): TransactionType
     return TransactionType.StakingWithdraw;
   } else if (matchTransactionTypeByInstructionsOrder(instructions, ataInitInstructionIndexes)) {
     return TransactionType.AssociatedTokenAccountInitialization;
+  } else if (matchTransactionTypeByInstructionsOrder(instructions, ataCloseInstructionIndexes)) {
+    return TransactionType.CloseAssociatedTokenAccount;
   } else {
     throw new NotSupported('Invalid transaction, transaction not supported or invalid');
   }
@@ -365,6 +368,27 @@ export function validateRawMsgInstruction(instructions: TransactionInstruction[]
       if (
         instructionName1 === nonceAdvanceInstruction &&
         (data === validInstructionData || data === validInstructionData2)
+      ) {
+        return true;
+      }
+    }
+  }
+  if (instructions.length === 3) {
+    const programId1 = instructions[0].programId.toString();
+    const programId2 = instructions[1].programId.toString();
+    const programId3 = instructions[2].programId.toString();
+    if (
+      programId1 === SystemProgram.programId.toString() &&
+      programId2 === StakeProgram.programId.toString() &&
+      programId3 === StakeProgram.programId.toString()
+    ) {
+      const instructionName1 = SystemInstruction.decodeInstructionType(instructions[0]);
+      const data = instructions[1].data.toString('hex');
+      const data2 = instructions[2].data.toString('hex');
+      if (
+        instructionName1 === nonceAdvanceInstruction &&
+        (data === validInstructionData || data === validInstructionData2) &&
+        (data2 === validInstructionData || data2 === validInstructionData2)
       ) {
         return true;
       }

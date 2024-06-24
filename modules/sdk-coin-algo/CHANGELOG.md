@@ -3,6 +3,86 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.17](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-algo@2.1.16...@bitgo/sdk-coin-algo@2.1.17) (2024-06-14)
+
+### Bug Fixes
+
+- **sdk-coin-algo:** return non-bitgo recovery tx in base64 ([c4df3ab](https://github.com/BitGo/BitGoJS/commit/c4df3ab0e43ec47395937161c7e65cba3c17dc3a))
+
+## [2.1.16](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-algo@2.1.15...@bitgo/sdk-coin-algo@2.1.16) (2024-06-11)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-algo
+
+## [2.1.15](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-algo@2.1.14...@bitgo/sdk-coin-algo@2.1.15) (2024-06-05)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-algo
+
+## [2.1.14](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-algo@2.1.13...@bitgo/sdk-coin-algo@2.1.14) (2024-05-31)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-algo
+
+## [2.1.13](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-algo@2.1.12...@bitgo/sdk-coin-algo@2.1.13) (2024-05-28)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-algo
+
+## [2.1.12](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-algo@2.1.11...@bitgo/sdk-coin-algo@2.1.12) (2024-05-22)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-algo
+
+## [2.1.11](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-algo@2.1.10...@bitgo/sdk-coin-algo@2.1.11) (2024-05-17)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-algo
+
+## [2.1.10](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-algo@2.1.9...@bitgo/sdk-coin-algo@2.1.10) (2024-05-13)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-algo
+
+## [2.1.9](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-algo@2.1.8...@bitgo/sdk-coin-algo@2.1.9) (2024-05-08)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-algo
+
+## [2.1.8](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-algo@2.1.7...@bitgo/sdk-coin-algo@2.1.8) (2024-05-01)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-algo
+
+## [2.1.7](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-algo@2.1.6...@bitgo/sdk-coin-algo@2.1.7) (2024-04-25)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-algo
+
+## [2.1.6](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-algo@2.1.5...@bitgo/sdk-coin-algo@2.1.6) (2024-04-24)
+
+### Bug Fixes
+
+- superagent upgrade to 9.0 ([6e9aa43](https://github.com/BitGo/BitGoJS/commit/6e9aa43a6d2999298abd450ceb168d664b8b926d))
+
+## [2.1.5](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-algo@2.1.4...@bitgo/sdk-coin-algo@2.1.5) (2024-04-22)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-algo
+
+## [2.1.4](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-algo@2.1.3...@bitgo/sdk-coin-algo@2.1.4) (2024-04-17)
+
+### Reverts
+
+- Revert "feat: protect pass by value when sending data out" ([ef1497f](https://github.com/BitGo/BitGoJS/commit/ef1497ffdc9c158300c32a596828081d32eb6f3a))
+
+## [2.1.3](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-algo@2.1.2...@bitgo/sdk-coin-algo@2.1.3) (2024-04-12)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-algo
+
+## [2.1.2](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-algo@2.1.1...@bitgo/sdk-coin-algo@2.1.2) (2024-04-10)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-algo
+
+## [2.1.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-algo@2.1.0...@bitgo/sdk-coin-algo@2.1.1) (2024-04-09)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-algo
+
+# [2.1.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-algo@2.0.1...@bitgo/sdk-coin-algo@2.1.0) (2024-04-08)
+
+### Features
+
+- protect pass by value when sending data out ([8755bdd](https://github.com/BitGo/BitGoJS/commit/8755bdd5f4174de21f0b7e4c1e7bb74fb9b8e40f))
+
 ## [2.0.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-algo@2.0.0...@bitgo/sdk-coin-algo@2.0.1) (2024-04-05)
 
 ### Bug Fixes

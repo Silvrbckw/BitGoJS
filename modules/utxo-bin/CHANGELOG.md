@@ -3,6 +3,78 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.47.21](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-bin@2.47.20...@bitgo/utxo-bin@2.47.21) (2024-06-14)
+
+**Note:** Version bump only for package @bitgo/utxo-bin
+
+## [2.47.20](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-bin@2.47.19...@bitgo/utxo-bin@2.47.20) (2024-06-11)
+
+**Note:** Version bump only for package @bitgo/utxo-bin
+
+## [2.47.19](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-bin@2.47.18...@bitgo/utxo-bin@2.47.19) (2024-06-05)
+
+**Note:** Version bump only for package @bitgo/utxo-bin
+
+## [2.47.18](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-bin@2.47.17...@bitgo/utxo-bin@2.47.18) (2024-05-31)
+
+**Note:** Version bump only for package @bitgo/utxo-bin
+
+## [2.47.17](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-bin@2.47.16...@bitgo/utxo-bin@2.47.17) (2024-05-28)
+
+**Note:** Version bump only for package @bitgo/utxo-bin
+
+## [2.47.16](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-bin@2.47.15...@bitgo/utxo-bin@2.47.16) (2024-05-22)
+
+**Note:** Version bump only for package @bitgo/utxo-bin
+
+## [2.47.15](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-bin@2.47.14...@bitgo/utxo-bin@2.47.15) (2024-05-17)
+
+**Note:** Version bump only for package @bitgo/utxo-bin
+
+## [2.47.14](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-bin@2.47.13...@bitgo/utxo-bin@2.47.14) (2024-05-13)
+
+**Note:** Version bump only for package @bitgo/utxo-bin
+
+## [2.47.13](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-bin@2.47.12...@bitgo/utxo-bin@2.47.13) (2024-05-08)
+
+**Note:** Version bump only for package @bitgo/utxo-bin
+
+## [2.47.12](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-bin@2.47.11...@bitgo/utxo-bin@2.47.12) (2024-05-01)
+
+**Note:** Version bump only for package @bitgo/utxo-bin
+
+## [2.47.11](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-bin@2.47.10...@bitgo/utxo-bin@2.47.11) (2024-04-25)
+
+**Note:** Version bump only for package @bitgo/utxo-bin
+
+## [2.47.10](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-bin@2.47.9...@bitgo/utxo-bin@2.47.10) (2024-04-24)
+
+**Note:** Version bump only for package @bitgo/utxo-bin
+
+## [2.47.9](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-bin@2.47.8...@bitgo/utxo-bin@2.47.9) (2024-04-22)
+
+**Note:** Version bump only for package @bitgo/utxo-bin
+
+## [2.47.8](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-bin@2.47.7...@bitgo/utxo-bin@2.47.8) (2024-04-17)
+
+**Note:** Version bump only for package @bitgo/utxo-bin
+
+## [2.47.7](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-bin@2.47.6...@bitgo/utxo-bin@2.47.7) (2024-04-12)
+
+**Note:** Version bump only for package @bitgo/utxo-bin
+
+## [2.47.6](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-bin@2.47.5...@bitgo/utxo-bin@2.47.6) (2024-04-10)
+
+**Note:** Version bump only for package @bitgo/utxo-bin
+
+## [2.47.5](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-bin@2.47.4...@bitgo/utxo-bin@2.47.5) (2024-04-09)
+
+**Note:** Version bump only for package @bitgo/utxo-bin
+
+## [2.47.4](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-bin@2.47.3...@bitgo/utxo-bin@2.47.4) (2024-04-08)
+
+**Note:** Version bump only for package @bitgo/utxo-bin
+
 ## [2.47.3](https://github.com/BitGo/BitGoJS/compare/@bitgo/utxo-bin@2.47.2...@bitgo/utxo-bin@2.47.3) (2024-04-05)
 
 **Note:** Version bump only for package @bitgo/utxo-bin

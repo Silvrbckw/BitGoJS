@@ -3,6 +3,38 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.9.5](https://github.com/BitGo/BitGoJS/compare/@bitgo/blockapis@1.9.4...@bitgo/blockapis@1.9.5) (2024-06-11)
+
+**Note:** Version bump only for package @bitgo/blockapis
+
+## [1.9.4](https://github.com/BitGo/BitGoJS/compare/@bitgo/blockapis@1.9.3...@bitgo/blockapis@1.9.4) (2024-05-08)
+
+**Note:** Version bump only for package @bitgo/blockapis
+
+## [1.9.3](https://github.com/BitGo/BitGoJS/compare/@bitgo/blockapis@1.9.2...@bitgo/blockapis@1.9.3) (2024-05-01)
+
+**Note:** Version bump only for package @bitgo/blockapis
+
+## [1.9.2](https://github.com/BitGo/BitGoJS/compare/@bitgo/blockapis@1.9.1...@bitgo/blockapis@1.9.2) (2024-04-24)
+
+### Bug Fixes
+
+- superagent upgrade to 9.0 ([6e9aa43](https://github.com/BitGo/BitGoJS/commit/6e9aa43a6d2999298abd450ceb168d664b8b926d))
+
+## [1.9.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/blockapis@1.9.0...@bitgo/blockapis@1.9.1) (2024-04-22)
+
+**Note:** Version bump only for package @bitgo/blockapis
+
+# [1.9.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/blockapis@1.8.1...@bitgo/blockapis@1.9.0) (2024-04-12)
+
+### Features
+
+- fix getUnspentsForAddresses in BlockchairApi ([48574c4](https://github.com/BitGo/BitGoJS/commit/48574c49856471ccd67a173114a37c1f38e964e8))
+
+## [1.8.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/blockapis@1.7.3...@bitgo/blockapis@1.8.1) (2024-04-10)
+
+**Note:** Version bump only for package @bitgo/blockapis
+
 ## [1.7.33](https://github.com/BitGo/BitGoJS/compare/@bitgo/blockapis@1.7.3...@bitgo/blockapis@1.7.33) (2024-01-30)
 
 **Note:** Version bump only for package @bitgo/blockapis

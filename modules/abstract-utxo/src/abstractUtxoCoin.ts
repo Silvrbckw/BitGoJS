@@ -18,6 +18,8 @@ import {
   RecoveryProvider,
   backupKeyRecovery,
   RecoverParams,
+  V1RecoverParams,
+  v1BackupKeyRecovery,
 } from './recovery';
 
 import {
@@ -31,7 +33,6 @@ import {
   IBaseCoin,
   InvalidAddressDerivationPropertyError,
   InvalidAddressError,
-  InvalidAddressVerificationObjectPropertyError,
   IRequestTracer,
   isTriple,
   ITransactionExplanation as BaseTransactionExplanation,
@@ -110,11 +111,24 @@ export interface VerifyAddressOptions extends BaseVerifyAddressOptions {
   index: number;
 }
 
-export interface Output {
+export interface BaseOutput {
   address: string;
   amount: string | number;
+  // Even though this external flag is redundant with the chain property, it is necessary for backwards compatibility
+  // with legacy transaction format.
   external?: boolean;
+}
+
+export interface WalletOutput extends BaseOutput {
   needsCustomChangeKeySignatureVerification?: boolean;
+  chain: number;
+  index: number;
+}
+
+export type Output = BaseOutput | WalletOutput;
+
+export function isWalletOutput(output: Output): output is WalletOutput {
+  return (output as WalletOutput).chain !== undefined && (output as WalletOutput).index !== undefined;
 }
 
 export interface TransactionExplanation extends BaseTransactionExplanation<string, string> {
@@ -146,6 +160,11 @@ export interface ExplainTransactionOptions<TNumber extends number | bigint = num
   txInfo?: TransactionInfo<TNumber>;
   feeInfo?: string;
   pubs?: Triple<string>;
+}
+
+export interface DecoratedExplainTransactionOptions<TNumber extends number | bigint = number>
+  extends ExplainTransactionOptions<TNumber> {
+  changeInfo?: { address: string; chain: number; index: number }[];
 }
 
 export type UtxoNetwork = utxolib.Network;
@@ -590,7 +609,7 @@ export abstract class AbstractUtxoCoin extends BaseCoin {
     );
 
     const needsCustomChangeKeySignatureVerification = allOutputDetails.some(
-      (output) => output.needsCustomChangeKeySignatureVerification
+      (output) => (output as WalletOutput)?.needsCustomChangeKeySignatureVerification
     );
 
     const changeOutputs = _.filter(allOutputDetails, { external: false });
@@ -947,7 +966,7 @@ export abstract class AbstractUtxoCoin extends BaseCoin {
    * @throws {UnexpectedAddressError}
    */
   async isWalletAddress(params: VerifyAddressOptions): Promise<boolean> {
-    const { address, addressType, keychains, coinSpecific, chain, index } = params;
+    const { address, addressType, keychains, chain, index } = params;
 
     if (!this.isValidAddress(address)) {
       throw new InvalidAddressError(`invalid address: ${address}`);
@@ -956,12 +975,6 @@ export abstract class AbstractUtxoCoin extends BaseCoin {
     if ((_.isUndefined(chain) && _.isUndefined(index)) || !(_.isFinite(chain) && _.isFinite(index))) {
       throw new InvalidAddressDerivationPropertyError(
         `address validation failure: invalid chain (${chain}) or index (${index})`
-      );
-    }
-
-    if (!_.isObject(coinSpecific)) {
-      throw new InvalidAddressVerificationObjectPropertyError(
-        'address validation failure: coinSpecific field must be an object'
       );
     }
 
@@ -1121,6 +1134,18 @@ export abstract class AbstractUtxoCoin extends BaseCoin {
       .post(this.url('/wallet/' + walletId + '/tx/signpsbt'))
       .send(params)
       .result();
+  }
+
+  /**
+   * @returns input psbt added with deterministic MuSig2 nonce for bitgo key for each MuSig2 inputs from OVC.
+   * @param ovcJson JSON object provided by OVC with fields psbtHex and walletId
+   */
+  async signPsbtFromOVC(ovcJson: Record<string, unknown>): Promise<Record<string, unknown>> {
+    assert(ovcJson['psbtHex'], 'ovcJson must contain psbtHex');
+    assert(ovcJson['walletId'], 'ovcJson must contain walletId');
+    const psbt = (await this.signPsbt(ovcJson['psbtHex'] as string, ovcJson['walletId'] as string)).psbt;
+    assert(psbt, 'psbt not found');
+    return _.extend(ovcJson, { txHex: psbt });
   }
 
   /**
@@ -1398,6 +1423,10 @@ export abstract class AbstractUtxoCoin extends BaseCoin {
     return backupKeyRecovery(this, this.bitgo, params);
   }
 
+  async recoverV1(params: V1RecoverParams): ReturnType<typeof v1BackupKeyRecovery> {
+    return v1BackupKeyRecovery(this, this.bitgo, params);
+  }
+
   /**
    * Recover coin that was sent to wrong chain
    * @param params
@@ -1466,10 +1495,10 @@ export abstract class AbstractUtxoCoin extends BaseCoin {
 
   async getExtraPrebuildParams(buildParams: ExtraPrebuildParamsOptions & { wallet: Wallet }): Promise<{
     txFormat?: 'legacy' | 'psbt';
-    addressType?: ScriptType2Of3;
+    changeAddressType?: ScriptType2Of3[] | ScriptType2Of3;
   }> {
     let txFormat = buildParams.txFormat as 'legacy' | 'psbt' | undefined;
-    let addressType = buildParams.addressType as ScriptType2Of3 | undefined;
+    let changeAddressType = buildParams.changeAddressType as ScriptType2Of3[] | ScriptType2Of3 | undefined;
 
     const walletFlagMusigKp = buildParams.wallet.flag('musigKp') === 'true';
 
@@ -1489,16 +1518,14 @@ export abstract class AbstractUtxoCoin extends BaseCoin {
       buildParams.addressType === undefined && // addressType is deprecated and replaced by `changeAddress`
       buildParams.changeAddressType === undefined &&
       buildParams.changeAddress === undefined &&
-      buildParams.wallet.type() === 'hot' &&
-      // FIXME(BTC-92): remove this check once p2trMusig2 is fully rolled out
-      (this.network === utxolib.networks.testnet || walletFlagMusigKp)
+      buildParams.wallet.type() === 'hot'
     ) {
-      addressType = 'p2trMusig2';
+      changeAddressType = ['p2trMusig2', 'p2wsh', 'p2shP2wsh', 'p2sh', 'p2tr'];
     }
 
     return {
       txFormat,
-      addressType,
+      changeAddressType,
     };
   }
 

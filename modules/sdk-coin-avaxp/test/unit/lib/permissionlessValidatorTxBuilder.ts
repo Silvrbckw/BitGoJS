@@ -8,7 +8,7 @@ import * as AvaxpLib from '../../../src/lib';
 import { TransactionBuilderFactory } from '../../../src/lib';
 import { PermissionlessValidatorTxBuilder } from '../../../src/lib/permissionlessValidatorTxBuilder';
 import * as testData from '../../resources/avaxp';
-// import { pvm } from '@bitgo/avalanchejs';
+// import { pvm } from '@bitgo-forks/avalanchejs';
 
 describe('AvaxP permissionlessValidatorTxBuilder', () => {
   let basecoin;
@@ -61,6 +61,19 @@ describe('AvaxP permissionlessValidatorTxBuilder', () => {
       txExplain.outputAmount.should.equal(testData.ADDVALIDATOR_SAMPLES.minValidatorStake);
       txExplain.type.should.equal(TransactionType.AddPermissionlessValidator);
       txExplain.outputs[0].address.should.equal(testData.ADDVALIDATOR_SAMPLES.nodeID);
+    });
+
+    it('should explains a Signed AddPermissionlessValidatorTx and order inputs', async () => {
+      const txBuilder = new TransactionBuilderFactory(coins.get('avaxp')).from(
+        // https://testnet.snowtrace.io/pvm/tx/2tt3KE6gAG7qpMLL6xoynSyk7ht4egQ74wcF7AuGm25vQ3QNWB?chainId=43113
+        '0x0000000000190000000100000000000000000000000000000000000000000000000000000000000000000000000121e67317cbc4be2aeb00677ad6462778a8f52274b9d605df2591b23027a87dff0000000700000000773594000000000000000000000000020000000393ca93e4cb3b6c10d167d41fbabeb8e94ed2deb5dc787323d722ff40fdfe56040fb98f7aee2075eff4dd7a368ddb6ef7132bff693cbfd9ba30f17c18000000046f8bdc3c893edd2c7f24a6190d6233fda5ccf517d96dd6c08d134179abb2d14e0000000021e67317cbc4be2aeb00677ad6462778a8f52274b9d605df2591b23027a87dff0000000500000047036aaa00000000020000000100000002865cc8568b9c4c7d36bb96e086619d8c85218d653ff56d051334f839e58977c30000000221e67317cbc4be2aeb00677ad6462778a8f52274b9d605df2591b23027a87dff00000005000000005fb5d590000000020000000100000002865cc8568b9c4c7d36bb96e086619d8c85218d653ff56d051334f839e58977c30000000121e67317cbc4be2aeb00677ad6462778a8f52274b9d605df2591b23027a87dff0000000500000007ae61e378000000020000000100000002865cc8568b9c4c7d36bb96e086619d8c85218d653ff56d051334f839e58977c30000000021e67317cbc4be2aeb00677ad6462778a8f52274b9d605df2591b23027a87dff00000005000003ffb6db3f6900000002000000010000000200000000953cc95e84f29dc6ee7589ef6acb01c9d561cba3000000006616c6750000000066560e750000044e51280e7100000000000000000000000000000000000000000000000000000000000000000000001ca7a2f29ca580c4254e3beabce2047e04ea8c3c7c69a5817b5461c2239593561a3843bc7cb14576390378b145135301478ff8cb5a651e3d082fd6cd1e1777edeabd5b0924ca648f3890d82ebd6259b3cca00e30faa249482fef10293f42e28afb15f0a5dd3f37e5524cd5de3f3c2b909df49873b8196af60004d3f3a84baa46ba08df7baf8e486b0b79a9c207095e1a430000000121e67317cbc4be2aeb00677ad6462778a8f52274b9d605df2591b23027a87dff000000070000044e51280e710000000000000000000000020000000393ca93e4cb3b6c10d167d41fbabeb8e94ed2deb5dc787323d722ff40fdfe56040fb98f7aee2075eff4dd7a368ddb6ef7132bff693cbfd9ba30f17c180000000b0000000000000000000000020000000393ca93e4cb3b6c10d167d41fbabeb8e94ed2deb5dc787323d722ff40fdfe56040fb98f7aee2075eff4dd7a368ddb6ef7132bff693cbfd9ba30f17c180000000b0000000000000000000000020000000393ca93e4cb3b6c10d167d41fbabeb8e94ed2deb5dc787323d722ff40fdfe56040fb98f7aee2075eff4dd7a368ddb6ef7132bff693cbfd9ba30f17c1800004e2000000004000000090000000208304e8841ab96169ea2b28dc358df3594523b3ce87593f1f579b51b7bfb844d49d690f71edb4e6530b8800436a4ef7357046a2155c5b52c15414ae76ca956c8007bbd8dbea9071c1bf1788f853472e08362b1afadc9d0a4412b13b0ea43b703e010df1204d88c6fe0484140b1bb91fdbf7a032d262475a419f80829411a04114001000000090000000208304e8841ab96169ea2b28dc358df3594523b3ce87593f1f579b51b7bfb844d49d690f71edb4e6530b8800436a4ef7357046a2155c5b52c15414ae76ca956c8007bbd8dbea9071c1bf1788f853472e08362b1afadc9d0a4412b13b0ea43b703e010df1204d88c6fe0484140b1bb91fdbf7a032d262475a419f80829411a04114001000000090000000208304e8841ab96169ea2b28dc358df3594523b3ce87593f1f579b51b7bfb844d49d690f71edb4e6530b8800436a4ef7357046a2155c5b52c15414ae76ca956c8007bbd8dbea9071c1bf1788f853472e08362b1afadc9d0a4412b13b0ea43b703e010df1204d88c6fe0484140b1bb91fdbf7a032d262475a419f80829411a04114001000000090000000208304e8841ab96169ea2b28dc358df3594523b3ce87593f1f579b51b7bfb844d49d690f71edb4e6530b8800436a4ef7357046a2155c5b52c15414ae76ca956c8007bbd8dbea9071c1bf1788f853472e08362b1afadc9d0a4412b13b0ea43b703e010df1204d88c6fe0484140b1bb91fdbf7a032d262475a419f80829411a0411400127efec04'
+      );
+      const tx = await txBuilder.build();
+      const txExplain = tx.explainTransaction();
+      txExplain.inputs[0].id.should.equal('r8JUUYFv9NWcNe5cxMFdBRjqkL6FZewDf2GtkttmxWCdeFFMK:0');
+      txExplain.inputs[1].id.should.equal('22B7GH7fDarBqyw8W7atC8ED3euVnefTiEWBPBmaSXrAhAQ4Lk:0');
+      txExplain.inputs[2].id.should.equal('22B7GH7fDarBqyw8W7atC8ED3euVnefTiEWBPBmaSXrAhAQ4Lk:1');
+      txExplain.inputs[3].id.should.equal('22B7GH7fDarBqyw8W7atC8ED3euVnefTiEWBPBmaSXrAhAQ4Lk:2');
     });
 
     it('should explains a Signed AddPermissionlessValidatorTx from raw', async () => {
@@ -169,6 +182,9 @@ describe('AvaxP permissionlessValidatorTxBuilder', () => {
       const txExplain = tx.explainTransaction();
       const txJson = tx.toJson();
       assert(txExplain.outputAmount === testData.BUILD_AND_SIGN_ADD_PERMISSIONLESS_VALIDATOR_SAMPLE.stakeAmount);
+      txExplain.inputs[0].id.should.equal('WyjYJHa7Ye1KMsBZiQ8hQJzY7YYxTJTTyMkxcVrKRDiNytTY8:0');
+      txExplain.inputs[1].id.should.equal('WyjYJHa7Ye1KMsBZiQ8hQJzY7YYxTJTTyMkxcVrKRDiNytTY8:1');
+      txExplain.inputs[2].id.should.equal('s92SjoZQemgG97HocX9GgyFy6ZKmapgcgqQ3y5J2uwP3qWBUy:0');
       assert(txJson.outputs[0].value === testData.BUILD_AND_SIGN_ADD_PERMISSIONLESS_VALIDATOR_SAMPLE.stakeAmount);
       tx.type.should.equal(TransactionType.AddPermissionlessValidator);
       console.log(tx.toBroadcastFormat());
@@ -297,5 +313,31 @@ describe('AvaxP permissionlessValidatorTxBuilder', () => {
       const fullSignedTx = await txBuilder2.build();
       console.log(fullSignedTx.toJson());
     });
+  });
+  it('Should fail to build if utxos change output 0', async () => {
+    const unixNow = BigInt(Math.round(new Date().getTime() / 1000));
+    const startTime = unixNow + BigInt(60);
+    const endTime = startTime + BigInt(60 * 60 * 24 + 600);
+
+    const txBuilder = new AvaxpLib.TransactionBuilderFactory(coins.get('tavaxp'))
+      .getPermissionlessValidatorTxBuilder()
+      .threshold(testData.BUILD_AND_SIGN_ADD_PERMISSIONLESS_VALIDATOR_SAMPLE.threshold)
+      .locktime(testData.BUILD_AND_SIGN_ADD_PERMISSIONLESS_VALIDATOR_SAMPLE.locktime)
+      .recoverMode(false)
+      .fromPubKey(testData.BUILD_AND_SIGN_ADD_PERMISSIONLESS_VALIDATOR_SAMPLE.bitgoAddresses)
+      .startTime(startTime.toString())
+      .endTime(endTime.toString())
+      .stakeAmount(testData.BUILD_AND_SIGN_ADD_PERMISSIONLESS_VALIDATOR_SAMPLE.stakeAmountNoOutput)
+      .delegationFeeRate(testData.BUILD_AND_SIGN_ADD_PERMISSIONLESS_VALIDATOR_SAMPLE.delegationFeeRate)
+      .nodeID(testData.BUILD_AND_SIGN_ADD_PERMISSIONLESS_VALIDATOR_SAMPLE.nodeId)
+      .blsPublicKey(testData.BUILD_AND_SIGN_ADD_PERMISSIONLESS_VALIDATOR_SAMPLE.blsPublicKey)
+      .blsSignature(testData.BUILD_AND_SIGN_ADD_PERMISSIONLESS_VALIDATOR_SAMPLE.blsSignature)
+      .utxos(testData.BUILD_AND_SIGN_ADD_PERMISSIONLESS_VALIDATOR_SAMPLE.utxos);
+    const tx = await txBuilder.build();
+    const txJson = tx.toJson();
+    const txExplain = tx.explainTransaction();
+    txJson.changeOutputs.length.should.equal(0);
+    txExplain.changeOutputs.length.should.equal(0);
+    txExplain.changeAmount.should.equal('0');
   });
 });

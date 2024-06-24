@@ -5,6 +5,7 @@ module.exports = {
   ignores: [
     (commit) => /^Merge commit '[a-f0-9]{40}'$/m.test(commit),
     (commit) => /^chore\(root\): publish modules/m.test(commit),
+    (commit) => commit.includes('Signed-off-by: dependabot[bot] <support@github.com>'),
   ],
   rules: {
     'scope-enum': async () => [2, 'always', (await readdir('modules')).concat('root', 'deps')],
@@ -28,6 +29,7 @@ module.exports = {
         'DES-',
         'DO-',
         'DOS-',
+        'DX-',
         'EA-',
         'ERC20-',
         'FAC-',
@@ -51,6 +53,7 @@ module.exports = {
         'VL-',
         'WIN-',
         'WP-',
+        'COIN-',
         '#', // Prefix used by GitHub issues
       ],
     },

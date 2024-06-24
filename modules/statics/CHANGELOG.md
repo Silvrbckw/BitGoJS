@@ -3,6 +3,150 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [48.18.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/statics@48.17.0...@bitgo/statics@48.18.0) (2024-06-14)
+
+### Bug Fixes
+
+- **statics:** decimalPlaces for XLM tokens ([405128e](https://github.com/BitGo/BitGoJS/commit/405128e804eaf8c9a079639ac81d6fafa4ae94ad))
+- **statics:** update contract address for xsgd ([4916b7f](https://github.com/BitGo/BitGoJS/commit/4916b7f28edb991bcf54058d13a59a5d3d6f57e4))
+
+### Features
+
+- **sdk-coin-ethlike:** add new eth like coin packages ([ba305cb](https://github.com/BitGo/BitGoJS/commit/ba305cb7f7b564d499d0f931f50919058e85652f))
+- **statics:** add new token zro ([7a4669a](https://github.com/BitGo/BitGoJS/commit/7a4669a302e0f608b125caa7029f9ff470f5d17b))
+- **statics:** add USMS Tokens part 1 ([24ce642](https://github.com/BitGo/BitGoJS/commit/24ce642f0fec193d3e291a963abf6c2242a7c671))
+
+# [48.17.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/statics@48.16.0...@bitgo/statics@48.17.0) (2024-06-11)
+
+### Bug Fixes
+
+- **abstract-eth:** use correct derivation path in wrw recover function ([5018147](https://github.com/BitGo/BitGoJS/commit/50181478d487c8871f94da2fb92e7327098b2370))
+
+### Features
+
+- **statics:** add support for Optimism Ethereum (L2 Chain) ([866edb5](https://github.com/BitGo/BitGoJS/commit/866edb51a64dfa32011297452c39e0b163f9f665))
+- **statics:** add usde token ([dfc83c6](https://github.com/BitGo/BitGoJS/commit/dfc83c6e2826c707c6cc2fd4a29945ca367afeaa))
+- **statics:** added ofc support for Polygon tokens ([baa8fbd](https://github.com/BitGo/BitGoJS/commit/baa8fbd9d269f4eb103f746a5b7afb0402102332))
+
+# [48.16.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/statics@48.15.0...@bitgo/statics@48.16.0) (2024-06-05)
+
+### Features
+
+- **statics:** add new batch of tokens ([fd2ad87](https://github.com/BitGo/BitGoJS/commit/fd2ad87c11318f5c63239dd8638e8c61f183795a))
+
+# [48.15.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/statics@48.14.0...@bitgo/statics@48.15.0) (2024-05-31)
+
+### Bug Fixes
+
+- **statics:** fix the polygon usdc on amoy ([0b8134a](https://github.com/BitGo/BitGoJS/commit/0b8134a201e696ea2d56fa07dac7ee893c15cc18))
+
+### Features
+
+- **statics:** add new batch of tokens ([634ab67](https://github.com/BitGo/BitGoJS/commit/634ab67c2dfd500b3bda5164d6f0a89f664aa12c))
+
+# [48.14.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/statics@48.13.0...@bitgo/statics@48.14.0) (2024-05-28)
+
+### Features
+
+- **statics:** add new batch of tokens ([30316f1](https://github.com/BitGo/BitGoJS/commit/30316f1077a8cd303f3293735aa4e7db9e6fac42))
+- **statics:** added offchain support for ANKR,PENDLE,OM ([60d73c1](https://github.com/BitGo/BitGoJS/commit/60d73c16b935f1c205ec2f197eebe6682351b06a))
+- **statics:** adding test token for solana tokens for go account ([e89757d](https://github.com/BitGo/BitGoJS/commit/e89757d12a1540b433a856acb0aef6ee22c88ebe))
+- **statics:** enable cosmosLike MPCv2 ([231d25e](https://github.com/BitGo/BitGoJS/commit/231d25eccaeb8e4cd96a3b5b79ae3c11e73ea991))
+- **statics:** enable mpcv2 for bsc and polygon ([e8cbbb8](https://github.com/BitGo/BitGoJS/commit/e8cbbb8d2e4fa1e079298faa5ccac17e19228aff))
+- **statics:** fixing gari token ([065b9f0](https://github.com/BitGo/BitGoJS/commit/065b9f01adf7e477025608645c9fcbf361745ba4))
+
+# [48.13.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/statics@48.12.0...@bitgo/statics@48.13.0) (2024-05-22)
+
+### Features
+
+- **statics:** add new batch of tokens ([8f705eb](https://github.com/BitGo/BitGoJS/commit/8f705eb0905b15d24e07fd3e4c5a40534c1dfef0))
+- **statics:** update sbc address to the new one ([cf8a122](https://github.com/BitGo/BitGoJS/commit/cf8a122ddd9714186216a1a3183fc1a4b14e4226))
+
+# [48.12.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/statics@48.11.0...@bitgo/statics@48.12.0) (2024-05-17)
+
+### Bug Fixes
+
+- **statics:** update explorer for ADA and ALGO ([75773b5](https://github.com/BitGo/BitGoJS/commit/75773b5025fbed82d67b730684e96e38dc5807e6))
+- **statics:** update stellar token label ([639ee43](https://github.com/BitGo/BitGoJS/commit/639ee43aeb047b7bddd177c952d6303f3a364006))
+
+### Features
+
+- **statics:** add ofc token to represent Erc20 token on avalance chain ([abc09c2](https://github.com/BitGo/BitGoJS/commit/abc09c2009883e535a91a95c235801da87ce87e1))
+- **statics:** add offchain token for arbeth:usdcv2 ([aad0b16](https://github.com/BitGo/BitGoJS/commit/aad0b166763242cc2bd0837e9d0138f721e17f86))
+- **statics:** add Tezos(XTZ) coin support to Go Accounts ([7e9b7e8](https://github.com/BitGo/BitGoJS/commit/7e9b7e8931ba5f3337d74baf9a563e6b7651c497))
+- **statics:** adding support for solana tokens for go account ([076ff13](https://github.com/BitGo/BitGoJS/commit/076ff133de149de8e6c6a1382b9f082f7f838316))
+- **statics:** rename stx explorer testnet url to nakamoto testnet url ([8ccdca8](https://github.com/BitGo/BitGoJS/commit/8ccdca8500a5f5a91baa9f5bcabeb022067e6590))
+
+# [48.11.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/statics@48.10.0...@bitgo/statics@48.11.0) (2024-05-13)
+
+### Bug Fixes
+
+- **statics:** fix display name issue for arbeth tokens ([6f096c7](https://github.com/BitGo/BitGoJS/commit/6f096c75502bdce40dd02a4b86db1b37a4759faf))
+
+### Features
+
+- onboard celo coin ([d922c02](https://github.com/BitGo/BitGoJS/commit/d922c02e24ea3a80757f92c0aa9cc6f3a2441946))
+- **statics:** add new batch of tokens ([983e919](https://github.com/BitGo/BitGoJS/commit/983e919a2b702013f7409606ee68587ead61e640))
+
+# [48.10.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/statics@48.9.0...@bitgo/statics@48.10.0) (2024-05-08)
+
+### Features
+
+- onboard celo token ([75002b3](https://github.com/BitGo/BitGoJS/commit/75002b3a8a5c36f14e2ae46318bc1b55c4b91339))
+- **statics:** add COREUM(CORE) coin support to Go Accounts ([7c8a797](https://github.com/BitGo/BitGoJS/commit/7c8a797e1339277448fd6b00cff2ff7a11978e74))
+- **statics:** add COREUM(CORE) coin support to Go Accounts ([c43ef7f](https://github.com/BitGo/BitGoJS/commit/c43ef7f14fdc87558c9e55f70520c5dc7bf9aaf6))
+- **statics:** add MASA(ERC-20) token support to Go Account ([eeccfef](https://github.com/BitGo/BitGoJS/commit/eeccfef88835384494905c6ef626e3b3b2b102c8))
+- **statics:** add new batch of tokens ([bc5f92e](https://github.com/BitGo/BitGoJS/commit/bc5f92e4b8cf0010ecf077a70d5db5a0cc0b981c))
+- **statics:** add new batch of tokens ([6fbc1c7](https://github.com/BitGo/BitGoJS/commit/6fbc1c7f2194bd53fc5a40d221f12d7924db1ed2))
+- **statics:** add new erc20 tokens on holesky ([3f019f7](https://github.com/BitGo/BitGoJS/commit/3f019f7b574fe31ba532630a6c4f55515701cd9e))
+- **statics:** adding support for tokens (erc20) for go account ([913fd92](https://github.com/BitGo/BitGoJS/commit/913fd9275a5b2095ba1eb45a04bb7b81216d582e))
+
+# [48.9.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/statics@48.8.1...@bitgo/statics@48.9.0) (2024-05-01)
+
+### Features
+
+- **sdk-core:** add MPCv2 wallet creation ([3b15e71](https://github.com/BitGo/BitGoJS/commit/3b15e715a5cdb165ce671bd216d1191170ee8980))
+- **statics:** adding support for tokens (erc20) for go account ([5f21569](https://github.com/BitGo/BitGoJS/commit/5f21569bafc6a7f0648c6d4d3b1e2eb800b3eef4))
+
+## [48.8.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/statics@48.8.0...@bitgo/statics@48.8.1) (2024-04-25)
+
+**Note:** Version bump only for package @bitgo/statics
+
+# [48.8.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/statics@48.7.0...@bitgo/statics@48.8.0) (2024-04-22)
+
+### Features
+
+- **statics:** add new batch of tokens ([bdb16bc](https://github.com/BitGo/BitGoJS/commit/bdb16bc50059d391219a9b93366f20038d702f05))
+- **statics:** add polygon amoy testnet ([b9a770d](https://github.com/BitGo/BitGoJS/commit/b9a770d4833a9175832629912ecae4687b2681b4))
+- **statics:** adding support for jasmycoin (erc20) for go account ([d3cdb98](https://github.com/BitGo/BitGoJS/commit/d3cdb9841262bc253aa43a16221ae5957e85cf8a))
+
+# [48.7.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/statics@48.6.0...@bitgo/statics@48.7.0) (2024-04-17)
+
+### Features
+
+- **statics:** add ofc token to represent Erc20 token on arbitrun chain ([32ccf68](https://github.com/BitGo/BitGoJS/commit/32ccf682b4329fd53f06c6466585af58dacc4a57))
+- **statics:** remove test on addressCoin ([c5356b9](https://github.com/BitGo/BitGoJS/commit/c5356b92fe9099babaee0085da63a440436b7220))
+
+# [48.6.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/statics@48.5.0...@bitgo/statics@48.6.0) (2024-04-12)
+
+### Features
+
+- **statics:** add new batch of tokens ([534a156](https://github.com/BitGo/BitGoJS/commit/534a156cafecbcd9f1d918036516771270f79610))
+- **statics:** add ofc for TBILL (erc20) ([5e6c6f6](https://github.com/BitGo/BitGoJS/commit/5e6c6f6474eaf391ac120f721b255868193d5853))
+- **statics:** add ofc for USTB (erc20) ([b40d72c](https://github.com/BitGo/BitGoJS/commit/b40d72cf90b07fd890ea95b5feb759054403330c))
+
+# [48.5.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/statics@48.4.0...@bitgo/statics@48.5.0) (2024-04-09)
+
+### Features
+
+- **statics:** add new batch of tokens ([2d5da0e](https://github.com/BitGo/BitGoJS/commit/2d5da0e038416fd512cdcd20e89938f980a756db))
+
+# [48.4.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/statics@48.3.0...@bitgo/statics@48.4.0) (2024-04-08)
+
+### Features
+
+- **statics:** add offchain coins for few arbeth coins ([d7c570c](https://github.com/BitGo/BitGoJS/commit/d7c570cabb8e3e2a0481caac6f73e04a87d4ba48))
+
 # [48.3.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/statics@48.2.0...@bitgo/statics@48.3.0) (2024-04-05)
 
 ### Features

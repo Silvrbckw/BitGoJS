@@ -3,6 +3,95 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.49.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-api@1.48.1...@bitgo/sdk-api@1.49.0) (2024-06-14)
+
+### Features
+
+- add `recover` function for v1 btc wallets ([16e3b25](https://github.com/BitGo/BitGoJS/commit/16e3b2550baab6d15795ee8314935ee3f13c5af1))
+
+## [1.48.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-api@1.48.0...@bitgo/sdk-api@1.48.1) (2024-06-11)
+
+**Note:** Version bump only for package @bitgo/sdk-api
+
+# [1.48.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-api@1.47.5...@bitgo/sdk-api@1.48.0) (2024-06-05)
+
+### Features
+
+- add forReset2fa flag in authenticate options ([1f65868](https://github.com/BitGo/BitGoJS/commit/1f658684ecabef457efd51f07e321a5048eaf6e2))
+
+## [1.47.5](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-api@1.47.4...@bitgo/sdk-api@1.47.5) (2024-05-31)
+
+**Note:** Version bump only for package @bitgo/sdk-api
+
+## [1.47.4](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-api@1.47.3...@bitgo/sdk-api@1.47.4) (2024-05-28)
+
+**Note:** Version bump only for package @bitgo/sdk-api
+
+## [1.47.3](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-api@1.47.2...@bitgo/sdk-api@1.47.3) (2024-05-22)
+
+**Note:** Version bump only for package @bitgo/sdk-api
+
+## [1.47.2](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-api@1.47.1...@bitgo/sdk-api@1.47.2) (2024-05-17)
+
+**Note:** Version bump only for package @bitgo/sdk-api
+
+## [1.47.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-api@1.47.0...@bitgo/sdk-api@1.47.1) (2024-05-13)
+
+**Note:** Version bump only for package @bitgo/sdk-api
+
+# [1.47.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-api@1.46.0...@bitgo/sdk-api@1.47.0) (2024-05-08)
+
+### Features
+
+- move verifyAddress func to own file ([07797bc](https://github.com/BitGo/BitGoJS/commit/07797bc9bc1265a878a066c41e971bd50b3abb0d))
+- support creating v1 transaction to bech32 recipient ([2039ee5](https://github.com/BitGo/BitGoJS/commit/2039ee5e5677e48582e5e1b53281888a965b2f0d))
+
+# [1.46.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-api@1.45.4...@bitgo/sdk-api@1.46.0) (2024-05-01)
+
+### Features
+
+- support bech32 recipient for v1 wallets ([b60c306](https://github.com/BitGo/BitGoJS/commit/b60c3068208d1c5422cc1388723343b0ddc82104))
+
+## [1.45.4](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-api@1.45.3...@bitgo/sdk-api@1.45.4) (2024-04-25)
+
+**Note:** Version bump only for package @bitgo/sdk-api
+
+## [1.45.3](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-api@1.45.2...@bitgo/sdk-api@1.45.3) (2024-04-24)
+
+### Bug Fixes
+
+- superagent upgrade to 9.0 ([6e9aa43](https://github.com/BitGo/BitGoJS/commit/6e9aa43a6d2999298abd450ceb168d664b8b926d))
+
+## [1.45.2](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-api@1.45.1...@bitgo/sdk-api@1.45.2) (2024-04-22)
+
+**Note:** Version bump only for package @bitgo/sdk-api
+
+## [1.45.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-api@1.45.0...@bitgo/sdk-api@1.45.1) (2024-04-17)
+
+### Reverts
+
+- Revert "feat: protect pass by value when sending data out" ([ef1497f](https://github.com/BitGo/BitGoJS/commit/ef1497ffdc9c158300c32a596828081d32eb6f3a))
+
+# [1.45.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-api@1.44.2...@bitgo/sdk-api@1.45.0) (2024-04-12)
+
+### Features
+
+- **bitgo:** add PATCH and OPTIONS to redirectRequest ([4c8ba7a](https://github.com/BitGo/BitGoJS/commit/4c8ba7abb5718261774352e1a191f0ab5dc5e616))
+
+## [1.44.2](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-api@1.44.1...@bitgo/sdk-api@1.44.2) (2024-04-10)
+
+**Note:** Version bump only for package @bitgo/sdk-api
+
+## [1.44.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-api@1.44.0...@bitgo/sdk-api@1.44.1) (2024-04-09)
+
+**Note:** Version bump only for package @bitgo/sdk-api
+
+# [1.44.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-api@1.43.6...@bitgo/sdk-api@1.44.0) (2024-04-08)
+
+### Features
+
+- protect pass by value when sending data out ([8755bdd](https://github.com/BitGo/BitGoJS/commit/8755bdd5f4174de21f0b7e4c1e7bb74fb9b8e40f))
+
 ## [1.43.6](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-api@1.43.5...@bitgo/sdk-api@1.43.6) (2024-04-05)
 
 **Note:** Version bump only for package @bitgo/sdk-api

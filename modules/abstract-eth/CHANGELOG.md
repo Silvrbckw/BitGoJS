@@ -3,6 +3,110 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [21.6.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-eth@21.5.3...@bitgo/abstract-eth@21.6.0) (2024-06-14)
+
+### Features
+
+- **sdk-coin-ethlike:** add new eth like coin packages ([ba305cb](https://github.com/BitGo/BitGoJS/commit/ba305cb7f7b564d499d0f931f50919058e85652f))
+
+## [21.5.3](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-eth@21.5.2...@bitgo/abstract-eth@21.5.3) (2024-06-11)
+
+### Bug Fixes
+
+- **abstract-eth:** use correct derivation path in wrw recover function ([5018147](https://github.com/BitGo/BitGoJS/commit/50181478d487c8871f94da2fb92e7327098b2370))
+
+## [21.5.2](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-eth@21.5.1...@bitgo/abstract-eth@21.5.2) (2024-06-05)
+
+**Note:** Version bump only for package @bitgo/abstract-eth
+
+## [21.5.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-eth@21.5.0...@bitgo/abstract-eth@21.5.1) (2024-05-31)
+
+**Note:** Version bump only for package @bitgo/abstract-eth
+
+# [21.5.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-eth@21.4.0...@bitgo/abstract-eth@21.5.0) (2024-05-28)
+
+### Bug Fixes
+
+- **abstract-eth:** handle absence of batcher contract for native coin ([37ede15](https://github.com/BitGo/BitGoJS/commit/37ede15f2fc8e24f732a6d8f513327650d58590c))
+
+### Features
+
+- **abstract-eth:** add support to build tx for CCR of unsupported token ([a6dac7c](https://github.com/BitGo/BitGoJS/commit/a6dac7c00d47acfa3d4dd072b9cfcdf99215a743))
+
+# [21.4.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-eth@21.3.0...@bitgo/abstract-eth@21.4.0) (2024-05-22)
+
+### Features
+
+- **abstract-eth:** wrw recovery for dkls wallet ([bf374e8](https://github.com/BitGo/BitGoJS/commit/bf374e89522c9688619d9b20ed66d3873b55d75e))
+
+# [21.3.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-eth@21.2.1...@bitgo/abstract-eth@21.3.0) (2024-05-17)
+
+### Features
+
+- **abstract-eth:** refactor eth wrw recovery tss ([0fdbd5e](https://github.com/BitGo/BitGoJS/commit/0fdbd5eaf25c414b43b61bcfa6bdcdf0150b880f))
+
+## [21.2.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-eth@21.2.0...@bitgo/abstract-eth@21.2.1) (2024-05-13)
+
+**Note:** Version bump only for package @bitgo/abstract-eth
+
+# [21.2.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-eth@21.1.1...@bitgo/abstract-eth@21.2.0) (2024-05-08)
+
+### Features
+
+- **abstract-eth:** support v4 wallet for recover method ([142ec9f](https://github.com/BitGo/BitGoJS/commit/142ec9f220ec2af54545aca4b4d95b39a4179002))
+
+## [21.1.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-eth@21.1.0...@bitgo/abstract-eth@21.1.1) (2024-05-01)
+
+**Note:** Version bump only for package @bitgo/abstract-eth
+
+# [21.1.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-eth@21.0.0...@bitgo/abstract-eth@21.1.0) (2024-04-25)
+
+### Features
+
+- **abstract-eth:** use non packed encode for V4 wallet ([54fd3a8](https://github.com/BitGo/BitGoJS/commit/54fd3a8dbafb14bdeae78204c122885d288d48b6))
+
+# [21.0.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-eth@20.1.6...@bitgo/abstract-eth@21.0.0) (2024-04-24)
+
+### Bug Fixes
+
+- superagent upgrade to 9.0 ([6e9aa43](https://github.com/BitGo/BitGoJS/commit/6e9aa43a6d2999298abd450ceb168d664b8b926d))
+
+### Features
+
+- **abstract-eth:** support txn bulding for v4 wallet on eth chain ([d8aabea](https://github.com/BitGo/BitGoJS/commit/d8aabead0197072ee5b6c7fb11bd9c379606208d))
+
+### BREAKING CHANGES
+
+- **abstract-eth:** Made ChainID mandatory for signAndBuild method
+
+## [20.1.6](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-eth@20.1.5...@bitgo/abstract-eth@20.1.6) (2024-04-22)
+
+### Bug Fixes
+
+- **sdk-coin-polygon:** fix send tx for polygon testnet ([172a081](https://github.com/BitGo/BitGoJS/commit/172a081cc4bec1eedf9876a438bc8828dc543d31))
+
+## [20.1.5](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-eth@20.1.4...@bitgo/abstract-eth@20.1.5) (2024-04-17)
+
+**Note:** Version bump only for package @bitgo/abstract-eth
+
+## [20.1.4](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-eth@20.1.3...@bitgo/abstract-eth@20.1.4) (2024-04-12)
+
+**Note:** Version bump only for package @bitgo/abstract-eth
+
+## [20.1.3](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-eth@20.1.2...@bitgo/abstract-eth@20.1.3) (2024-04-10)
+
+**Note:** Version bump only for package @bitgo/abstract-eth
+
+## [20.1.2](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-eth@20.1.1...@bitgo/abstract-eth@20.1.2) (2024-04-09)
+
+**Note:** Version bump only for package @bitgo/abstract-eth
+
+## [20.1.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-eth@20.1.0...@bitgo/abstract-eth@20.1.1) (2024-04-08)
+
+### Bug Fixes
+
+- **abstract-eth:** fix flush v4 tx building from hex ([f20dc10](https://github.com/BitGo/BitGoJS/commit/f20dc106e90222f27f0ee774fe9844fc0b55f77e))
+
 # [20.1.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-eth@20.0.0...@bitgo/abstract-eth@20.1.0) (2024-04-05)
 
 ### Bug Fixes

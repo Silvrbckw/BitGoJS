@@ -3,6 +3,84 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.1.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-xrp@2.0.18...@bitgo/sdk-coin-xrp@2.1.0) (2024-06-14)
+
+### Bug Fixes
+
+- **sdk-coin-xrp:** better error handling ([dcf7de4](https://github.com/BitGo/BitGoJS/commit/dcf7de4e0bfed6f3af2f87f8215e18c130cb8107))
+
+### Features
+
+- **sdk-coin-xrp:** removing padding from recovery ([ec58694](https://github.com/BitGo/BitGoJS/commit/ec58694ac5ad83de40b4d8bc1edc1dfa96434a95))
+
+## [2.0.18](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-xrp@2.0.17...@bitgo/sdk-coin-xrp@2.0.18) (2024-06-11)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-xrp
+
+## [2.0.17](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-xrp@2.0.16...@bitgo/sdk-coin-xrp@2.0.17) (2024-06-05)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-xrp
+
+## [2.0.16](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-xrp@2.0.15...@bitgo/sdk-coin-xrp@2.0.16) (2024-05-31)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-xrp
+
+## [2.0.15](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-xrp@2.0.14...@bitgo/sdk-coin-xrp@2.0.15) (2024-05-28)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-xrp
+
+## [2.0.14](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-xrp@2.0.13...@bitgo/sdk-coin-xrp@2.0.14) (2024-05-22)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-xrp
+
+## [2.0.13](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-xrp@2.0.12...@bitgo/sdk-coin-xrp@2.0.13) (2024-05-17)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-xrp
+
+## [2.0.12](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-xrp@2.0.11...@bitgo/sdk-coin-xrp@2.0.12) (2024-05-13)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-xrp
+
+## [2.0.11](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-xrp@2.0.10...@bitgo/sdk-coin-xrp@2.0.11) (2024-05-08)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-xrp
+
+## [2.0.10](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-xrp@2.0.9...@bitgo/sdk-coin-xrp@2.0.10) (2024-05-01)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-xrp
+
+## [2.0.9](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-xrp@2.0.8...@bitgo/sdk-coin-xrp@2.0.9) (2024-04-25)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-xrp
+
+## [2.0.8](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-xrp@2.0.7...@bitgo/sdk-coin-xrp@2.0.8) (2024-04-24)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-xrp
+
+## [2.0.7](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-xrp@2.0.6...@bitgo/sdk-coin-xrp@2.0.7) (2024-04-22)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-xrp
+
+## [2.0.6](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-xrp@2.0.5...@bitgo/sdk-coin-xrp@2.0.6) (2024-04-17)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-xrp
+
+## [2.0.5](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-xrp@2.0.4...@bitgo/sdk-coin-xrp@2.0.5) (2024-04-12)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-xrp
+
+## [2.0.4](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-xrp@2.0.3...@bitgo/sdk-coin-xrp@2.0.4) (2024-04-10)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-xrp
+
+## [2.0.3](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-xrp@2.0.2...@bitgo/sdk-coin-xrp@2.0.3) (2024-04-09)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-xrp
+
+## [2.0.2](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-xrp@2.0.1...@bitgo/sdk-coin-xrp@2.0.2) (2024-04-08)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-xrp
+
 ## [2.0.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-xrp@2.0.0...@bitgo/sdk-coin-xrp@2.0.1) (2024-04-05)
 
 **Note:** Version bump only for package @bitgo/sdk-coin-xrp

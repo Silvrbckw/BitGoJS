@@ -1,17 +1,24 @@
+import { coins, SolCoin } from '@bitgo/statics';
+import {
+  createAssociatedTokenAccountInstruction,
+  createCloseAccountInstruction,
+  createTransferCheckedInstruction,
+} from '@solana/spl-token';
 import {
   Authorized,
   Lockup,
   PublicKey,
+  StakeAuthorizationLayout,
   StakeProgram,
   SystemProgram,
-  TransactionInstruction,
   Transaction,
-  StakeAuthorizationLayout,
+  TransactionInstruction,
 } from '@solana/web3.js';
 import assert from 'assert';
 import BigNumber from 'bignumber.js';
 import { InstructionBuilderTypes, MEMO_PROGRAM_PK } from './constants';
 import {
+  AtaClose,
   AtaInit,
   InstructionParams,
   Memo,
@@ -25,8 +32,6 @@ import {
   Transfer,
   WalletInit,
 } from './iface';
-import { coins, SolCoin } from '@bitgo/statics';
-import { createTransferCheckedInstruction, createAssociatedTokenAccountInstruction } from '@solana/spl-token';
 
 /**
  * Construct Solana instructions from instructions params
@@ -54,6 +59,8 @@ export function solInstructionFactory(instructionToBuild: InstructionParams): Tr
       return stakingWithdrawInstruction(instructionToBuild);
     case InstructionBuilderTypes.CreateAssociatedTokenAccount:
       return createATAInstruction(instructionToBuild);
+    case InstructionBuilderTypes.CloseAssociatedTokenAccount:
+      return closeATAInstruction(instructionToBuild);
     case InstructionBuilderTypes.StakingAuthorize:
       return stakingAuthorizeInstruction(instructionToBuild);
     case InstructionBuilderTypes.StakingDelegate:
@@ -241,12 +248,15 @@ function stakingDeactivateInstruction(data: StakingDeactivate): TransactionInstr
     });
     tx.add(assignAccount);
 
-    const splitStake = StakeProgram.split({
-      stakePubkey: new PublicKey(stakingAddress),
-      authorizedPubkey: new PublicKey(fromAddress),
-      splitStakePubkey: unstakingAddress,
-      lamports: new BigNumber(data.params.amount).toNumber(),
-    });
+    const splitStake = StakeProgram.split(
+      {
+        stakePubkey: new PublicKey(stakingAddress),
+        authorizedPubkey: new PublicKey(fromAddress),
+        splitStakePubkey: unstakingAddress,
+        lamports: new BigNumber(data.params.amount).toNumber(),
+      },
+      0
+    );
     tx.add(splitStake.instructions[1]);
 
     const deactivateStaking = StakeProgram.deactivate({
@@ -312,6 +322,28 @@ function createATAInstruction(data: AtaInit): TransactionInstruction[] {
     new PublicKey(mintAddress)
   );
   return [associatedTokenAccountInstruction];
+}
+
+/**
+ * Construct Close ATA Solana instructions
+ *
+ * @param {WalletInit} data - the data to build the instruction
+ * @returns {TransactionInstruction[]} An array containing Close ATA Solana instruction
+ */
+function closeATAInstruction(data: AtaClose): TransactionInstruction[] {
+  const {
+    params: { accountAddress, destinationAddress, authorityAddress },
+  } = data;
+  assert(accountAddress, 'Missing accountAddress param');
+  assert(destinationAddress, 'Missing destinationAddress param');
+  assert(authorityAddress, 'Missing authorityAddress param');
+
+  const closeAssociatedTokenAccountInstruction = createCloseAccountInstruction(
+    new PublicKey(accountAddress),
+    new PublicKey(destinationAddress),
+    new PublicKey(authorityAddress)
+  );
+  return [closeAssociatedTokenAccountInstruction];
 }
 
 /**

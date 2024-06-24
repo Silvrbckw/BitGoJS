@@ -1,18 +1,18 @@
-import * as sinon from 'sinon';
-import assert from 'assert';
-import { TestBitGo, TestBitGoAPI } from '@bitgo/sdk-test';
 import { BitGoAPI } from '@bitgo/sdk-api';
-import * as testData from '../fixtures/sol';
-import * as should from 'should';
-import * as resources from '../resources/sol';
-import * as _ from 'lodash';
-import { KeyPair, Sol, Tsol } from '../../src';
-import { TssUtils, TxRequest, Wallet, MPCSweepTxs, MPCTx, MPCTxs } from '@bitgo/sdk-core';
-import { getBuilderFactory } from './getBuilderFactory';
-import { Transaction } from '../../src/lib';
+import { MPCSweepTxs, MPCTx, MPCTxs, TssUtils, TxRequest, Wallet } from '@bitgo/sdk-core';
+import { TestBitGo, TestBitGoAPI } from '@bitgo/sdk-test';
 import { coins } from '@bitgo/statics';
+import assert from 'assert';
+import * as _ from 'lodash';
+import * as should from 'should';
+import * as sinon from 'sinon';
+import { KeyPair, Sol, Tsol } from '../../src';
+import { Transaction } from '../../src/lib';
+import { AtaInit, InstructionParams, TokenTransfer } from '../../src/lib/iface';
 import { getAssociatedTokenAccountAddress } from '../../src/lib/utils';
-import { InstructionParams, AtaInit, TokenTransfer } from '../../src/lib/iface';
+import * as testData from '../fixtures/sol';
+import * as resources from '../resources/sol';
+import { getBuilderFactory } from './getBuilderFactory';
 
 describe('SOL:', function () {
   let bitgo: TestBitGoAPI;
@@ -1425,7 +1425,6 @@ describe('SOL:', function () {
     const sandBox = sinon.createSandbox();
     const coin = coins.get('tsol');
     const usdtMintAddress = '9cgpBeNZ2HnLda7NWaaU1i3NyTstk2c4zCMUcoAGsi9C';
-    const usdcMintAddress = 'F4uLeXJoFz3hw13MposuwaQbMcZbCjqvEGPPeRRB1Byf';
 
     beforeEach(() => {
       const callBack = sandBox.stub(Sol.prototype, 'getDataFromNode' as keyof Sol);
@@ -1510,6 +1509,26 @@ describe('SOL:', function () {
             jsonrpc: '2.0',
             method: 'getBalance',
             params: [testData.accountInfo.bs58EncodedPublicKeyWithManyTokens],
+          },
+        })
+        .resolves(testData.SolResponses.getAccountBalanceResponseM2Derivation);
+      callBack
+        .withArgs({
+          payload: {
+            id: '1',
+            jsonrpc: '2.0',
+            method: 'getBalance',
+            params: [testData.closeATAkeys.closeAtaAddress],
+          },
+        })
+        .resolves(testData.SolResponses.getAccountBalanceResponseM2Derivation);
+      callBack
+        .withArgs({
+          payload: {
+            id: '1',
+            jsonrpc: '2.0',
+            method: 'getBalance',
+            params: [testData.closeATAkeys.bs58EncodedPublicKey],
           },
         })
         .resolves(testData.SolResponses.getAccountBalanceResponseM2Derivation);
@@ -1680,7 +1699,7 @@ describe('SOL:', function () {
       should.equal(latestBlockhashTxnJson.feePayer, testData.accountInfo.bs58EncodedPublicKey);
       should.equal(latestBlockhashTxnJson.numSignatures, testData.SolInputData.latestBlockhashSignatures);
       const solCoin = basecoin as any;
-      sandBox.assert.callCount(solCoin.getDataFromNode, 4);
+      sandBox.assert.callCount(solCoin.getDataFromNode, 3);
     });
 
     it('should recover a txn for non-bitgo recoveries (durable nonce)', async function () {
@@ -1710,7 +1729,7 @@ describe('SOL:', function () {
       should.equal(durableNonceTxnJson.feePayer, testData.accountInfo.bs58EncodedPublicKey);
       should.equal(durableNonceTxnJson.numSignatures, testData.SolInputData.durableNonceSignatures);
       const solCoin = basecoin as any;
-      sandBox.assert.callCount(solCoin.getDataFromNode, 5);
+      sandBox.assert.callCount(solCoin.getDataFromNode, 4);
     });
 
     it('should recover a txn for unsigned sweep recoveries', async function () {
@@ -1739,7 +1758,7 @@ describe('SOL:', function () {
       should.equal(unsignedSweepTxnJson.feePayer, testData.accountInfo.bs58EncodedPublicKey);
       should.equal(unsignedSweepTxnJson.numSignatures, testData.SolInputData.unsignedSweepSignatures);
       const solCoin = basecoin as any;
-      sandBox.assert.callCount(solCoin.getDataFromNode, 5);
+      sandBox.assert.callCount(solCoin.getDataFromNode, 4);
     });
 
     it('should handle error in recover function if a required field is missing/incorrect', async function () {
@@ -1802,6 +1821,7 @@ describe('SOL:', function () {
         backupKey: testData.wrwUser.backupKey,
         bitgoKey: testData.wrwUser.bitgoKey,
         recoveryDestination: testData.keys.destinationPubKey,
+        tokenContractAddress: usdtMintAddress,
         walletPassphrase: testData.wrwUser.walletPassphrase,
         durableNonce: {
           publicKey: testData.keys.durableNoncePubKey,
@@ -1823,7 +1843,7 @@ describe('SOL:', function () {
       should.equal(tokenTxnJson.numSignatures, testData.SolInputData.durableNonceSignatures);
 
       const instructionsData = tokenTxnJson.instructionsData as InstructionParams[];
-      should.equal(instructionsData.length, 5);
+      should.equal(instructionsData.length, 3);
       should.equal(instructionsData[0].type, 'NonceAdvance');
 
       const destinationUSDTTokenAccount = await getAssociatedTokenAccountAddress(
@@ -1837,38 +1857,16 @@ describe('SOL:', function () {
       should.equal((instructionsData[1] as AtaInit).params.tokenName, 'tsol:usdt');
       should.equal((instructionsData[1] as AtaInit).params.payerAddress, testData.wrwUser.walletAddress0);
 
-      const destinationUSDCTokenAccount = await getAssociatedTokenAccountAddress(
-        usdcMintAddress,
-        testData.keys.destinationPubKey
-      );
-      should.equal(instructionsData[2].type, 'CreateAssociatedTokenAccount');
-      should.equal((instructionsData[2] as AtaInit).params.mintAddress, usdcMintAddress);
-      should.equal((instructionsData[2] as AtaInit).params.ataAddress, destinationUSDCTokenAccount);
-      should.equal((instructionsData[2] as AtaInit).params.ownerAddress, testData.keys.destinationPubKey);
-      should.equal((instructionsData[2] as AtaInit).params.tokenName, 'tsol:usdc');
-      should.equal((instructionsData[2] as AtaInit).params.payerAddress, testData.wrwUser.walletAddress0);
-
       const sourceUSDTTokenAccount = await getAssociatedTokenAccountAddress(
         usdtMintAddress,
         testData.wrwUser.walletAddress0
       );
-      should.equal(instructionsData[3].type, 'TokenTransfer');
-      should.equal((instructionsData[3] as TokenTransfer).params.fromAddress, testData.wrwUser.walletAddress0);
-      should.equal((instructionsData[3] as TokenTransfer).params.toAddress, destinationUSDTTokenAccount);
-      should.equal((instructionsData[3] as TokenTransfer).params.amount, '2000000000');
-      should.equal((instructionsData[3] as TokenTransfer).params.tokenName, 'tsol:usdt');
-      should.equal((instructionsData[3] as TokenTransfer).params.sourceAddress, sourceUSDTTokenAccount);
-
-      const sourceUSDCTokenAccount = await getAssociatedTokenAccountAddress(
-        usdcMintAddress,
-        testData.wrwUser.walletAddress0
-      );
-      should.equal(instructionsData[4].type, 'TokenTransfer');
-      should.equal((instructionsData[4] as TokenTransfer).params.fromAddress, testData.wrwUser.walletAddress0);
-      should.equal((instructionsData[4] as TokenTransfer).params.toAddress, destinationUSDCTokenAccount);
-      should.equal((instructionsData[4] as TokenTransfer).params.amount, '3000000000');
-      should.equal((instructionsData[4] as TokenTransfer).params.tokenName, 'tsol:usdc');
-      should.equal((instructionsData[4] as TokenTransfer).params.sourceAddress, sourceUSDCTokenAccount);
+      should.equal(instructionsData[2].type, 'TokenTransfer');
+      should.equal((instructionsData[2] as TokenTransfer).params.fromAddress, testData.wrwUser.walletAddress0);
+      should.equal((instructionsData[2] as TokenTransfer).params.toAddress, destinationUSDTTokenAccount);
+      should.equal((instructionsData[2] as TokenTransfer).params.amount, '2000000000');
+      should.equal((instructionsData[2] as TokenTransfer).params.tokenName, 'tsol:usdt');
+      should.equal((instructionsData[2] as TokenTransfer).params.sourceAddress, sourceUSDTTokenAccount);
 
       const solCoin = basecoin as any;
       sandBox.assert.callCount(solCoin.getDataFromNode, 7);
@@ -1880,6 +1878,7 @@ describe('SOL:', function () {
         backupKey: testData.wrwUser.backupKey,
         bitgoKey: testData.wrwUser.bitgoKey,
         recoveryDestination: testData.keys.destinationPubKey2,
+        tokenContractAddress: usdtMintAddress,
         walletPassphrase: testData.wrwUser.walletPassphrase,
         durableNonce: {
           publicKey: testData.keys.durableNoncePubKey,
@@ -1901,7 +1900,7 @@ describe('SOL:', function () {
       should.equal(tokenTxnJson.numSignatures, testData.SolInputData.durableNonceSignatures);
 
       const instructionsData = tokenTxnJson.instructionsData as TokenTransfer[];
-      should.equal(instructionsData.length, 3);
+      should.equal(instructionsData.length, 2);
       should.equal(instructionsData[0].type, 'NonceAdvance');
 
       const sourceUSDTTokenAccount = await getAssociatedTokenAccountAddress(
@@ -1919,21 +1918,6 @@ describe('SOL:', function () {
       should.equal(instructionsData[1].params.tokenName, 'tsol:usdt');
       should.equal(instructionsData[1].params.sourceAddress, sourceUSDTTokenAccount);
 
-      const sourceUSDCTokenAccount = await getAssociatedTokenAccountAddress(
-        usdcMintAddress,
-        testData.wrwUser.walletAddress0
-      );
-      const destinationUSDCTokenAccount = await getAssociatedTokenAccountAddress(
-        usdcMintAddress,
-        testData.keys.destinationPubKey2
-      );
-      should.equal(instructionsData[2].type, 'TokenTransfer');
-      should.equal(instructionsData[2].params.fromAddress, testData.wrwUser.walletAddress0);
-      should.equal(instructionsData[2].params.toAddress, destinationUSDCTokenAccount);
-      should.equal(instructionsData[2].params.amount, '3000000000');
-      should.equal(instructionsData[2].params.tokenName, 'tsol:usdc');
-      should.equal(instructionsData[2].params.sourceAddress, sourceUSDCTokenAccount);
-
       const solCoin = basecoin as any;
       sandBox.assert.callCount(solCoin.getDataFromNode, 7);
     });
@@ -1946,6 +1930,7 @@ describe('SOL:', function () {
           publicKey: testData.keys.durableNoncePubKey,
           secretKey: testData.keys.durableNoncePrivKey,
         },
+        tokenContractAddress: testData.tokenAddress.TestUSDC,
       })) as MPCSweepTxs;
 
       // 2 signatures and no rent exemption fee since the destination already has token accounts
@@ -1958,8 +1943,8 @@ describe('SOL:', function () {
       assert.strictEqual(feeInfo.feeString, expectedFee.toString());
       assert.strictEqual(feeInfo.fee, expectedFee);
       assert.ok(parsedTx);
-      assert.ok(parsedTx.inputs instanceof Array && parsedTx.inputs.length === 2);
-      assert.ok(parsedTx.outputs instanceof Array && parsedTx.outputs.length === 2);
+      assert.ok(parsedTx.inputs instanceof Array && parsedTx.inputs.length === 1);
+      assert.ok(parsedTx.outputs instanceof Array && parsedTx.outputs.length === 1);
 
       const tokenTxnDeserialize = new Transaction(coin);
       tokenTxnDeserialize.fromRawTransaction(tokenTxn.txRequests[0].transactions[0].unsignedTx.serializedTx);
@@ -1972,44 +1957,27 @@ describe('SOL:', function () {
       sandBox.assert.callCount(solCoin.getDataFromNode, 7);
     });
 
-    it('should recover sol tokens to recovery destination with over 6 existing token accounts for unsigned sweep recoveries', async function () {
-      const tokenTxn = (await basecoin.recover({
-        bitgoKey: testData.wrwUser.bitgoKeyWithManyTokens,
-        recoveryDestination: testData.keys.destinationPubKey,
-        durableNonce: {
-          publicKey: testData.keys.durableNoncePubKey,
-          secretKey: testData.keys.durableNoncePrivKey,
-        },
-      })) as MPCSweepTxs;
-
-      // 2 signatures and 6 times the rent exemption fee since we set the max number of token tx to 6
-      const expectedFee = 5000 + 5000 + 2039280 * 6;
-
-      const { serializedTx, scanIndex, feeInfo, parsedTx } = tokenTxn.txRequests[0].transactions[0].unsignedTx;
-      assert.ok(serializedTx);
-      assert.strictEqual(scanIndex, 0);
-      assert.ok(feeInfo);
-      assert.strictEqual(feeInfo.feeString, expectedFee.toString());
-      assert.strictEqual(feeInfo.fee, expectedFee);
-      assert.ok(parsedTx);
-      assert.ok(parsedTx.inputs instanceof Array && parsedTx.inputs.length === 6);
-      assert.ok(parsedTx.outputs instanceof Array && parsedTx.outputs.length === 6);
-
-      const tokenTxnDeserialize = new Transaction(coin);
-      tokenTxnDeserialize.fromRawTransaction(serializedTx);
-      const tokenTxnJson = tokenTxnDeserialize.toJson();
-
-      assert.strictEqual(tokenTxnJson.nonce, testData.SolInputData.durableNonceBlockhash);
-      assert.strictEqual(tokenTxnJson.feePayer, testData.wrwUser.walletAddress4);
-      assert.strictEqual(tokenTxnJson.numSignatures, testData.SolInputData.unsignedSweepSignatures);
-      const solCoin = basecoin as any;
-      sandBox.assert.callCount(solCoin.getDataFromNode, 7);
+    it('should recover sol funds from ATA address for non-bitgo recoveries', async function () {
+      // close ATA address instruction type txn
+      const closeATATxn = await basecoin.recover({
+        userKey: testData.closeATAkeys.userKey,
+        backupKey: testData.closeATAkeys.backupKey,
+        bitgoKey: testData.closeATAkeys.bitgoKey,
+        recoveryDestination: testData.closeATAkeys.destinationPubKey,
+        walletPassphrase: testData.closeATAkeys.walletPassword,
+        closeAtaAddress: testData.closeATAkeys.closeAtaAddress,
+      });
+      closeATATxn.should.not.be.empty();
+      closeATATxn.should.hasOwnProperty('serializedTx');
+      closeATATxn.should.hasOwnProperty('scanIndex');
+      should.equal((closeATATxn as MPCTx).scanIndex, 0);
     });
   });
 
   describe('Build Consolidation Recoveries:', () => {
     const sandBox = sinon.createSandbox();
     const coin = coins.get('tsol');
+    const usdtMintAddress = '9cgpBeNZ2HnLda7NWaaU1i3NyTstk2c4zCMUcoAGsi9C';
     const durableNonces = {
       publicKeys: [
         testData.keys.durableNoncePubKey,
@@ -2075,6 +2043,26 @@ describe('SOL:', function () {
           },
         })
         .resolves(testData.SolResponses.getAccountBalanceResponse);
+      callBack
+        .withArgs({
+          payload: {
+            id: '1',
+            jsonrpc: '2.0',
+            method: 'getBalance',
+            params: [testData.wrwUser.walletAddress5],
+          },
+        })
+        .resolves(testData.SolResponses.getAccountBalanceResponse);
+      callBack
+        .withArgs({
+          payload: {
+            id: '1',
+            jsonrpc: '2.0',
+            method: 'getMinimumBalanceForRentExemption',
+            params: [165],
+          },
+        })
+        .resolves(testData.SolResponses.getMinimumBalanceForRentExemptionResponse);
       callBack
         .withArgs({
           payload: {
@@ -2159,6 +2147,42 @@ describe('SOL:', function () {
           },
         })
         .resolves(testData.SolResponses.getTokenAccountsByOwnerResponseNoAccounts);
+      callBack
+        .withArgs({
+          payload: {
+            id: '1',
+            jsonrpc: '2.0',
+            method: 'getTokenAccountsByOwner',
+            params: [
+              testData.wrwUser.walletAddress5,
+              {
+                programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+              },
+              {
+                encoding: 'jsonParsed',
+              },
+            ],
+          },
+        })
+        .resolves(testData.SolResponses.getTokenAccountsByOwnerResponse);
+      callBack
+        .withArgs({
+          payload: {
+            id: '1',
+            jsonrpc: '2.0',
+            method: 'getTokenAccountsByOwner',
+            params: [
+              testData.wrwUser.walletAddress0,
+              {
+                programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+              },
+              {
+                encoding: 'jsonParsed',
+              },
+            ],
+          },
+        })
+        .resolves(testData.SolResponses.getTokenAccountsByOwnerResponse);
     });
 
     afterEach(() => {
@@ -2257,6 +2281,41 @@ describe('SOL:', function () {
       should.equal(latestBlockhashTxnJson2.nonce, nonce2);
       should.equal(latestBlockhashTxnJson2.feePayer, testData.wrwUser.walletAddress3);
       should.equal(latestBlockhashTxnJson2.numSignatures, testData.SolInputData.unsignedSweepSignatures);
+    });
+
+    it('should build unsigned token consolidation recoveries', async function () {
+      const res = (await basecoin.recoverConsolidations({
+        bitgoKey: testData.wrwUser.bitgoKey,
+        startingScanIndex: 3,
+        endingScanIndex: 5,
+        tokenContractAddress: usdtMintAddress,
+        durableNonces: durableNonces,
+      })) as MPCSweepTxs;
+      res.should.not.be.empty();
+      res.txRequests.length.should.equal(1);
+
+      const txn1 = res.txRequests[0].transactions[0].unsignedTx;
+      txn1.should.hasOwnProperty('serializedTx');
+      txn1.should.hasOwnProperty('signableHex');
+      txn1.should.hasOwnProperty('scanIndex');
+      txn1.scanIndex.should.equal(4);
+      txn1.should.hasOwnProperty('coin');
+      txn1.coin?.should.equal('tsol');
+      txn1.should.hasOwnProperty('derivationPath');
+      txn1.derivationPath?.should.equal('m/4');
+
+      txn1.should.hasOwnProperty('coinSpecific');
+      const coinSpecific1 = txn1.coinSpecific;
+      coinSpecific1?.should.hasOwnProperty('commonKeychain');
+
+      const latestBlockhashTxnDeserialize1 = new Transaction(coin);
+      latestBlockhashTxnDeserialize1.fromRawTransaction((txn1 as MPCTx).serializedTx);
+      const latestBlockhashTxnJson1 = latestBlockhashTxnDeserialize1.toJson();
+
+      const nonce1 = testData.SolResponses.getAccountInfoResponse.body.result.value.data.parsed.info.blockhash;
+      should.equal(latestBlockhashTxnJson1.nonce, nonce1);
+      should.equal(latestBlockhashTxnJson1.feePayer, testData.wrwUser.walletAddress5);
+      should.equal(latestBlockhashTxnJson1.numSignatures, testData.SolInputData.unsignedSweepSignatures);
     });
 
     it('should skip building consolidate transaction if balance is equal to zero', async function () {

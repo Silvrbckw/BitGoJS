@@ -258,6 +258,9 @@ describe('TRON:', function () {
       accountBalance.withArgs(TestRecoverData.baseAddress).resolves(
         baseAddressBalance(100000000, [
           {
+            TSdZwNqpHofzP6BsBKGQUWdBeJphLmF6id: '1000000000',
+          },
+          {
             TG3XXyExBkPp9nzdajDZsozEu4BkaSJozs: '1100000000',
           },
         ])
@@ -269,11 +272,14 @@ describe('TRON:', function () {
         userKey: TestRecoverData.userKey,
         backupKey: TestRecoverData.backupKey,
         bitgoKey: TestRecoverData.bitgoKey,
+        tokenContractAddress: 'TG3XXyExBkPp9nzdajDZsozEu4BkaSJozs',
         recoveryDestination: TestRecoverData.recoveryDestination,
       });
       res.should.not.be.empty();
       res.recoveryAmount.should.equal(1100000000);
       res.feeInfo.fee.should.equal('100000000');
+      const expirationDuration = res.tx.raw_data.expiration - res.tx.raw_data.timestamp;
+      expirationDuration.should.greaterThanOrEqual(86400000);
       should.not.exist(res.addressInfo);
       const rawData = JSON.parse(res.txHex).raw_data;
       rawData.should.hasOwnProperty('contract');
@@ -300,6 +306,7 @@ describe('TRON:', function () {
           userKey: TestRecoverData.userKey,
           backupKey: TestRecoverData.backupKey,
           bitgoKey: TestRecoverData.bitgoKey,
+          tokenContractAddress: 'TG3XXyExBkPp9nzdajDZsozEu4BkaSJozs',
           recoveryDestination: TestRecoverData.recoveryDestination,
         })
         .should.be.rejectedWith(
@@ -388,6 +395,49 @@ describe('TRON:', function () {
       value2.amount.should.equal(47900000);
       Utils.getBase58AddressFromHex(value2.owner_address).should.equal(TestRecoverData.secondReceiveAddress);
       Utils.getBase58AddressFromHex(value2.to_address).should.equal(TestRecoverData.baseAddress);
+    });
+
+    it('should build consolidate token recoveries', async () => {
+      const accountBalance = sandBox.stub(Trx.prototype, 'getAccountBalancesFromNode' as keyof Trx);
+      accountBalance.withArgs(TestRecoverData.firstReceiveAddress).resolves(
+        receiveAddressBalance(202100000, TestRecoverData.firstReceiveAddress, [
+          {
+            TSdZwNqpHofzP6BsBKGQUWdBeJphLmF6id: '1100000000',
+          },
+        ])
+      );
+      accountBalance
+        .withArgs(TestRecoverData.secondReceiveAddress)
+        .resolves(receiveAddressBalance(500, TestRecoverData.secondReceiveAddress));
+
+      const createtransaction = sandBox.stub(Trx.prototype, 'getBuildTransaction' as keyof Trx);
+      const firstReceiveAddrHex = Utils.getHexAddressFromBase58Address(TestRecoverData.firstReceiveAddress);
+      const baseAddrHex = Utils.getHexAddressFromBase58Address(TestRecoverData.baseAddress);
+      createtransaction
+        .withArgs(baseAddrHex, firstReceiveAddrHex, 1100000000)
+        .resolves(creationTransaction(firstReceiveAddrHex, baseAddrHex, 1100000000));
+
+      const res = await basecoin.recoverConsolidations({
+        userKey: TestRecoverData.userKey,
+        backupKey: TestRecoverData.backupKey,
+        bitgoKey: TestRecoverData.bitgoKey,
+        tokenContractAddress: 'TSdZwNqpHofzP6BsBKGQUWdBeJphLmF6id',
+        startingScanIndex: 1,
+        endingScanIndex: 3,
+      });
+
+      res.should.not.be.empty();
+      res.should.hasOwnProperty('transactions');
+      res.transactions.length.should.equal(1);
+      const txn = res.transactions[0];
+      const rawData = JSON.parse(txn.txHex).raw_data;
+      rawData.should.hasOwnProperty('contract');
+      const value = rawData.contract[0].parameter.value;
+      value.data.should.equal(
+        'a9059cbb000000000000000000000000c25420255c2c5a2dd54ef69f92ef261e6bd4216a000000000000000000000000000000000000000000000000000000004190ab00'
+      );
+      Utils.getBase58AddressFromHex(value.owner_address).should.equal(TestRecoverData.firstReceiveAddress);
+      Utils.getBase58AddressFromHex(value.contract_address).should.equal('TSdZwNqpHofzP6BsBKGQUWdBeJphLmF6id');
     });
 
     it('should skip building consolidate transaction if balance is lower than reserved fee', async () => {

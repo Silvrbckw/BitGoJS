@@ -19,6 +19,7 @@ import { VirtualSizes } from '@bitgo/unspents';
 import debugLib = require('debug');
 const debug = debugLib('bitgo:v1:txb');
 import { common, getAddressP2PKH, getNetwork, sanitizeLegacyPath } from '@bitgo/sdk-core';
+import { verifyAddress } from './verifyAddress';
 
 interface BaseOutput {
   amount: number;
@@ -60,6 +61,7 @@ interface BitGoUnspent {
 //   feeSingleKeySourceAddress: Use this single key address to pay fees
 //   feeSingleKeyWIF: Use the address based on this private key to pay fees
 //   unspentsFetchParams: Extra parameters to use for fetching unspents for this transaction
+//   unspents: array of unspent objects to use while constructing the transaction instead of fetching from the API
 exports.createTransaction = function (params) {
   const minConfirms = params.minConfirms || 0;
   const validate = params.validate === undefined ? true : params.validate;
@@ -186,9 +188,7 @@ exports.createTransaction = function (params) {
 
   recipients.forEach(function (recipient) {
     if (_.isString(recipient.address)) {
-      try {
-        utxolib.address.fromBase58Check(recipient.address, network);
-      } catch (e) {
+      if (!verifyAddress(recipient.address, network)) {
         throw new Error('invalid bitcoin address: ' + recipient.address);
       }
       if (!!recipient.script) {

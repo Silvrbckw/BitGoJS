@@ -29,6 +29,7 @@ import {
   SignedMessage,
   BaseTssUtils,
   KeyType,
+  SendManyOptions,
 } from '@bitgo/sdk-core';
 
 import { TestBitGo } from '@bitgo/sdk-test';
@@ -71,7 +72,10 @@ describe('V2 Wallet:', function () {
   const bgUrl = common.Environments[bitgo.getEnv()].uri;
   const address1 = '0x174cfd823af8ce27ed0afee3fcf3c3ba259116be';
   const address2 = '0x7e85bdc27c050e3905ebf4b8e634d9ad6edd0de6';
-  const tbtcHotWalletDefaultParams = { txFormat: 'psbt', addressType: 'p2trMusig2' };
+  const tbtcHotWalletDefaultParams = {
+    txFormat: 'psbt',
+    changeAddressType: ['p2trMusig2', 'p2wsh', 'p2shP2wsh', 'p2sh', 'p2tr'],
+  };
 
   afterEach(function () {
     sinon.restore();
@@ -1739,6 +1743,20 @@ describe('V2 Wallet:', function () {
       ethWallet = new Wallet(bitgo, bitgo.coin('teth'), walletData);
     });
 
+    it('should return reqId if it was passed in the params', async function () {
+      const params = { offlineVerification: true };
+      const scope = nock(bgUrl)
+        .post(`/api/v2/${wallet.coin()}/wallet/${wallet.id()}/tx/build`, tbtcHotWalletDefaultParams)
+        .query(params)
+        .reply(200, {});
+      const blockHeight = 100;
+      sinon.stub(basecoin, 'getLatestBlockHeight').resolves(blockHeight);
+      sinon.stub(basecoin, 'postProcessPrebuild').resolves({});
+      const txRequest = await wallet.prebuildTransaction({ ...params, reqId: reqId });
+      txRequest.reqId?.should.containEql(reqId);
+      scope.done();
+    });
+
     it('should pass offlineVerification=true query param if passed truthy value', async function () {
       const params = { offlineVerification: true };
       const scope = nock(bgUrl)
@@ -1795,6 +1813,30 @@ describe('V2 Wallet:', function () {
         blockHeight: 100,
         wallet: wallet,
         buildParams: tbtcHotWalletDefaultParams,
+      });
+      blockHeightStub.restore();
+      postProcessStub.restore();
+    });
+
+    it('prebuild should not have changeAddressType array in post body when changeAddressType is defined', async function () {
+      const expectedBuildPostBodyParams = {
+        changeAddressType: 'p2trMusig2',
+        txFormat: 'psbt',
+      };
+
+      nock(bgUrl)
+        .post(`/api/v2/${wallet.coin()}/wallet/${wallet.id()}/tx/build`, expectedBuildPostBodyParams)
+        .query({})
+        .reply(200, {});
+      const blockHeight = 100;
+      const blockHeightStub = sinon.stub(basecoin, 'getLatestBlockHeight').resolves(blockHeight);
+      const postProcessStub = sinon.stub(basecoin, 'postProcessPrebuild').resolves({});
+      await wallet.prebuildTransaction({ changeAddressType: 'p2trMusig2' });
+      blockHeightStub.should.have.been.calledOnce();
+      postProcessStub.should.have.been.calledOnceWith({
+        blockHeight: 100,
+        wallet: wallet,
+        buildParams: expectedBuildPostBodyParams,
       });
       blockHeightStub.restore();
       postProcessStub.restore();
@@ -3471,7 +3513,12 @@ describe('V2 Wallet:', function () {
             amount: '1000',
           },
         ],
+        reqId: new RequestTracer(),
       };
+
+      afterEach(function () {
+        nock.cleanAll();
+      });
 
       it('should send many', async function () {
         const signedTransaction = {
@@ -3492,48 +3539,179 @@ describe('V2 Wallet:', function () {
         sendMany.should.deepEqual('sendTxResponse');
       });
 
-      it('should send many and call create transfer api', async function () {
+      it('should send many and call setRequestTracer', async function () {
         const signedTransaction = {
           txRequestId: 'txRequestId',
         };
 
-        const prebuildAndSignTransaction = sandbox.stub(custodialTssSolWallet, 'prebuildAndSignTransaction');
+        const prebuildAndSignTransaction = sandbox.stub(tssSolWallet, 'prebuildAndSignTransaction');
         prebuildAndSignTransaction.resolves(signedTransaction);
-        // TODO(BG-59686): this is not doing anything if we don't check the return value, we should also move this check to happen after we invoke sendMany
         prebuildAndSignTransaction.calledOnceWithExactly(sendManyInput);
 
         const sendTxRequest = sandbox.stub(TssUtils.prototype, 'sendTxRequest');
+        sendTxRequest.resolves('sendTxResponse');
+        sendTxRequest.calledOnceWithExactly(signedTransaction.txRequestId);
+
+        const setRequestTracerSpy = sinon.spy(bitgo, 'setRequestTracer');
+        setRequestTracerSpy.withArgs(sendManyInput.reqId);
+
+        const sendMany = await tssSolWallet.sendMany(sendManyInput);
+        sendMany.should.deepEqual('sendTxResponse');
+        sinon.assert.calledOnce(setRequestTracerSpy);
+        setRequestTracerSpy.restore();
+      });
+
+      it('should return transfer from sendMany for apiVersion=full', async function () {
+        const wallet = new Wallet(bitgo, tsol, {
+          ...walletData,
+          type: 'custodial',
+        });
+        const signedTxResult = {
+          txRequestId: 'txRequestId',
+        };
         const txRequest: TxRequest = {
-          date: '',
+          date: new Date().toString(),
           intent: 'payment',
           latest: false,
           policiesChecked: false,
-          state: 'signed',
+          state: 'delivered',
           unsignedTxs: [],
           userId: 'unit-test',
           version: 0,
           walletId: wallet.id(),
-          walletType: 'custodial',
-          txRequestId: signedTransaction.txRequestId,
+          walletType: wallet.type() ?? 'hot',
+          txRequestId: signedTxResult.txRequestId,
+          transactions: [
+            {
+              state: 'delivered',
+              signedTx: {
+                id: 'txid',
+                tx: 'tx',
+              },
+              unsignedTx: 'something' as any,
+              signatureShares: [],
+            },
+          ],
         };
-        sendTxRequest.resolves(txRequest);
-        // TODO(BG-59686): this is not doing anything if we don't check the return value, we should also move this check to happen after we invoke sendMany
-        sendTxRequest.calledOnceWithExactly(signedTransaction.txRequestId);
+        const transfer = {
+          id: 'transferId',
+          state: 'signed',
+          txid: 'txid',
+        };
+
+        const prebuildAndSignTransaction = sandbox.stub(wallet, 'prebuildAndSignTransaction').resolves(signedTxResult);
 
         const txRequestNock = nock(bgUrl)
           .persist()
-          .get(`/api/v2/wallet/${walletData.id}/txrequests?txRequestIds=${signedTransaction.txRequestId}&latest=true`)
+          .get(`/api/v2/wallet/${walletData.id}/txrequests?txRequestIds=${signedTxResult.txRequestId}&latest=true`)
           .reply(200, { txRequests: [txRequest] });
 
         const createTransferNock = nock(bgUrl)
           .persist()
-          .post(`/api/v2/wallet/${walletData.id}/txrequests/${signedTransaction.txRequestId}/transfers`)
-          .reply(200);
+          .post(`/api/v2/wallet/${walletData.id}/txrequests/${signedTxResult.txRequestId}/transfers`)
+          .reply(200, transfer);
 
-        const sendMany = await custodialTssSolWallet.sendMany(sendManyInput);
-        sendMany.should.deepEqual(txRequest);
+        const input: SendManyOptions = {
+          type: 'transfer',
+          recipients: [
+            {
+              address: 'address',
+              amount: '1000',
+            },
+          ],
+          apiVersion: 'full',
+        };
+        const sendManyResult = await wallet.sendMany(input);
+        prebuildAndSignTransaction.calledOnceWithExactly(input);
         txRequestNock.isDone().should.be.true();
         createTransferNock.isDone().should.be.true();
+
+        sendManyResult.should.deepEqual({
+          txRequest,
+          transfer,
+          txid: 'txid',
+          tx: 'tx',
+          status: 'signed',
+        });
+      });
+
+      it('should return pendingApproval from sendMany for apiVersion=full', async function () {
+        const wallet = new Wallet(bitgo, tsol, {
+          ...walletData,
+          type: 'hot',
+        });
+        const signedTxResult = {
+          txRequestId: 'txRequestId',
+        };
+        const txRequest: TxRequest = {
+          txRequestId: signedTxResult.txRequestId,
+          date: new Date().toString(),
+          intent: 'payment',
+          latest: false,
+          policiesChecked: false,
+          state: 'pendingApproval',
+          unsignedTxs: [],
+          userId: 'unit-test',
+          version: 0,
+          walletId: wallet.id(),
+          walletType: wallet.type() ?? 'hot',
+          pendingApprovalId: 'some-pending-approval-id',
+          transactions: [
+            {
+              state: 'initialized',
+              unsignedTx: 'something' as any,
+              signatureShares: [],
+            },
+          ],
+        };
+        const transfer = {
+          id: 'transferId',
+          state: 'signed',
+          txid: 'txid',
+        };
+        const pendingApproval = {
+          id: 'some-pending-approval-id',
+          wallet: wallet.id(),
+          info: {
+            type: 'transactionRequestFull',
+          },
+          txRequestId: txRequest.txRequestId,
+        };
+
+        const prebuildAndSignTransaction = sandbox.stub(wallet, 'prebuildAndSignTransaction').resolves(signedTxResult);
+
+        const txRequestNock = nock(bgUrl)
+          .persist()
+          .get(`/api/v2/wallet/${walletData.id}/txrequests?txRequestIds=${txRequest.txRequestId}&latest=true`)
+          .reply(200, { txRequests: [txRequest] });
+
+        const createTransferNock = nock(bgUrl)
+          .persist()
+          .post(`/api/v2/wallet/${walletData.id}/txrequests/${txRequest.txRequestId}/transfers`)
+          .reply(200, transfer);
+
+        const getPendingApprovalNock = nock(bgUrl)
+          .persist()
+          .get(`/api/v2/${wallet.coin()}/pendingapprovals/${txRequest.pendingApprovalId}`)
+          .reply(200, pendingApproval);
+
+        const input: SendManyOptions = {
+          type: 'transfer',
+          recipients: [
+            {
+              address: 'address',
+              amount: '1000',
+            },
+          ],
+          apiVersion: 'full',
+        };
+        const sendManyResult = await wallet.sendMany(input);
+        prebuildAndSignTransaction.calledOnceWithExactly(input);
+        txRequestNock.isDone().should.be.true();
+        createTransferNock.isDone().should.be.true();
+        getPendingApprovalNock.isDone().should.be.true();
+
+        sendManyResult.should.deepEqual({ pendingApproval, txRequest });
       });
 
       it('should fail if txRequestId is missing from prebuild', async function () {
@@ -3897,6 +4075,7 @@ describe('V2 Wallet:', function () {
       response.isDone().should.be.true();
     });
   });
+
   describe('NFT Tests', function () {
     let ethWallet: Wallet;
 

@@ -626,11 +626,20 @@ export abstract class TransactionBuilder extends BaseTransactionBuilder {
       throw new BuildTransactionError('Missing transfer information');
     }
     const chainId = this._common.chainIdBN().toString();
+    this._transfer.walletVersion(this._walletVersion);
     // This change is made to support new contracts with different encoding type
-    const coinUsesNonPackedEncodingForTxData = this._coinConfig.features.includes(
-      CoinFeature.USES_NON_PACKED_ENCODING_FOR_TXDATA
+    return this._transfer.signAndBuild(chainId, this.coinUsesNonPackedEncodingForTxData());
+  }
+
+  /**
+   * Decide if the coin uses non-packed encoding for tx data
+   *
+   * @returns {boolean} true if the coin uses non-packed encoding for tx data
+   */
+  public coinUsesNonPackedEncodingForTxData(): boolean {
+    return (
+      this._walletVersion === 4 || this._coinConfig.features.includes(CoinFeature.USES_NON_PACKED_ENCODING_FOR_TXDATA)
     );
-    return this._transfer.signAndBuild(chainId, coinUsesNonPackedEncodingForTxData);
   }
 
   private buildSendTransaction(): TxData {

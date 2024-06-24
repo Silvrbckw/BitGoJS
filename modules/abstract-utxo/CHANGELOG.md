@@ -3,6 +3,112 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.7.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-utxo@8.6.1...@bitgo/abstract-utxo@8.7.0) (2024-06-14)
+
+### Bug Fixes
+
+- correctly parse the response of `/fees/recommended` from Mempool ([e7455a8](https://github.com/BitGo/BitGoJS/commit/e7455a8057a6ece91b73fe373ecd1742282a8c28))
+
+### Features
+
+- add `recover` function for v1 btc wallets ([16e3b25](https://github.com/BitGo/BitGoJS/commit/16e3b2550baab6d15795ee8314935ee3f13c5af1))
+
+## [8.6.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-utxo@8.6.0...@bitgo/abstract-utxo@8.6.1) (2024-06-11)
+
+**Note:** Version bump only for package @bitgo/abstract-utxo
+
+# [8.6.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-utxo@8.5.0...@bitgo/abstract-utxo@8.6.0) (2024-06-05)
+
+### Features
+
+- **utxo-lib:** add signPsbtFromOVC ([59db80f](https://github.com/BitGo/BitGoJS/commit/59db80fcd2d07d145049b6f2dfbdccb6c1931606))
+
+### Reverts
+
+- Revert "feat: use psbt format for hot and custodial wallets" ([4d027c8](https://github.com/BitGo/BitGoJS/commit/4d027c8c218fca8228544f22f1b413e2ba507463))
+
+# [8.5.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-utxo@8.4.0...@bitgo/abstract-utxo@8.5.0) (2024-05-31)
+
+### Features
+
+- use cashaddr address format for ecash recovery ([072f11f](https://github.com/BitGo/BitGoJS/commit/072f11f9e2b8b10c91d9ddf4e0503dc3a1e13563))
+- use psbt format for hot and custodial wallets ([7b66a58](https://github.com/BitGo/BitGoJS/commit/7b66a584ce304093e03a372dafad9152ef875e7b))
+
+# [8.4.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-utxo@8.3.1...@bitgo/abstract-utxo@8.4.0) (2024-05-28)
+
+### Features
+
+- add p2tr as the last option ([673c7d8](https://github.com/BitGo/BitGoJS/commit/673c7d8444be8147ca2b3803e641ab35890e6521))
+- remove p2tr from changeAddressType list ([561a8bd](https://github.com/BitGo/BitGoJS/commit/561a8bdd4f785a4e8ef483e0271a40a4a5c192d9))
+
+## [8.3.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-utxo@8.3.0...@bitgo/abstract-utxo@8.3.1) (2024-05-22)
+
+**Note:** Version bump only for package @bitgo/abstract-utxo
+
+# [8.3.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-utxo@8.2.1...@bitgo/abstract-utxo@8.3.0) (2024-05-17)
+
+### Features
+
+- remove conditional p2trMusig2 check ([9683f33](https://github.com/BitGo/BitGoJS/commit/9683f3325fd454a804a60894c618ee0212acc6b2))
+- send changeAddressType preferences array ([bd18c9e](https://github.com/BitGo/BitGoJS/commit/bd18c9e5e897655036676db49070858e11b6e028))
+
+## [8.2.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-utxo@8.2.0...@bitgo/abstract-utxo@8.2.1) (2024-05-13)
+
+**Note:** Version bump only for package @bitgo/abstract-utxo
+
+# [8.2.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-utxo@8.1.3...@bitgo/abstract-utxo@8.2.0) (2024-05-08)
+
+### Features
+
+- use canonical address when checking if owned by wallet ([82a13bd](https://github.com/BitGo/BitGoJS/commit/82a13bdaed9cf4f7ae5a1aa87e6ff7d92bf989eb))
+
+### Reverts
+
+- Revert "Revert "feat(abstract-utxo): support trustless change outputs from explaintx"" ([03896f6](https://github.com/BitGo/BitGoJS/commit/03896f65ecaaa85f6a5a9be9d45012d848329938))
+
+## [8.1.3](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-utxo@8.1.2...@bitgo/abstract-utxo@8.1.3) (2024-05-01)
+
+### Reverts
+
+- Revert "feat(abstract-utxo): support trustless change outputs from explaintx" ([23442a9](https://github.com/BitGo/BitGoJS/commit/23442a9873ae432c1d5efee8a3b3d4c0c3a772e2))
+
+## [8.1.2](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-utxo@8.1.1...@bitgo/abstract-utxo@8.1.2) (2024-04-25)
+
+**Note:** Version bump only for package @bitgo/abstract-utxo
+
+## [8.1.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-utxo@8.1.0...@bitgo/abstract-utxo@8.1.1) (2024-04-24)
+
+### Bug Fixes
+
+- superagent upgrade to 9.0 ([6e9aa43](https://github.com/BitGo/BitGoJS/commit/6e9aa43a6d2999298abd450ceb168d664b8b926d))
+
+# [8.1.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-utxo@8.0.6...@bitgo/abstract-utxo@8.1.0) (2024-04-22)
+
+### Features
+
+- **abstract-utxo:** support trustless change outputs from explaintx ([445ed53](https://github.com/BitGo/BitGoJS/commit/445ed5357c24357b5f9137669551e146bf2f2e60))
+- only query unspents for wallet owned addresses ([5beaff5](https://github.com/BitGo/BitGoJS/commit/5beaff54e8fc11b642c13e3ac17ffd6b6ff4752c))
+
+## [8.0.6](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-utxo@8.0.5...@bitgo/abstract-utxo@8.0.6) (2024-04-17)
+
+**Note:** Version bump only for package @bitgo/abstract-utxo
+
+## [8.0.5](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-utxo@8.0.4...@bitgo/abstract-utxo@8.0.5) (2024-04-12)
+
+**Note:** Version bump only for package @bitgo/abstract-utxo
+
+## [8.0.4](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-utxo@8.0.3...@bitgo/abstract-utxo@8.0.4) (2024-04-10)
+
+**Note:** Version bump only for package @bitgo/abstract-utxo
+
+## [8.0.3](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-utxo@8.0.2...@bitgo/abstract-utxo@8.0.3) (2024-04-09)
+
+**Note:** Version bump only for package @bitgo/abstract-utxo
+
+## [8.0.2](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-utxo@8.0.1...@bitgo/abstract-utxo@8.0.2) (2024-04-08)
+
+**Note:** Version bump only for package @bitgo/abstract-utxo
+
 ## [8.0.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/abstract-utxo@8.0.0...@bitgo/abstract-utxo@8.0.1) (2024-04-05)
 
 **Note:** Version bump only for package @bitgo/abstract-utxo

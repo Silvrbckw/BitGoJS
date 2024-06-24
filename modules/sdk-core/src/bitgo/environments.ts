@@ -16,6 +16,8 @@ interface EnvironmentTemplate {
   eth2ExplorerBaseUrl: string;
   ethwFullNodeRPCBaseUrl: string;
   polygonscanBaseUrl?: string;
+  bscscanBaseUrl?: string;
+  bscscanApiToken?: string;
   polygonscanApiToken?: string;
   arbiscanBaseUrl?: string;
   arbiscanApiToken?: string;
@@ -23,6 +25,8 @@ interface EnvironmentTemplate {
   optimisticEtherscanApiToken?: string;
   zksyncExplorerBaseUrl?: string;
   zksyncExplorerApiToken?: string;
+  baseethExplorerUrl?: string;
+  baseethApiToken?: string;
   stellarFederationServerUrl?: string;
   eosNodeUrls: string[];
   nearNodeUrls: string[];
@@ -104,6 +108,7 @@ const mainnetBase: EnvironmentTemplate = {
   avaxcNetworkBaseUrl: 'https://api.avax.network',
   eth2ExplorerBaseUrl: 'https://beaconscan.com/api',
   ethwFullNodeRPCBaseUrl: 'https://mainnet.ethereumpow.org',
+  bscscanBaseUrl: 'https://api.bscscan.com',
   polygonscanBaseUrl: 'https://api.polygonscan.com',
   polygonscanApiToken: process.env.POLYGONSCAN_API_TOKEN,
   arbiscanBaseUrl: 'https://api.arbiscan.io',
@@ -112,6 +117,8 @@ const mainnetBase: EnvironmentTemplate = {
   optimisticEtherscanApiToken: process.env.OPTIMISTIC_ETHERSCAN_API_TOKEN,
   zksyncExplorerBaseUrl: 'https://block-explorer-api.mainnet.zksync.io',
   zksyncExplorerApiToken: process.env.ZKSYNC_EXPLORER_API_TOKEN,
+  baseethExplorerUrl: 'https://api.basescan.org',
+  baseethApiToken: process.env.BASESCAN_API_TOKEN,
   eosNodeUrls: ['https://bp.cryptolions.io', 'https://api.eosnewyork.io', 'https://api.eosdetroit.io'],
   nearNodeUrls: ['https://rpc.mainnet.near.org'],
   solNodeUrl: 'https://api.mainnet-beta.solana.com',
@@ -146,14 +153,17 @@ const testnetBase: EnvironmentTemplate = {
   avaxcNetworkBaseUrl: 'https://api.avax-test.network',
   eth2ExplorerBaseUrl: 'https://beaconscan.com/api',
   ethwFullNodeRPCBaseUrl: 'https://mainnet.ethereumpow.org',
-  polygonscanBaseUrl: 'https://api-testnet.polygonscan.com',
+  polygonscanBaseUrl: 'https://api-amoy.polygonscan.com',
   polygonscanApiToken: process.env.POLYGONSCAN_API_TOKEN,
+  bscscanBaseUrl: 'https://api-testnet.bscscan.com',
   arbiscanBaseUrl: 'https://api-sepolia.arbiscan.io',
   arbiscanApiToken: process.env.ARBISCAN_API_TOKEN,
   optimisticEtherscanBaseUrl: 'https://api-sepolia-optimistic.etherscan.io',
   optimisticEtherscanApiToken: process.env.OPTIMISTIC_ETHERSCAN_API_TOKEN,
   zksyncExplorerBaseUrl: 'https://block-explorer-api.sepolia.zksync.dev',
   zksyncExplorerApiToken: process.env.ZKSYNC_EXPLORER_API_TOKEN,
+  baseethExplorerUrl: 'https://api-sepolia.basescan.org',
+  baseethApiToken: process.env.BASESCAN_API_TOKEN,
   // kylin eos endpoints found here
   // https://github.com/cryptokylin/CryptoKylin-Testnet#http-api-list
   // https://docs.liquidapps.io/liquidapps-documentation/eosio-guides/testnet-creation-guides/creating-cryptokylin-account#setup

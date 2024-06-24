@@ -3,7 +3,7 @@ import assert from 'assert';
 import * as common from '../../common';
 import { IBaseCoin, KeychainsTriplet, KeyPair } from '../baseCoin';
 import { BitGoBase } from '../bitgoBase';
-import { BlsUtils, RequestTracer, EDDSAUtils, ECDSAUtils, decodeOrElse } from '../utils';
+import { BlsUtils, RequestTracer, EDDSAUtils, ECDSAUtils, decodeOrElse, generateRandomPassword } from '../utils';
 import {
   AddKeychainOptions,
   ApiKeyShare,
@@ -21,6 +21,7 @@ import {
   UpdateSingleKeychainPasswordOptions,
 } from './iKeychains';
 import { BitGoKeyFromOvcShares, BitGoToOvcJSON, OvcToBitGoJSON } from './ovcJsonCodec';
+import { TssSettings } from '@bitgo/public-types';
 
 export class Keychains implements IKeychains {
   private readonly bitgo: BitGoBase;
@@ -116,8 +117,7 @@ export class Keychains implements IKeychains {
             newPassword: params.newPassword,
           });
           if (updatedKeychain.encryptedPrv) {
-            const changedKeyIdentifier =
-              updatedKeychain.type === 'tss' ? updatedKeychain.commonKeychain : updatedKeychain.pub;
+            const changedKeyIdentifier = updatedKeychain.type === 'tss' ? updatedKeychain.id : updatedKeychain.pub;
             if (changedKeyIdentifier) {
               changedKeys[changedKeyIdentifier] = updatedKeychain.encryptedPrv;
             }
@@ -236,6 +236,7 @@ export class Keychains implements IKeychains {
         backupGPGPublicKey: params.backupGPGPublicKey,
         algoUsed: params.algoUsed,
         isDistributedCustody: params.isDistributedCustody,
+        isMPCv2: params.isMPCv2,
       })
       .result();
   }
@@ -265,6 +266,9 @@ export class Keychains implements IKeychains {
       // if the provider is undefined, we generate a local key and add the source details
       const key = this.create();
       _.extend(params, key);
+      if (params.passphrase !== undefined) {
+        _.extend(params, { encryptedPrv: this.bitgo.encrypt({ input: key.prv, password: params.passphrase }) });
+      }
     }
 
     const serverResponse = await this.add(params);
@@ -294,9 +298,23 @@ export class Keychains implements IKeychains {
    */
   async createMpc(params: CreateMpcOptions): Promise<KeychainsTriplet> {
     let MpcUtils;
+    let multisigTypeVersion: 'MPCv2' | undefined = undefined;
+    if (params.multisigType === 'tss' && this.baseCoin.getMPCAlgorithm() === 'ecdsa') {
+      const tssSettings: TssSettings = await this.bitgo
+        .get(this.bitgo.microservicesUrl('/api/v2/tss/settings'))
+        .result();
+      multisigTypeVersion =
+        tssSettings.coinSettings[this.baseCoin.getFamily()]?.walletCreationSettings?.multiSigTypeVersion;
+    }
+
     switch (params.multisigType) {
       case 'tss':
-        MpcUtils = this.baseCoin.getMPCAlgorithm() === 'ecdsa' ? ECDSAUtils.EcdsaUtils : EDDSAUtils.default;
+        MpcUtils =
+          this.baseCoin.getMPCAlgorithm() === 'eddsa'
+            ? EDDSAUtils.default
+            : multisigTypeVersion === 'MPCv2'
+            ? ECDSAUtils.EcdsaMPCv2Utils
+            : ECDSAUtils.EcdsaUtils;
         break;
       case 'blsdkg':
         if (_.isUndefined(params.passphrase)) {
@@ -425,6 +443,29 @@ export class Keychains implements IKeychains {
 
     return decodeOrElse(BitGoKeyFromOvcShares.name, BitGoKeyFromOvcShares, output, (errors) => {
       throw new Error(`Error producing the output: ${errors}`);
+    });
+  }
+
+  /**
+   * Create keychain for ofc wallet using the password
+   * @param userPassword
+   * @returns
+   */
+  async createUserKeychain(userPassword: string): Promise<Keychain> {
+    const keychains = this.baseCoin.keychains();
+    const newKeychain = keychains.create();
+    const originalPasscodeEncryptionCode = generateRandomPassword(5);
+
+    const encryptedPrv = this.bitgo.encrypt({
+      password: userPassword,
+      input: newKeychain.prv,
+    });
+
+    return await keychains.add({
+      encryptedPrv,
+      originalPasscodeEncryptionCode,
+      pub: newKeychain.pub,
+      source: 'user',
     });
   }
 }

@@ -19,10 +19,10 @@ import { BitGoBase } from '../bitgoBase';
 import { getSharedSecret } from '../ecdh';
 import { AddressGenerationError, MethodNotImplementedError } from '../errors';
 import * as internal from '../internal/internal';
-import { drawKeycard } from '../internal/keycard';
+import { drawKeycard } from '../internal';
 import { decryptKeychainPrivateKey, Keychain, KeychainWithEncryptedPrv } from '../keychain';
-import { IPendingApproval, PendingApproval } from '../pendingApproval';
-import { TradingAccount } from '../trading/tradingAccount';
+import { IPendingApproval, PendingApproval, PendingApprovals } from '../pendingApproval';
+import { TradingAccount } from '../trading';
 import {
   inferAddressType,
   RequestTracer,
@@ -92,15 +92,16 @@ import {
   WalletSignTypedDataOptions,
   WalletType,
 } from './iWallet';
-import { StakingWallet } from '../staking/stakingWallet';
+import { StakingWallet } from '../staking';
 import { Lightning } from '../lightning';
 import EddsaUtils from '../utils/tss/eddsa';
-import { EcdsaUtils } from '../utils/tss/ecdsa';
+import { EcdsaMPCv2Utils, EcdsaUtils } from '../utils/tss/ecdsa';
 import { getTxRequest } from '../tss';
 import { buildParamKeys, BuildParams } from './BuildParams';
 import { postWithCodec } from '../utils/postWithCodec';
 import { TxSendBody } from '@bitgo/public-types';
 import { AddressBook, IAddressBook } from '../address-book';
+import { IRequestTracer } from '../../api';
 
 const debug = require('debug')('bitgo:v2:wallet');
 
@@ -126,7 +127,7 @@ export class Wallet implements IWallet {
   public readonly bitgo: BitGoBase;
   public readonly baseCoin: IBaseCoin;
   public _wallet: WalletData;
-  private readonly tssUtils: EcdsaUtils | EddsaUtils | undefined;
+  private readonly tssUtils: EcdsaUtils | EcdsaMPCv2Utils | EddsaUtils | undefined;
   private readonly _permissions?: string[];
 
   constructor(bitgo: BitGoBase, baseCoin: IBaseCoin, walletData: any) {
@@ -141,7 +142,11 @@ export class Wallet implements IWallet {
     if (baseCoin?.supportsTss() && this._wallet.multisigType === 'tss') {
       switch (baseCoin.getMPCAlgorithm()) {
         case 'ecdsa':
-          this.tssUtils = new EcdsaUtils(bitgo, baseCoin, this);
+          if (walletData.multisigTypeVersion === 'MPCv2') {
+            this.tssUtils = new EcdsaMPCv2Utils(bitgo, baseCoin, this);
+          } else {
+            this.tssUtils = new EcdsaUtils(bitgo, baseCoin, this);
+          }
           break;
         case 'eddsa':
           this.tssUtils = new EddsaUtils(bitgo, baseCoin, this);
@@ -259,6 +264,10 @@ export class Wallet implements IWallet {
     return this._wallet.multisigType;
   }
 
+  multisigTypeVersion(): 'MPCv2' | undefined {
+    return this._wallet.multisigTypeVersion;
+  }
+
   subType(): SubWalletType | undefined {
     return this._wallet.subType;
   }
@@ -271,7 +280,7 @@ export class Wallet implements IWallet {
   }
 
   public flags(): { name: string; value: string }[] {
-    return structuredClone(this._wallet.walletFlags ?? []);
+    return this._wallet.walletFlags ?? [];
   }
 
   public flag(name: string): string | undefined {
@@ -282,7 +291,7 @@ export class Wallet implements IWallet {
    * Get the public object ids for the keychains on this wallet.
    */
   public keyIds(): string[] {
-    return structuredClone(this._wallet.keys);
+    return this._wallet.keys;
   }
 
   /**
@@ -317,7 +326,7 @@ export class Wallet implements IWallet {
    * Get wallet properties which are specific to certain coin implementations
    */
   coinSpecific(): WalletCoinSpecific | undefined {
-    return structuredClone(this._wallet.coinSpecific);
+    return this._wallet.coinSpecific;
   }
 
   /**
@@ -719,7 +728,7 @@ export class Wallet implements IWallet {
         const signedTransaction = await this.signTransaction({ ...transactionParams, txPrebuild });
         const finalTxParams = _.extend({}, signedTransaction, selectParams, { type: routeName });
         this.bitgo.setRequestTracer(reqId);
-        return this.sendTransaction(finalTxParams);
+        return this.sendTransaction(finalTxParams, reqId);
       })
     );
 
@@ -831,7 +840,7 @@ export class Wallet implements IWallet {
     }
     const url = this.url(`/address/${encodeURIComponent(query)}/deployment`);
     this._wallet = await this.bitgo.post(url).send(params).result();
-    return structuredClone(this._wallet);
+    return this._wallet;
   }
 
   /**
@@ -858,7 +867,7 @@ export class Wallet implements IWallet {
     }
     const url = this.url(`/address/${encodeURIComponent(query)}/tokenforward`);
     this._wallet = await this.bitgo.post(url).send(params).result();
-    return structuredClone(this._wallet);
+    return this._wallet;
   }
 
   /**
@@ -933,7 +942,7 @@ export class Wallet implements IWallet {
     const selectParams = _.pick(params, ['otp']);
     const finalTxParams = _.extend({}, signedTransaction, selectParams);
     this.bitgo.setRequestTracer(reqId);
-    return this.sendTransaction(finalTxParams);
+    return this.sendTransaction(finalTxParams, reqId);
   }
 
   /**
@@ -1146,8 +1155,6 @@ export class Wallet implements IWallet {
         throw new Error('forwarderVersion has to be an integer 0, 1, 2, 3 or 4');
       }
       addressParams.forwarderVersion = forwarderVersion;
-    } else if (this._wallet.multisigType === 'tss' && this.baseCoin.getMPCAlgorithm() === 'ecdsa') {
-      addressParams.forwarderVersion = 3;
     }
 
     if (!_.isUndefined(label)) {
@@ -1628,6 +1635,7 @@ export class Wallet implements IWallet {
     if (this._wallet && this._wallet.coinSpecific && !params.walletContractAddress) {
       prebuild = _.extend({}, prebuild, { walletContractAddress: this._wallet.coinSpecific.baseAddress });
     }
+    prebuild = _.extend({}, prebuild, { reqId: params.reqId });
     debug('final transaction prebuild: %O', prebuild);
     return prebuild as PrebuildTransactionResult;
   }
@@ -1707,7 +1715,11 @@ export class Wallet implements IWallet {
     });
 
     if (this.multisigType() === 'tss') {
-      return this.signTransactionTss({ ...presign, prv: this.getUserPrv(presign as GetUserPrvOptions), apiVersion });
+      return this.signTransactionTss({
+        ...presign,
+        prv: this.getUserPrv(presign as GetUserPrvOptions),
+        apiVersion,
+      });
     }
 
     let { pubs } = params;
@@ -1971,7 +1983,7 @@ export class Wallet implements IWallet {
 
     if (signingParams.txPrebuild.txRequestId) {
       assert(this.tssUtils, 'tssUtils must be defined for TSS wallets');
-      const txRequest = await this.tssUtils.getTxRequest(signingParams.txPrebuild.txRequestId);
+      const txRequest = await this.tssUtils.getTxRequest(signingParams.txPrebuild.txRequestId, params.reqId);
       if (this.tssUtils.isPendingApprovalTxRequestFull(txRequest)) {
         return txRequest;
       }
@@ -2102,8 +2114,9 @@ export class Wallet implements IWallet {
    * @param params
    * - txHex: transaction hex to submit
    * - halfSigned: object containing transaction (txHex or txBase64) to submit
+   * @param reqId - request tracer request id
    */
-  async submitTransaction(params: SubmitTransactionOptions = {}): Promise<any> {
+  async submitTransaction(params: SubmitTransactionOptions = {}, reqId?: IRequestTracer): Promise<any> {
     common.validateParams(params, [], ['otp', 'txHex', 'txRequestId']);
     const hasTxHex = !!params.txHex;
     const hasHalfSigned = !!params.halfSigned;
@@ -2113,7 +2126,7 @@ export class Wallet implements IWallet {
     } else if (!params.txRequestId && ((hasTxHex && hasHalfSigned) || (!hasTxHex && !hasHalfSigned))) {
       throw new Error('must supply either txHex or halfSigned, but not both');
     }
-    return this.sendTransaction(params);
+    return this.sendTransaction(params, reqId);
   }
 
   /**
@@ -2313,12 +2326,13 @@ export class Wallet implements IWallet {
     if (this._wallet.type === 'custodial') {
       const extraParams = await this.baseCoin.getExtraPrebuildParams(Object.assign(params, { wallet: this }));
       Object.assign(selectParams, extraParams);
-      return this.initiateTransaction(selectParams);
+      return this.initiateTransaction(selectParams, reqId);
     }
 
     const halfSignedTransaction = await this.prebuildAndSignTransaction(params);
-    const finalTxParams = _.extend({}, halfSignedTransaction, selectParams);
-    return this.sendTransaction(finalTxParams);
+    const extraParams = await this.baseCoin.getExtraPrebuildParams(Object.assign(params, { wallet: this }));
+    const finalTxParams = _.extend({}, halfSignedTransaction, selectParams, extraParams);
+    return this.sendTransaction(finalTxParams, reqId);
   }
 
   /**
@@ -2479,7 +2493,7 @@ export class Wallet implements IWallet {
    * Extract a JSON representable version of this wallet
    */
   toJSON(): WalletData {
-    return structuredClone(this._wallet);
+    return this._wallet;
   }
 
   /**
@@ -2671,7 +2685,7 @@ export class Wallet implements IWallet {
 
     if (this._wallet.type === 'custodial' && this._wallet.multisigType !== 'tss') {
       params.type = 'consolidate';
-      return this.initiateTransaction(params as TxSendBody);
+      return this.initiateTransaction(params as TxSendBody, params.reqId);
     }
 
     // one of a set of consolidation transactions
@@ -2698,7 +2712,7 @@ export class Wallet implements IWallet {
 
     delete signedPrebuild.wallet;
 
-    return await this.submitTransaction(signedPrebuild);
+    return await this.submitTransaction(signedPrebuild, params.reqId);
   }
 
   /**
@@ -2832,9 +2846,9 @@ export class Wallet implements IWallet {
         case 'hot':
         case 'cold':
           const signedPrebuild = await this.prebuildAndSignTransaction(params);
-          return await this.submitTransaction(signedPrebuild);
+          return await this.submitTransaction(signedPrebuild, params.reqId);
         case 'custodial':
-          return this.initiateTransaction(params.prebuildTx.buildParams);
+          return this.initiateTransaction(params.prebuildTx.buildParams, params.reqId);
       }
     }
   }
@@ -3067,14 +3081,16 @@ export class Wallet implements IWallet {
 
     assert(this.tssUtils, 'tssUtils must be defined');
     // adding this to rebuild the transaction just before signing for EdDSA transaction using external signer
-    await this.tssUtils.deleteSignatureShares(txRequestId);
+    const reqId = params.reqId || undefined;
+    await this.tssUtils.deleteSignatureShares(txRequestId, reqId);
 
     try {
       const signedTxRequest = await this.tssUtils.signEddsaTssUsingExternalSigner(
         txRequestId,
         params.customCommitmentGeneratingFunction,
         params.customRShareGeneratingFunction,
-        params.customGShareGeneratingFunction
+        params.customGShareGeneratingFunction,
+        reqId
       );
       return signedTxRequest;
     } catch (e) {
@@ -3122,7 +3138,7 @@ export class Wallet implements IWallet {
         {
           txRequest: txRequestId,
           prv: '',
-          reqId: new RequestTracer(),
+          reqId: params.reqId || new RequestTracer(),
         },
         RequestType.tx,
         params.customPaillierModulusGeneratingFunction,
@@ -3198,7 +3214,7 @@ export class Wallet implements IWallet {
         txRequest = await this.tssUtils!.createTxRequestWithIntentForMessageSigning(intentOption);
         params.message.txRequestId = txRequest.txRequestId;
       } else {
-        txRequest = await getTxRequest(this.bitgo, this.id(), params.message.txRequestId);
+        txRequest = await getTxRequest(this.bitgo, this.id(), params.message.txRequestId, params.reqId);
       }
 
       const signedMessageRequest = await this.tssUtils!.signTxRequestForMessage({
@@ -3254,7 +3270,7 @@ export class Wallet implements IWallet {
         txRequest = await this.tssUtils!.createTxRequestWithIntentForTypedDataSigning(intentOptions);
         params.typedData.txRequestId = txRequest.txRequestId;
       } else {
-        txRequest = await getTxRequest(this.bitgo, this.id(), params.typedData.txRequestId);
+        txRequest = await getTxRequest(this.bitgo, this.id(), params.typedData.txRequestId, params.reqId);
       }
 
       const signedTypedDataRequest = await this.tssUtils!.signTxRequestForMessage({
@@ -3301,24 +3317,38 @@ export class Wallet implements IWallet {
       throw new Error('txRequestId missing from signed transaction');
     }
 
-    // TODO: BG-51122 Remove conditional when moved to txRequestFull for everything
-    if (this._wallet.type === 'custodial') {
-      await this.bitgo
+    if (onlySupportsTxRequestFull || apiVersion === 'full') {
+      const latestTxRequest = await getTxRequest(this.bitgo, this.id(), signedTransaction.txRequestId, params.reqId);
+      const reqId = params.reqId || new RequestTracer();
+      this.bitgo.setRequestTracer(reqId);
+      const transfer: { state: string; pendingApproval?: string; txid?: string } = await this.bitgo
         .post(
           this.bitgo.url(
             '/wallet/' + this._wallet.id + '/txrequests/' + signedTransaction.txRequestId + '/transfers',
             2
           )
         )
-        .send();
+        .send()
+        .result();
+      if (latestTxRequest.state === 'pendingApproval') {
+        const pendingApprovals = new PendingApprovals(this.bitgo, this.baseCoin);
+        const pendingApproval = await pendingApprovals.get({ id: latestTxRequest.pendingApprovalId });
+        return {
+          pendingApproval: pendingApproval.toJSON(),
+          txRequest: latestTxRequest,
+        };
+      }
+      return {
+        transfer,
+        txRequest: latestTxRequest,
+        txid: (latestTxRequest.transactions ?? [])[0]?.signedTx?.id,
+        tx: (latestTxRequest.transactions ?? [])[0]?.signedTx?.tx,
+        status: transfer.state,
+      };
     }
 
-    // ECDSA TSS uses TxRequestFull
-    if (apiVersion === 'full' || onlySupportsTxRequestFull) {
-      return getTxRequest(this.bitgo, this.id(), signedTransaction.txRequestId);
-    }
-
-    return this.tssUtils?.sendTxRequest(signedTransaction.txRequestId);
+    const reqId = params.reqId || undefined;
+    return this.tssUtils?.sendTxRequest(signedTransaction.txRequestId, reqId);
   }
 
   /**
@@ -3335,7 +3365,7 @@ export class Wallet implements IWallet {
     }
     const url = this.url('/fundForwarder');
     this._wallet = await this.bitgo.post(url).send(params).result();
-    return structuredClone(this._wallet);
+    return this._wallet;
   }
 
   /**
@@ -3372,11 +3402,13 @@ export class Wallet implements IWallet {
     return await this.bitgo.get(url).query({}).result();
   }
 
-  private sendTransaction(params: TxSendBody) {
+  private sendTransaction(params: TxSendBody, reqId?: IRequestTracer) {
     // extract the whitelisted params from the top level, in case
     // other invalid params are present that would fail encoding
     // and fall back to the body params
     const whitelistedParams = _.pick(params, whitelistedSendParams);
+    const reqTracer = reqId || new RequestTracer();
+    this.bitgo.setRequestTracer(reqTracer);
     return postWithCodec(
       this.bitgo,
       this.baseCoin.url('/wallet/' + this.id() + '/tx/send'),
@@ -3385,11 +3417,13 @@ export class Wallet implements IWallet {
     ).result();
   }
 
-  private initiateTransaction(params: TxSendBody) {
+  private initiateTransaction(params: TxSendBody, reqId?: IRequestTracer) {
     // extract the whitelisted params from the top level, in case
     // other invalid params are present that would fail encoding
     // and fall back to the body params
     const whitelistedParams = _.pick(params, whitelistedSendParams);
+    const reqTracer = reqId || new RequestTracer();
+    this.bitgo.setRequestTracer(reqTracer);
     return postWithCodec(
       this.bitgo,
       this.baseCoin.url('/wallet/' + this.id() + '/tx/initiate'),

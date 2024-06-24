@@ -1,17 +1,10 @@
 /**
  * @prettier
  */
-import debugLib from 'debug';
-import { bip32 } from '@bitgo/utxo-lib';
-import { BigNumber } from 'bignumber.js';
-import { randomBytes } from 'crypto';
-import Keccak from 'keccak';
-import _ from 'lodash';
-import secp256k1 from 'secp256k1';
-import BN from 'bn.js';
 import {
   AddressCoinSpecific,
   BitGoBase,
+  BuildNftTransferDataOptions,
   common,
   ECDSA,
   Ecdsa,
@@ -33,30 +26,39 @@ import {
   Recipient,
   SignTransactionOptions as BaseSignTransactionOptions,
   TransactionParams,
-  TransactionRecipient,
   TransactionPrebuild as BaseTransactionPrebuild,
+  TransactionRecipient,
   TypedData,
   UnexpectedAddressError,
   Util,
   VerifyAddressOptions as BaseVerifyAddressOptions,
   VerifyTransactionOptions,
   Wallet,
-  BuildNftTransferDataOptions,
 } from '@bitgo/sdk-core';
+import { DklsDsg, DklsTypes, DklsUtils, EcdsaPaillierProof, EcdsaRangeProof, EcdsaTypes } from '@bitgo/sdk-lib-mpc';
 import {
   BaseCoin as StaticsBaseCoin,
+  CoinMap,
   coins,
   EthereumNetwork as EthLikeNetwork,
   ethGasConfigs,
-  CoinMap,
 } from '@bitgo/statics';
-import type * as EthLikeTxLib from '@ethereumjs/tx';
+import { bip32 } from '@bitgo/utxo-lib';
 import type * as EthLikeCommon from '@ethereumjs/common';
-import { EcdsaPaillierProof, EcdsaRangeProof, EcdsaTypes } from '@bitgo/sdk-lib-mpc';
+import type * as EthLikeTxLib from '@ethereumjs/tx';
 import { FeeMarketEIP1559Transaction, Transaction as LegacyTransaction } from '@ethereumjs/tx';
-import { addHexPrefix, stripHexPrefix } from 'ethereumjs-util';
 import { SignTypedDataVersion, TypedDataUtils, TypedMessage } from '@metamask/eth-sig-util';
+import { BigNumber } from 'bignumber.js';
+import BN from 'bn.js';
+import { randomBytes } from 'crypto';
+import debugLib from 'debug';
+import { addHexPrefix, stripHexPrefix } from 'ethereumjs-util';
+import Keccak from 'keccak';
+import _ from 'lodash';
+import secp256k1 from 'secp256k1';
 
+import { AbstractEthLikeCoin } from './abstractEthLikeCoin';
+import { EthLikeToken } from './ethLikeToken';
 import {
   calculateForwarderV1Address,
   ERC1155TransferBuilder,
@@ -68,8 +70,6 @@ import {
   TransactionBuilder,
   TransferBuilder,
 } from './lib';
-import { AbstractEthLikeCoin } from './abstractEthLikeCoin';
-import { EthLikeToken } from './ethLikeToken';
 
 /**
  * The prebuilt hop transaction returned from the HSM
@@ -149,6 +149,7 @@ export interface SignFinalOptions {
   walletContractAddress?: string;
   prv: string;
   recipients?: Recipient[];
+  common?: EthLikeCommon.default;
 }
 
 export interface SignTransactionOptions extends BaseSignTransactionOptions, SignFinalOptions {
@@ -158,6 +159,7 @@ export interface SignTransactionOptions extends BaseSignTransactionOptions, Sign
   gasLimit?: number;
   gasPrice?: number;
   custodianTransactionId?: string;
+  common?: EthLikeCommon.default;
 }
 
 export type SignedTransaction = HalfSignedTransaction | FullySignedTransaction;
@@ -214,6 +216,8 @@ export interface RecoverOptions {
   bitgoFeeAddress?: string;
   bitgoDestinationAddress?: string;
   tokenContractAddress?: string;
+  intendedChain?: string;
+  common?: EthLikeCommon.default;
 }
 
 export type GetBatchExecutionInfoRT = {
@@ -962,7 +966,7 @@ export abstract class AbstractEthLikeNewCoins extends AbstractEthLikeCoin {
     if (_.isUndefined(signingKey)) {
       throw new Error('missing private key');
     }
-    const txBuilder = this.getTransactionBuilder();
+    const txBuilder = this.getTransactionBuilder(params.common);
     try {
       txBuilder.from(params.txPrebuild.halfSigned?.txHex);
     } catch (e) {
@@ -985,7 +989,7 @@ export abstract class AbstractEthLikeNewCoins extends AbstractEthLikeCoin {
       // In this case when we're doing the second (final) signature, the logic is different.
       return await this.signFinalEthLike(params);
     }
-    const txBuilder = this.getTransactionBuilder();
+    const txBuilder = this.getTransactionBuilder(params.common);
     txBuilder.from(params.txPrebuild.txHex);
     txBuilder
       .transfer()
@@ -1056,6 +1060,10 @@ export abstract class AbstractEthLikeNewCoins extends AbstractEthLikeCoin {
       rangeProofChallenge?: EcdsaTypes.SerializedNtilde;
     } = {}
   ): Promise<ECDSAMethodTypes.Signature> {
+    if (!userKeyCombined || !backupKeyCombined) {
+      throw new Error('Missing key combined shares for user or backup');
+    }
+
     const MPC = new Ecdsa();
     const signerOneIndex = userKeyCombined.xShare.i;
     const signerTwoIndex = backupKeyCombined.xShare.i;
@@ -1178,19 +1186,26 @@ export abstract class AbstractEthLikeNewCoins extends AbstractEthLikeCoin {
       userSigningMaterial.bitgoNShare,
       userSigningMaterial.backupNShare,
     ]);
+    const userSigningKeyDerived = MPC.keyDerive(
+      userSigningMaterial.pShare,
+      [userSigningMaterial.bitgoNShare, userSigningMaterial.backupNShare],
+      'm/0'
+    );
+    const userKeyDerivedCombined = {
+      xShare: userSigningKeyDerived.xShare,
+      yShares: userKeyCombined.yShares,
+    };
     const backupKeyCombined = MPC.keyCombine(backupSigningMaterial.pShare, [
+      userSigningKeyDerived.nShares[2],
       backupSigningMaterial.bitgoNShare,
-      backupSigningMaterial.userNShare,
     ]);
-
     if (
-      userKeyCombined.xShare.y !== backupKeyCombined.xShare.y ||
-      userKeyCombined.xShare.chaincode !== backupKeyCombined.xShare.chaincode
+      userKeyDerivedCombined.xShare.y !== backupKeyCombined.xShare.y ||
+      userKeyDerivedCombined.xShare.chaincode !== backupKeyCombined.xShare.chaincode
     ) {
       throw new Error('Common keychains do not match');
     }
-
-    return [userKeyCombined, backupKeyCombined];
+    return [userKeyDerivedCombined, backupKeyCombined];
   }
 
   /**
@@ -1392,7 +1407,7 @@ export abstract class AbstractEthLikeNewCoins extends AbstractEthLikeCoin {
       gasLimit: gasLimit.toString(10),
     };
 
-    const txBuilder = this.getTransactionBuilder() as TransactionBuilder;
+    const txBuilder = this.getTransactionBuilder(params.common) as TransactionBuilder;
     txBuilder.counter(backupKeyNonce);
     txBuilder.contract(params.walletContractAddress);
     let txFee;
@@ -1467,11 +1482,11 @@ export abstract class AbstractEthLikeNewCoins extends AbstractEthLikeCoin {
 
     // Clean up whitespace from entered values
     const userKey = params.userKey.replace(/\s/g, '');
-    const bitgoFeeAddress = params.bitgoFeeAddress?.replace(/\s/g, '') as string;
-    const bitgoDestinationAddress = params.bitgoDestinationAddress?.replace(/\s/g, '') as string;
-    const recoveryDestination = params.recoveryDestination?.replace(/\s/g, '') as string;
-    const walletContractAddress = params.walletContractAddress?.replace(/\s/g, '') as string;
-    const tokenContractAddress = params.tokenContractAddress?.replace(/\s/g, '') as string;
+    const bitgoFeeAddress = params.bitgoFeeAddress?.replace(/\s/g, '').toLowerCase() as string;
+    const bitgoDestinationAddress = params.bitgoDestinationAddress?.replace(/\s/g, '').toLowerCase() as string;
+    const recoveryDestination = params.recoveryDestination?.replace(/\s/g, '').toLowerCase() as string;
+    const walletContractAddress = params.walletContractAddress?.replace(/\s/g, '').toLowerCase() as string;
+    const tokenContractAddress = params.tokenContractAddress?.replace(/\s/g, '').toLowerCase() as string;
 
     let userSigningKey;
     let userKeyPrv;
@@ -1573,7 +1588,7 @@ export abstract class AbstractEthLikeNewCoins extends AbstractEthLikeCoin {
     const network = this.getNetwork();
     const batcherContractAddress = network?.batcherContractAddress as string;
 
-    const txBuilder = this.getTransactionBuilder() as TransactionBuilder;
+    const txBuilder = this.getTransactionBuilder(params.common) as TransactionBuilder;
     txBuilder.counter(bitgoFeeAddressNonce);
     txBuilder.contract(walletContractAddress);
     let txFee;
@@ -1593,17 +1608,31 @@ export abstract class AbstractEthLikeNewCoins extends AbstractEthLikeCoin {
     });
 
     const transferBuilder = txBuilder.transfer() as TransferBuilder;
-
-    transferBuilder
-      .coin(this.staticsCoin?.name as string)
-      .amount(batchExecutionInfo.totalAmount)
-      .contractSequenceId(sequenceId)
-      .expirationTime(this.getDefaultExpireTime())
-      .to(batcherContractAddress)
-      .data(batchData);
+    if (!batcherContractAddress) {
+      transferBuilder
+        .coin(this.staticsCoin?.name as string)
+        .amount(batchExecutionInfo.totalAmount)
+        .contractSequenceId(sequenceId)
+        .expirationTime(this.getDefaultExpireTime())
+        .to(recoveryDestination);
+    } else {
+      transferBuilder
+        .coin(this.staticsCoin?.name as string)
+        .amount(batchExecutionInfo.totalAmount)
+        .contractSequenceId(sequenceId)
+        .expirationTime(this.getDefaultExpireTime())
+        .to(batcherContractAddress)
+        .data(batchData);
+    }
 
     if (params.walletPassphrase) {
       transferBuilder.key(userSigningKey);
+    }
+
+    // If the intended chain is arbitrum or optimism, we need to use wallet version 4
+    // since these contracts construct operationHash differently
+    if (params.intendedChain && ['arbeth', 'opeth'].includes(coins.get(params.intendedChain).family)) {
+      txBuilder.walletVersion(4);
     }
 
     const tx = await txBuilder.build();
@@ -1708,7 +1737,7 @@ export abstract class AbstractEthLikeNewCoins extends AbstractEthLikeCoin {
       isEvmBasedCrossChainRecovery: true,
     };
 
-    const txBuilder = this.getTransactionBuilder() as TransactionBuilder;
+    const txBuilder = this.getTransactionBuilder(params.common) as TransactionBuilder;
     txBuilder.counter(bitgoFeeAddressNonce);
     txBuilder.contract(params.walletContractAddress as string);
     let txFee;
@@ -1737,15 +1766,26 @@ export abstract class AbstractEthLikeNewCoins extends AbstractEthLikeCoin {
     )?.name as string;
 
     transferBuilder
-      .coin(token)
       .amount(txAmount)
       .contractSequenceId(sequenceId)
       .expirationTime(this.getDefaultExpireTime())
-      .to(params.recoveryDestination)
-      .coin(token);
+      .to(params.recoveryDestination);
+
+    if (token) {
+      transferBuilder.coin(token);
+    } else {
+      transferBuilder
+        .coin(this.staticsCoin?.name as string)
+        .tokenContractAddress(params.tokenContractAddress as string);
+    }
 
     if (params.walletPassphrase) {
       txBuilder.transfer().key(userSigningKey);
+    }
+    // If the intended chain is arbitrum or optimism, we need to use wallet version 4
+    // since these contracts construct operationHash differently
+    if (params.intendedChain && ['arbeth', 'opeth'].includes(coins.get(params.intendedChain).family)) {
+      txBuilder.walletVersion(4);
     }
 
     const tx = await txBuilder.build();
@@ -1753,7 +1793,7 @@ export abstract class AbstractEthLikeNewCoins extends AbstractEthLikeCoin {
     const response: OfflineVaultTxInfo = {
       txHex: tx.toBroadcastFormat(),
       userKey,
-      coin: token,
+      coin: token ? token : this.getChain(),
       gasPrice: optionalDeps.ethUtil.bufferToInt(gasPrice).toFixed(),
       gasLimit,
       recipients: txInfo.recipients,
@@ -1890,56 +1930,182 @@ export abstract class AbstractEthLikeNewCoins extends AbstractEthLikeCoin {
    */
   protected async recoverTSS(params: RecoverOptions): Promise<RecoveryInfo | OfflineVaultTxInfo> {
     this.validateRecoveryParams(params);
-    const isUnsignedSweep = getIsUnsignedSweep(params);
-
     // Clean up whitespace from entered values
     const userPublicOrPrivateKeyShare = params.userKey.replace(/\s/g, '');
     const backupPrivateOrPublicKeyShare = params.backupKey.replace(/\s/g, '');
 
-    // Set new eth tx fees (using default config values from platform)
     const gasLimit = new optionalDeps.ethUtil.BN(this.setGasLimit(params.gasLimit));
     const gasPrice = params.eip1559
       ? new optionalDeps.ethUtil.BN(params.eip1559.maxFeePerGas)
       : new optionalDeps.ethUtil.BN(this.setGasPrice(params.gasPrice));
 
-    const [backupKeyAddress, userKeyCombined, backupKeyCombined] = ((): [
-      string,
-      ECDSAMethodTypes.KeyCombined | undefined,
-      ECDSAMethodTypes.KeyCombined | undefined
-    ] => {
-      if (isUnsignedSweep) {
-        const backupKeyPair = new KeyPairLib({ pub: backupPrivateOrPublicKeyShare });
-        return [backupKeyPair.getAddress(), undefined, undefined];
-      } else {
+    if (
+      getIsUnsignedSweep({
+        userKey: userPublicOrPrivateKeyShare,
+        backupKey: backupPrivateOrPublicKeyShare,
+        isTss: params.isTss,
+      })
+    ) {
+      const backupKeyPair = new KeyPairLib({ pub: backupPrivateOrPublicKeyShare });
+      const baseAddress = backupKeyPair.getAddress();
+      const { txInfo, tx, nonce } = await this.buildTssRecoveryTxn(baseAddress, gasPrice, gasLimit, params);
+      return this.formatForOfflineVaultTSS(
+        txInfo,
+        tx,
+        userPublicOrPrivateKeyShare,
+        backupPrivateOrPublicKeyShare,
+        gasPrice,
+        gasLimit,
+        nonce,
+        params.eip1559,
+        params.replayProtectionOptions
+      );
+    } else {
+      const isGG18SigningMaterial = this.isGG18SigningMaterial(userPublicOrPrivateKeyShare, params.walletPassphrase);
+      let signature: ECDSAMethodTypes.Signature;
+      let unsignedTx: EthLikeTxLib.Transaction | EthLikeTxLib.FeeMarketEIP1559Transaction;
+      if (isGG18SigningMaterial) {
         const [userKeyCombined, backupKeyCombined] = this.getKeyCombinedFromTssKeyShares(
           userPublicOrPrivateKeyShare,
           backupPrivateOrPublicKeyShare,
           params.walletPassphrase
         );
         const backupKeyPair = new KeyPairLib({ pub: backupKeyCombined.xShare.y });
-        return [backupKeyPair.getAddress(), userKeyCombined, backupKeyCombined];
+        const baseAddress = backupKeyPair.getAddress();
+
+        unsignedTx = (await this.buildTssRecoveryTxn(baseAddress, gasPrice, gasLimit, params)).tx;
+
+        signature = await this.signRecoveryTSS(
+          userKeyCombined,
+          backupKeyCombined,
+          unsignedTx.getMessageToSign(false).toString('hex')
+        );
+      } else {
+        const { userKeyShare, backupKeyShare, commonKeyChain, baseAddress } = await this.getMpcV2RecoveryKeyShares(
+          userPublicOrPrivateKeyShare,
+          backupPrivateOrPublicKeyShare,
+          params.walletPassphrase
+        );
+
+        unsignedTx = (await this.buildTssRecoveryTxn(baseAddress, gasPrice, gasLimit, params)).tx;
+
+        signature = await AbstractEthLikeNewCoins.signRecoveryMpcV2(
+          unsignedTx,
+          userKeyShare,
+          backupKeyShare,
+          commonKeyChain
+        );
       }
-    })();
 
-    const backupKeyNonce = await this.getAddressNonce(backupKeyAddress);
+      const ethCommmon = AbstractEthLikeNewCoins.getEthLikeCommon(params.eip1559, params.replayProtectionOptions);
+      const signedTx = this.getSignedTxFromSignature(ethCommmon, unsignedTx, signature);
 
-    // get balance of backupKey to ensure funds are available to pay fees
-    const backupKeyBalance = await this.queryAddressBalance(backupKeyAddress);
-
-    const totalGasNeeded = gasPrice.mul(gasLimit);
-    const weiToGwei = 10 ** 9;
-    if (backupKeyBalance.lt(totalGasNeeded)) {
-      throw new Error(
-        `Backup key address ${backupKeyAddress} has balance ${(backupKeyBalance / weiToGwei).toString()} Gwei.` +
-          `This address must have a balance of at least ${(totalGasNeeded / weiToGwei).toString()}` +
-          ` Gwei to perform recoveries. Try sending some ETH to this address then retry.`
-      );
+      return {
+        id: addHexPrefix(signedTx.hash().toString('hex')),
+        tx: addHexPrefix(signedTx.serialize().toString('hex')),
+      };
     }
+  }
 
-    // get balance of wallet and deduct fees to get transaction amount, wallet contract address acts as base address for tss?
-    const txAmount = backupKeyBalance.sub(totalGasNeeded);
+  private static async signRecoveryMpcV2(
+    tx: EthLikeTxLib.FeeMarketEIP1559Transaction | EthLikeTxLib.Transaction,
+    userKeyShare: Buffer,
+    backupKeyShare: Buffer,
+    commonKeyChain: string
+  ) {
+    const messageHash = tx.getMessageToSign(true);
+    const userDsg = new DklsDsg.Dsg(userKeyShare, 0, 'm/0', messageHash);
+    const backupDsg = new DklsDsg.Dsg(backupKeyShare, 1, 'm/0', messageHash);
 
-    // build recipients object
+    const signatureString = DklsUtils.verifyAndConvertDklsSignature(
+      messageHash,
+      (await DklsUtils.executeTillRound(5, userDsg, backupDsg)) as DklsTypes.DeserializedDklsSignature,
+      commonKeyChain,
+      'm/0',
+      undefined,
+      false
+    );
+    const sigParts = signatureString.split(':');
+
+    return {
+      recid: parseInt(sigParts[0], 10),
+      r: sigParts[1],
+      s: sigParts[2],
+      y: sigParts[3],
+    };
+  }
+
+  private async getMpcV2RecoveryKeyShares(
+    userPublicOrPrivateKeyShare: string,
+    backupPrivateOrPublicKeyShare: string,
+    walletPassphrase?: string
+  ) {
+    const userCompressedPrv = Buffer.from(
+      this.bitgo.decrypt({
+        input: userPublicOrPrivateKeyShare,
+        password: walletPassphrase,
+      }),
+      'base64'
+    );
+    const bakcupCompressedPrv = Buffer.from(
+      this.bitgo.decrypt({
+        input: backupPrivateOrPublicKeyShare,
+        password: walletPassphrase,
+      }),
+      'base64'
+    );
+
+    const userPrvJSON: DklsTypes.ReducedKeyShare = DklsTypes.getDecodedReducedKeyShare(userCompressedPrv);
+    const backupPrvJSON: DklsTypes.ReducedKeyShare = DklsTypes.getDecodedReducedKeyShare(bakcupCompressedPrv);
+    const userKeyRetrofit: DklsTypes.RetrofitData = {
+      xShare: {
+        x: Buffer.from(userPrvJSON.prv).toString('hex'),
+        y: Buffer.from(userPrvJSON.pub).toString('hex'),
+        chaincode: Buffer.from(userPrvJSON.rootChainCode).toString('hex'),
+      },
+      bigSiList: [Buffer.from(userPrvJSON.bigSList[1]).toString('hex')],
+      xiList: userPrvJSON.xList.slice(0, 2),
+    };
+    const backupKeyRetrofit: DklsTypes.RetrofitData = {
+      xShare: {
+        x: Buffer.from(backupPrvJSON.prv).toString('hex'),
+        y: Buffer.from(backupPrvJSON.pub).toString('hex'),
+        chaincode: Buffer.from(backupPrvJSON.rootChainCode).toString('hex'),
+      },
+      bigSiList: [Buffer.from(backupPrvJSON.bigSList[0]).toString('hex')],
+      xiList: backupPrvJSON.xList.slice(0, 2),
+    };
+    const [user, backup] = await DklsUtils.generate2of2KeyShares(userKeyRetrofit, backupKeyRetrofit);
+    const userKeyShare = user.getKeyShare();
+    const backupKeyShare = backup.getKeyShare();
+    const commonKeyChain = DklsTypes.getCommonKeychain(userKeyShare);
+    const MPC = new Ecdsa();
+    const derivedCommonKeyChain = MPC.deriveUnhardened(commonKeyChain, 'm');
+    const backupKeyPair = new KeyPairLib({ pub: derivedCommonKeyChain.slice(0, 66) });
+    const baseAddress = backupKeyPair.getAddress();
+    return { userKeyShare, backupKeyShare, commonKeyChain, baseAddress };
+  }
+
+  private isGG18SigningMaterial(keyShare: string, walletPassphrase: string | undefined): boolean {
+    const prv = this.bitgo.decrypt({
+      input: keyShare,
+      password: walletPassphrase,
+    });
+    try {
+      const signingMaterial = JSON.parse(prv);
+      return (
+        signingMaterial.pShare &&
+        signingMaterial.bitgoNShare &&
+        (signingMaterial.userNShare || signingMaterial.backupNShare)
+      );
+    } catch (error) {
+      return false;
+    }
+  }
+
+  private async buildTssRecoveryTxn(baseAddress: string, gasPrice: any, gasLimit: any, params: RecoverOptions) {
+    const nonce = await this.getAddressNonce(baseAddress);
+    const txAmount = await this.validateBalanceAndGetTxAmount(baseAddress, gasPrice, gasLimit);
     const recipients = [
       {
         address: params.recoveryDestination,
@@ -1954,44 +2120,35 @@ export abstract class AbstractEthLikeNewCoins extends AbstractEthLikeCoin {
     };
 
     const txParams = {
-      to: params.recoveryDestination, // no contract address, so this field should not be used anyways
-      nonce: backupKeyNonce,
+      to: params.recoveryDestination,
+      nonce: nonce,
       value: txAmount,
       gasPrice: gasPrice,
       gasLimit: gasLimit,
-      data: Buffer.from('0x'), // no contract call
+      data: Buffer.from('0x'),
       eip1559: params.eip1559,
       replayProtectionOptions: params.replayProtectionOptions,
     };
 
-    let tx = AbstractEthLikeNewCoins.buildTransaction(txParams);
+    const tx = AbstractEthLikeNewCoins.buildTransaction(txParams);
+    return { txInfo, tx, nonce };
+  }
 
-    if (isUnsignedSweep) {
-      return this.formatForOfflineVaultTSS(
-        txInfo,
-        tx,
-        userPublicOrPrivateKeyShare,
-        backupPrivateOrPublicKeyShare,
-        gasPrice,
-        gasLimit,
-        backupKeyNonce,
-        params.eip1559,
-        params.replayProtectionOptions
+  async validateBalanceAndGetTxAmount(baseAddress: string, gasPrice: BN, gasLimit: BN) {
+    const baseAddressBalance = await this.queryAddressBalance(baseAddress);
+
+    const totalGasNeeded = gasPrice.mul(gasLimit);
+    const weiToGwei = new BN(10 ** 9);
+    if (baseAddressBalance.lt(totalGasNeeded)) {
+      throw new Error(
+        `Backup key address ${baseAddress} has balance ${baseAddressBalance.div(weiToGwei).toString()} Gwei.` +
+          `This address must have a balance of at least ${totalGasNeeded.div(weiToGwei).toString()}` +
+          ` Gwei to perform recoveries. Try sending some ETH to this address then retry.`
       );
     }
 
-    const signableHex = tx.getMessageToSign(false).toString('hex');
-    if (!userKeyCombined || !backupKeyCombined) {
-      throw new Error('Missing key combined shares for user or backup');
-    }
-    const signature = await this.signRecoveryTSS(userKeyCombined, backupKeyCombined, signableHex);
-    const ethCommmon = AbstractEthLikeNewCoins.getEthLikeCommon(params.eip1559, params.replayProtectionOptions);
-    tx = this.getSignedTxFromSignature(ethCommmon, tx, signature);
-
-    return {
-      id: addHexPrefix(tx.hash().toString('hex')),
-      tx: addHexPrefix(tx.serialize().toString('hex')),
-    };
+    const txAmount = baseAddressBalance.sub(totalGasNeeded);
+    return txAmount;
   }
 
   async recoveryBlockchainExplorerQuery(query: Record<string, string>): Promise<any> {

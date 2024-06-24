@@ -3,6 +3,90 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.2.2](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-sol@4.2.1...@bitgo/sdk-coin-sol@4.2.2) (2024-06-14)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-sol
+
+## [4.2.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-sol@4.2.0...@bitgo/sdk-coin-sol@4.2.1) (2024-06-11)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-sol
+
+# [4.2.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-sol@4.1.3...@bitgo/sdk-coin-sol@4.2.0) (2024-06-05)
+
+### Bug Fixes
+
+- update `@solana/web3.js` to `1.92.1` ([830c728](https://github.com/BitGo/BitGoJS/commit/830c72800a8f319867563b689ea70edbca311391))
+
+### Features
+
+- **sdk-coin-sol:** add sol close ATA recovery support ([b1fdb64](https://github.com/BitGo/BitGoJS/commit/b1fdb6471bd1f5331e7a690056cf9380c5c2b5f1))
+
+## [4.1.3](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-sol@4.1.2...@bitgo/sdk-coin-sol@4.1.3) (2024-05-31)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-sol
+
+## [4.1.2](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-sol@4.1.1...@bitgo/sdk-coin-sol@4.1.2) (2024-05-28)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-sol
+
+## [4.1.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-sol@4.1.0...@bitgo/sdk-coin-sol@4.1.1) (2024-05-22)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-sol
+
+# [4.1.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-sol@4.0.11...@bitgo/sdk-coin-sol@4.1.0) (2024-05-17)
+
+### Features
+
+- **sdk-coin-sol:** handle more sol authorize transaction ([02a7c47](https://github.com/BitGo/BitGoJS/commit/02a7c4741973a5ae417b2f5ef53015ff1752bc93))
+
+## [4.0.11](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-sol@4.0.10...@bitgo/sdk-coin-sol@4.0.11) (2024-05-13)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-sol
+
+## [4.0.10](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-sol@4.0.9...@bitgo/sdk-coin-sol@4.0.10) (2024-05-08)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-sol
+
+## [4.0.9](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-sol@4.0.8...@bitgo/sdk-coin-sol@4.0.9) (2024-05-01)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-sol
+
+## [4.0.8](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-sol@4.0.7...@bitgo/sdk-coin-sol@4.0.8) (2024-04-25)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-sol
+
+## [4.0.7](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-sol@4.0.6...@bitgo/sdk-coin-sol@4.0.7) (2024-04-24)
+
+### Bug Fixes
+
+- superagent upgrade to 9.0 ([6e9aa43](https://github.com/BitGo/BitGoJS/commit/6e9aa43a6d2999298abd450ceb168d664b8b926d))
+
+## [4.0.6](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-sol@4.0.5...@bitgo/sdk-coin-sol@4.0.6) (2024-04-22)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-sol
+
+## [4.0.5](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-sol@4.0.4...@bitgo/sdk-coin-sol@4.0.5) (2024-04-17)
+
+### Bug Fixes
+
+- **sdk-coin-sol:** update `split` with latest SOL library ([85d3cc3](https://github.com/BitGo/BitGoJS/commit/85d3cc3643bb3994d13f31f603ce0df8a9ea2e4b))
+
+## [4.0.4](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-sol@4.0.3...@bitgo/sdk-coin-sol@4.0.4) (2024-04-12)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-sol
+
+## [4.0.3](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-sol@4.0.2...@bitgo/sdk-coin-sol@4.0.3) (2024-04-10)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-sol
+
+## [4.0.2](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-sol@4.0.1...@bitgo/sdk-coin-sol@4.0.2) (2024-04-09)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-sol
+
+## [4.0.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-sol@4.0.0...@bitgo/sdk-coin-sol@4.0.1) (2024-04-08)
+
+**Note:** Version bump only for package @bitgo/sdk-coin-sol
+
 # [4.0.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-sol@2.39.4...@bitgo/sdk-coin-sol@4.0.0) (2024-04-05)
 
 ### Bug Fixes
