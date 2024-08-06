@@ -1,0 +1,65 @@
+export const apiData = {
+  initWalletRequestBody: {
+    walletId: 'fakeid',
+    passphrase: 'password123',
+    signerIP: '127.0.0.1',
+    signerTlsCert:
+      'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNKRENDQWNxZ0F3SUJBZ0lRU0E4VUdScy95MzF5WStXNFFvVXJDekFLQmdncWhrak9QUVFEQWpBNE1SOHcKSFFZRFZRUUtFeFpzYm1RZ1lYVjBiMmRsYm1WeVlYUmxaQ0JqWlhKME1SVXdFd1lEVlFRREV3d3hOR1JsTURjeQpPVGsxTURBd0hoY05NalF3T0RFeE1URTFNVEF5V2hjTk1qVXhNREEyTVRFMU1UQXlXakE0TVI4d0hRWURWUVFLCkV4WnNibVFnWVhWMGIyZGxibVZ5WVhSbFpDQmpaWEowTVJVd0V3WURWUVFERXd3eE5HUmxNRGN5T1RrMU1EQXcKV1RBVEJnY3Foa2pPUFFJQkJnZ3Foa2pPUFFNQkJ3TkNBQVJUc0dHNS9nSnBJNUl4VE9pQWF2ZEtOVlVicHpsRgpNaS9MaEIxUVZySkNROEJ3NDlNeU9sZ3hBd0pFblVVSHByRzV6VHJZQ1daZkpUTDIySjlucXZlQW80RzFNSUd5Ck1BNEdBMVVkRHdFQi93UUVBd0lDcERBVEJnTlZIU1VFRERBS0JnZ3JCZ0VGQlFjREFUQVBCZ05WSFJNQkFmOEUKQlRBREFRSC9NQjBHQTFVZERnUVdCQlQvd0VITDV6dzdPYzVEakV0TmVISEZ4Y1kwNFRCYkJnTlZIUkVFVkRCUwpnZ3d4TkdSbE1EY3lPVGsxTURDQ0NXeHZZMkZzYUc5emRJSUVkVzVwZUlJS2RXNXBlSEJoWTJ0bGRJSUhZblZtClkyOXVib2NFZndBQUFZY1FBQUFBQUFBQUFBQUFBQUFBQUFBQUFZY0VyQkVBQWpBS0JnZ3Foa2pPUFFRREFnTkkKQURCRkFpQTNyYjIwdjVhMURZTlJXL0RXYjN2bEN5Wk5SeFlaTUx4UzZ4MHExUitGQkFJaEFOS0dGN043aWtYbApBaEdVbm5zOW03VEFyRmtySUNpNG50eTNXYzI0VHkrSgotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==',
+    signerTlsKey:
+      'LS0tLS1CRUdJTiBFQyBQUklWQVRFIEtFWS0tLS0tCk1IY0NBUUVFSUNSSURpZUFmMkVHaG9mMDlacndJTlVYeW5laVVnTS9CaVFMTk5hQUFpeFdvQW9HQ0NxR1NNNDkKQXdFSG9VUURRZ0FFVTdCaHVmNENhU09TTVV6b2dHcjNTalZWRzZjNVJUSXZ5NFFkVUZheVFrUEFjT1BUTWpwWQpNUU1DUkoxRkI2YXh1YzA2MkFsbVh5VXk5dGlmWjZyM2dBPT0KLS0tLS1FTkQgRUMgUFJJVkFURSBLRVktLS0tLQo=',
+  },
+  signerMacaroonRequestBody: {
+    walletId: 'fakeid',
+    passphrase: 'password123',
+    watchOnlyIP: '127.0.0.1',
+  },
+  wallet: {
+    id: 'fakeid',
+    keys: ['abc'],
+    coinSpecific: {
+      keys: ['def', 'ghi'],
+      encryptedAdminMacaroon:
+        '{"iv":"mf/5PSEGdLTKlc8t1IwOBA==","v":1,"iter":10000,"ks":256,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"mZcamRzITwg=","ct":"KCCc+/ly37EZPRoVBgE9T2mAUufWuqmtSadZAAcECevmNbGgGtAhi7P8/zpge49EdsKOP1Mx1DkwnZBMqCVQBTIWZO4XrFI+OOI0YWDrJIaGcnXDFgZWCbgGaomzYNRvt3EoJ1+yMn1EsYdFYgM0NBS0YsvNHx6PsK2eSLpAK2UrhHAkm9X2uhVRMOjjiGr0UW6r4BKuzxCA06fKKQk6bb8LEF54EZFwigjLSztebW5ivNVT/6MxMnjlO7YPW1ClwM9cqJy1oNLUuRK1vnr6hHCas+3F0PCt5XhJJlsgsm1Vz45wWEGdZiyb0XbqOKHyxCI2WOF5Nj1ALiA0D4o9bqfzasNgrvYlMJ4Ld7ayHDtfhiFve/cUZkcQdVqNbS1TPuyvYT8vPKmL5JwuABoTkLH2LtBOh0afz9UFZajo7pxmJ9TtN+B+/GUoiR9v4e2Jw+IpMIIv3ATMqQl9Kot6yefiuP+1DfYNBPvcUqJMc8ibpP56BUA0qWLoAIg5DoocoMybXi0+eA1S0c8Lhe0PsA=="}',
+    },
+    source: 'user',
+  },
+  userKey: {
+    id: 'abc',
+    pub: 'xpub661MyMwAqRbcGTnAqrXTV1ZCxrjQuHG87GjDEaeH4VLyxq6LGPJyj3KmDybAiHkJPpRXgp8dMW3iJdFYDmQmNAEVwKLJbimaNua8XzYUJCh',
+    encryptedPrv:
+      '{"iv":"lByUPi8LsNP/3wpLGEcglg==","v":1,"iter":10000,"ks":256,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"Z/J2QDtyU84=","ct":"ShhLIUyG0GoxwzjpH/zuGss8SXEgnPyZQBlntRum2zkhoagIB0zptMOik9KFSll/fi5Z8b6huAmEo922/ZJsszLhlKQqW7PHvzFE19dCbv0WSriZCElpJpZRgRpE2GQ2AbPBLu7ddqf4+5/8/lRhRC1NaKxOQCo="}\n',
+    source: 'user',
+  },
+  userAuthKey: {
+    id: 'def',
+    pub: 'xpub661MyMwAqRbcGYjYsnsDj1SHdiXynWEXNnfNgMSpokN54FKyMqbu7rWEfVNDs6uAJmz86UVFtq4sefhQpXZhSAzQcL9zrEPtiLNNZoeSxCG',
+    encryptedPrv:
+      '{"iv":"zYhhaNdW0wPfJEoBjZ4pvg==","v":1,"iter":10000,"ks":256,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"tgAMua9jjhw=","ct":"HcrbxQvNlWG5tLMndYzdNCYa1l+1h7o+vSsweA0+q1le3tWt6jLUJSEjZN+JI8lTZ2KPFQgLulQQhsUa+ytUCBi0vSgjF7x7CprT7l2Cfjkew00XsEd7wnmtJUsrQk8m69Co7tIRA3oEgzrnYwy4qOM81lbNNyQ="}',
+    source: 'user',
+    coinSpecific: {
+      tlnbtc: {
+        purpose: 'userAuth',
+      },
+    },
+  },
+  nodeAuthKey: {
+    id: 'ghi',
+    pub: 'xpub661MyMwAqRbcG9xnTnAnRbJPo3MAHyRtH4zeehN8exYk4VFz5buepUzebhix33BKhS5Eb4V3LEfW5pYiSR8qmaEnyrpeghhKY8JfzAsUDpq',
+    encryptedPrv:
+      '{"iv":"bH6eGbnl9x8PZECPrgvcng==","v":1,"iter":10000,"ks":256,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"o8yknV6nTI8=","ct":"nGyzAToIzYkQeIdcVafoWHtMx7+Fgj0YldCme3WA1yxJAA0QulZVhblMZN/7efCRIumA0NNmpH7dxH6n8cVlz/Z+RUgC2q9lgvZKUoJcYNTjWUfkmkJutXX2tr8yVxm+eC/hnRiyfVLZ2qPxctvDlBVBfgLuPyc="}',
+    source: 'user',
+    coinSpecific: {
+      tlnbtc: {
+        purpose: 'nodeAuth',
+      },
+    },
+  },
+};
+
+export const lightningSignerConfigs = {
+  fakeid: {
+    url: 'https://127.0.0.1:8080',
+    tlsCert:
+      'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNKRENDQWNxZ0F3SUJBZ0lRU0E4VUdScy95MzF5WStXNFFvVXJDekFLQmdncWhrak9QUVFEQWpBNE1SOHcKSFFZRFZRUUtFeFpzYm1RZ1lYVjBiMmRsYm1WeVlYUmxaQ0JqWlhKME1SVXdFd1lEVlFRREV3d3hOR1JsTURjeQpPVGsxTURBd0hoY05NalF3T0RFeE1URTFNVEF5V2hjTk1qVXhNREEyTVRFMU1UQXlXakE0TVI4d0hRWURWUVFLCkV4WnNibVFnWVhWMGIyZGxibVZ5WVhSbFpDQmpaWEowTVJVd0V3WURWUVFERXd3eE5HUmxNRGN5T1RrMU1EQXcKV1RBVEJnY3Foa2pPUFFJQkJnZ3Foa2pPUFFNQkJ3TkNBQVJUc0dHNS9nSnBJNUl4VE9pQWF2ZEtOVlVicHpsRgpNaS9MaEIxUVZySkNROEJ3NDlNeU9sZ3hBd0pFblVVSHByRzV6VHJZQ1daZkpUTDIySjlucXZlQW80RzFNSUd5Ck1BNEdBMVVkRHdFQi93UUVBd0lDcERBVEJnTlZIU1VFRERBS0JnZ3JCZ0VGQlFjREFUQVBCZ05WSFJNQkFmOEUKQlRBREFRSC9NQjBHQTFVZERnUVdCQlQvd0VITDV6dzdPYzVEakV0TmVISEZ4Y1kwNFRCYkJnTlZIUkVFVkRCUwpnZ3d4TkdSbE1EY3lPVGsxTURDQ0NXeHZZMkZzYUc5emRJSUVkVzVwZUlJS2RXNXBlSEJoWTJ0bGRJSUhZblZtClkyOXVib2NFZndBQUFZY1FBQUFBQUFBQUFBQUFBQUFBQUFBQUFZY0VyQkVBQWpBS0JnZ3Foa2pPUFFRREFnTkkKQURCRkFpQTNyYjIwdjVhMURZTlJXL0RXYjN2bEN5Wk5SeFlaTUx4UzZ4MHExUitGQkFJaEFOS0dGN043aWtYbApBaEdVbm5zOW03VEFyRmtySUNpNG50eTNXYzI0VHkrSgotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==',
+  },
+};
