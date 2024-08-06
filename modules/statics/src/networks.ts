@@ -788,18 +788,6 @@ class CoreumTestnet extends Testnet implements AccountNetwork {
   explorerUrl = 'https://explorer.testnet-1.coreum.dev/coreum/transactions/';
 }
 
-class Bera extends Mainnet implements AccountNetwork {
-  name = 'Berachain';
-  family = CoinFamily.BERA;
-  explorerUrl = undefined;
-}
-
-class BeraTestnet extends Testnet implements AccountNetwork {
-  name = 'BerachainTestnet';
-  family = CoinFamily.BERA;
-  explorerUrl = undefined;
-}
-
 class Islm extends Mainnet implements AccountNetwork {
   name = 'Haqq';
   family = CoinFamily.ISLM;
@@ -1000,12 +988,13 @@ class ZkSyncTestnet extends Testnet implements EthereumNetwork {
   chainId = 300;
   nativeCoinOperationHashPrefix = '300';
   tokenOperationHashPrefix = '300-ERC20';
-  forwarderFactoryAddress = '0xdd498702f44c4da08eb9e08d3f015eefe5cb71fc';
-  forwarderImplementationAddress = '0xbe69cae311191fb45e648ed20847f06fad2dbab4';
+  forwarderFactoryAddress = '0x6FE8aE1DdD402D972BE260bf7095cDcf4aB19617';
+  forwarderImplementationAddress = '0x46D3d5625366A0729F11a88b0ca205914537D28B';
   walletFactoryAddress = '0x4550e1e7616d3364877fc6c9324938dab678621a';
   walletImplementationAddress = '0x92db2759d1dca129a0d9d46877f361be819184c4';
 }
 
+<<<<<<< HEAD
 class BaseChainTestnet extends Testnet implements EthereumNetwork {
   name = 'BaseChainTestnet';
   family = CoinFamily.BASEETH;
@@ -1032,6 +1021,26 @@ class BaseChain extends Mainnet implements EthereumNetwork {
   forwarderImplementationAddress = '0xbe69cae311191fb45e648ed20847f06fad2dbab4';
   walletFactoryAddress = '0x4550e1e7616d3364877fc6c9324938dab678621a';
   walletImplementationAddress = '0x92db2759d1dca129a0d9d46877f361be819184c4';
+=======
+class Bera extends Mainnet implements EthereumNetwork {
+  name = 'Bera';
+  family = CoinFamily.BERA;
+  explorerUrl = '';
+  accountExplorerUrl = '';
+  chainId = 0;
+  nativeCoinOperationHashPrefix = '';
+  tokenOperationHashPrefix = '';
+}
+
+class BeraTestnet extends Testnet implements EthereumNetwork {
+  name = 'BeraTestnet';
+  family = CoinFamily.BERA;
+  explorerUrl = 'https://bartio.beratrail.io/tx/';
+  accountExplorerUrl = 'https://bartio.beratrail.io/address/';
+  chainId = 80084;
+  nativeCoinOperationHashPrefix = '80084';
+  tokenOperationHashPrefix = '80084-ERC20';
+>>>>>>> 4d36be4d2 (feat(sdk-coin-bera): add bera sdk skeleton)
 }
 
 export const Networks = {
