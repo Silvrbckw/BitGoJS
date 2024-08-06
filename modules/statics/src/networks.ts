@@ -988,40 +988,12 @@ class ZkSyncTestnet extends Testnet implements EthereumNetwork {
   chainId = 300;
   nativeCoinOperationHashPrefix = '300';
   tokenOperationHashPrefix = '300-ERC20';
-  forwarderFactoryAddress = '0x6FE8aE1DdD402D972BE260bf7095cDcf4aB19617';
-  forwarderImplementationAddress = '0x46D3d5625366A0729F11a88b0ca205914537D28B';
-  walletFactoryAddress = '0x4550e1e7616d3364877fc6c9324938dab678621a';
-  walletImplementationAddress = '0x92db2759d1dca129a0d9d46877f361be819184c4';
-}
-
-<<<<<<< HEAD
-class BaseChainTestnet extends Testnet implements EthereumNetwork {
-  name = 'BaseChainTestnet';
-  family = CoinFamily.BASEETH;
-  explorerUrl = 'https://sepolia.basescan.org/tx/';
-  accountExplorerUrl = 'https://sepolia.basescan.org/address/';
-  chainId = 84532;
-  nativeCoinOperationHashPrefix = '84532';
-  tokenOperationHashPrefix = '84532-ERC20';
   forwarderFactoryAddress = '0xdd498702f44c4da08eb9e08d3f015eefe5cb71fc';
   forwarderImplementationAddress = '0xbe69cae311191fb45e648ed20847f06fad2dbab4';
   walletFactoryAddress = '0x4550e1e7616d3364877fc6c9324938dab678621a';
   walletImplementationAddress = '0x92db2759d1dca129a0d9d46877f361be819184c4';
 }
 
-class BaseChain extends Mainnet implements EthereumNetwork {
-  name = 'BaseChain';
-  family = CoinFamily.BASEETH;
-  explorerUrl = 'https://basescan.org/tx/';
-  accountExplorerUrl = 'https://basescan.org/address/';
-  chainId = 8453;
-  nativeCoinOperationHashPrefix = '8453';
-  tokenOperationHashPrefix = '8453-ERC20';
-  forwarderFactoryAddress = '0xdd498702f44c4da08eb9e08d3f015eefe5cb71fc';
-  forwarderImplementationAddress = '0xbe69cae311191fb45e648ed20847f06fad2dbab4';
-  walletFactoryAddress = '0x4550e1e7616d3364877fc6c9324938dab678621a';
-  walletImplementationAddress = '0x92db2759d1dca129a0d9d46877f361be819184c4';
-=======
 class Bera extends Mainnet implements EthereumNetwork {
   name = 'Bera';
   family = CoinFamily.BERA;
@@ -1040,7 +1012,10 @@ class BeraTestnet extends Testnet implements EthereumNetwork {
   chainId = 80084;
   nativeCoinOperationHashPrefix = '80084';
   tokenOperationHashPrefix = '80084-ERC20';
->>>>>>> 4d36be4d2 (feat(sdk-coin-bera): add bera sdk skeleton)
+  forwarderFactoryAddress = '0xe0fce739287037751555011785c369fb1bdfe9c8';
+  forwarderImplementationAddress = '0x49307e47f160829e2f37873ef9e79132b218cac7';
+  walletFactoryAddress = '0x252a69d9a2be99aae36a80ed92d311cf38ec89ce';
+  walletImplementationAddress = '0xe5301a9c2131d4A9b137a1fa8eee9436dda74f5d';
 }
 
 export const Networks = {
