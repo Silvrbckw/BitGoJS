@@ -389,9 +389,6 @@ export class Sui extends BaseCoin {
       const gasBudget = Math.trunc(feeEstimate.toNumber() * DEFAULT_GAS_OVERHEAD);
 
       netAmount = netAmount.plus(MAX_GAS_BUDGET).minus(gasBudget);
-      if (netAmount.toNumber() <= 0) {
-        continue;
-      }
       recipients[0].amount = netAmount.toString();
       txBuilder.send(recipients);
       txBuilder.gasData({
